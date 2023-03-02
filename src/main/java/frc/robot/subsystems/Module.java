@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Module extends SubsystemBase {
   /** Creates a new Module. */
 
-  private CANSparkMax angleMotor;
+  public CANSparkMax angleMotor;
   private CANSparkMax driveMotor;
 
   private final SparkMaxPIDController driveController;
@@ -36,7 +36,8 @@ public class Module extends SubsystemBase {
   private static final double kI = 0.0;
   private static final double kD = 0.005;
 
-  private static final PIDController pid = new PIDController(kP, kI, kD);
+  public final PIDController pid = new PIDController(kP, kI, kD);
+  
 
   public Module(int module) {
     this.module_num = module;
@@ -62,9 +63,12 @@ public class Module extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (!pid.atSetpoint()) {
-      angleMotor.set(MathUtil.clamp(pid.calculate(this.getAngleInRadians()), -1, 1));
-    }
+    // if (!pid.atSetpoint() ) {
+    //   angleMotor.set(MathUtil.clamp(pid.calculate(this.getAngleInRadians()), -0.3, 0.3));
+    // } else {
+    //   angleMotor.set(0);
+    // }
+
   }
 
   public void setDriveSpeed(double speed) {
@@ -80,7 +84,11 @@ public class Module extends SubsystemBase {
   }
 
   public void setAngle(double angle_in_rad) {
-    pid.setSetpoint(angle_in_rad); // angles are in TRUE BEARING ( angles are negated )
+    if (this.module_num == 2) {
+      pid.setSetpoint(-angle_in_rad); // angles are in TRUE BEARING ( angles are negated )
+    } else {
+      pid.setSetpoint(angle_in_rad); // angles are in TRUE BEARING ( angles are negated )
+    }
   }
   public void resetDriveAngleEncoder() {
     angleEncoder.reset();
