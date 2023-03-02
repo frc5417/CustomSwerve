@@ -19,7 +19,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Module m_Module = new Module(1);
+  private final Module m_Module1 = new Module(1);
+  private final Module m_Module2 = new Module(2);
+  private final Module m_Module3 = new Module(3);
+  private final Module m_Module4 = new Module(4);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -45,7 +48,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(new DriveCommand(m_Module));
+    m_driverController.b().whileTrue(new DriveCommand(m_Module1, m_Module2, m_Module3, m_Module4));
   }
 
   /**
