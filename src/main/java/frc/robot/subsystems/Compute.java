@@ -79,4 +79,20 @@ public class Compute extends SubsystemBase {
 
     this.conv(this.computeUnicorn(this.computeStrafe(l_joy_x, l_joy_y), this.computeRotation(r_joy_x)));
   }
+
+  public static double[] getVel() {
+  	return this.vel;
+  }
+  
+  public static double[] getTheta() {
+  	return this.theta;
+  }
+  
+  public static double getGyro() {
+  	return this.gyro;
+  }
+  
+  public static void setGyro(double gyro_in) {
+  	this.gyro = gyro_in;
+  }
 }
