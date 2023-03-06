@@ -11,6 +11,7 @@ public class Compute extends SubsystemBase {
   /** Creates a new Compute. */
   private double[] vel = new double[4];
   private double[] theta = new double[4];
+  public boolean fieldCentric = true;
   private double gyro = 0;
 
   public Compute() {}
@@ -18,6 +19,7 @@ public class Compute extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    this.call(1.0, 0.0, 0.0);
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -60,14 +62,21 @@ public class Compute extends SubsystemBase {
       if(a == 0) {
         this.theta[i] = (b/Math.abs(b)) * (Math.PI/2);
       } else {
-        this.theta[i] = (a/Math.abs(a)) * Math.tan(b/a);
+        this.theta[i] = (a/Math.abs(a)) * Math.atan(b/a);
       }
     }
   }
 
   public void call(double l_joy_x, double l_joy_y, double r_joy_x) {
-    System.out.printf("Strafe: %f \n", this.computeStrafe(l_joy_x, l_joy_y));
-    System.out.printf("Rotation: %f \n", this.computeRotation(r_joy_x));
+    // System.out.printf("Strafe: %f \n", this.computeStrafe(l_joy_x, l_joy_y));
+    // System.out.printf("Rotation: %f \n", this.computeRotation(r_joy_x));
+
+    if (fieldCentric) {
+      this.gyro = this.gyro;//FIXME GET NAVX YAW
+    } else {
+      this.gyro = 0;
+    }
+
     this.conv(this.computeUnicorn(this.computeStrafe(l_joy_x, l_joy_y), this.computeRotation(r_joy_x)));
   }
 }
