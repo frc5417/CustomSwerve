@@ -70,7 +70,7 @@ public class Compute extends SubsystemBase {
   public void call(double l_joy_x, double l_joy_y, double r_joy_x) {
     // System.out.printf("Strafe: %f \n", this.computeStrafe(l_joy_x, l_joy_y));
     // System.out.printf("Rotation: %f \n", this.computeRotation(r_joy_x));
-
+    gyro *= Math.PI/180;
     if (fieldCentric) {
       this.gyro = this.gyro;//FIXME GET NAVX YAW
     } else {
