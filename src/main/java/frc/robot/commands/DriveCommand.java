@@ -47,8 +47,6 @@ public class DriveCommand extends CommandBase {
     m_module2.setAngle(0);
     m_module3.setAngle(0);
     m_module4.setAngle(0);
-
-    m_swervekinematics.fieldCentric = Constants.OperatorConstants.fieldCentric;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -73,6 +71,16 @@ public class DriveCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_module1.setAngle(0);
+    m_module2.setAngle(0);
+    m_module3.setAngle(0);
+    m_module4.setAngle(0);
+
+    m_module1.setDriveSpeed(0);
+    m_module2.setDriveSpeed(0);
+    m_module3.setDriveSpeed(0);
+    m_module4.setDriveSpeed(0);
+
     m_module1.resetDriveAngleEncoder();
     m_module2.resetDriveAngleEncoder();
     m_module3.resetDriveAngleEncoder();
