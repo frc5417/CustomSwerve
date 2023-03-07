@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants;
 import frc.robot.subsystems.Compute;
 import frc.robot.subsystems.Module;
 import edu.wpi.first.wpilibj2.command.CommandBase;
