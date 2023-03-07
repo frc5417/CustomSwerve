@@ -27,7 +27,6 @@ public class Compute extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    this.gyro = ahrs.getYaw();
     this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
   }
 
@@ -42,9 +41,9 @@ public class Compute extends SubsystemBase {
 
   private double[][] computeRotation(double omega) {
     double[][] temp = {{omega * Math.cos(Math.PI/4), omega * Math.sin(Math.PI/4)}, 
-            {omega * Math.cos(7*(Math.PI/4)), omega * Math.sin(7*(Math.PI/4))}, 
-            {omega * Math.cos(5*(Math.PI/4)), omega * Math.sin(5*(Math.PI/4))}, 
-            {omega * Math.cos(3*(Math.PI/4)), omega * Math.sin(3*(Math.PI/4))}};
+                       {omega * Math.cos(7*(Math.PI/4)), omega * Math.sin(7*(Math.PI/4))}, 
+                       {omega * Math.cos(5*(Math.PI/4)), omega * Math.sin(5*(Math.PI/4))}, 
+                       {omega * Math.cos(3*(Math.PI/4)), omega * Math.sin(3*(Math.PI/4))}};
     return temp;
   }
 
@@ -64,7 +63,7 @@ public class Compute extends SubsystemBase {
   public void conv(double[][] unicorn) {
     for(int i=0; i<unicorn.length; i++) {
       double a = unicorn[i][0];
-      double b = unicorn[i][0];
+      double b = unicorn[i][1];
 
       this.vel[i] = Math.sqrt((a*a) + (b*b));
       
@@ -81,7 +80,7 @@ public class Compute extends SubsystemBase {
     // System.out.printf("Rotation: %f \n", this.computeRotation(r_joy_x));
     gyro *= Math.PI/180;
     if (fieldCentric) {
-      this.gyro = this.gyro;//FIXME GET NAVX YAW
+      this.gyro = this.ahrs.getYaw();
     } else {
       this.gyro = 0;
     }
