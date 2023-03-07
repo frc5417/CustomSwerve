@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
+import frc.robot.subsystems.Compute;
 import frc.robot.subsystems.Module;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -16,24 +18,26 @@ public class DriveCommand extends CommandBase {
   private final Module m_module2;
   private final Module m_module3;
   private final Module m_module4;
-  
-  private int angle = 0;
-  private int counter = 0;
 
+  private final Compute m_swervekinematics;
   
+  private double[] thetas = new double[4];  
+  private double[] vels = new double[4];  
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DriveCommand(Module mod1, Module mod2, Module mod3, Module mod4) {
+  public DriveCommand(Module mod1, Module mod2, Module mod3, Module mod4, Compute compute_passed) {
     m_module1 = mod1;
     m_module2 = mod2;
     m_module3 = mod3;
     m_module4 = mod4;
+
+    m_swervekinematics = compute_passed;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_module1, m_module2, m_module3, m_module4);
+    addRequirements(m_module1, m_module2, m_module3, m_module4, m_swervekinematics);
   }
 
   // Called when the command is initially scheduled.
@@ -41,36 +45,38 @@ public class DriveCommand extends CommandBase {
   public void initialize() {
     m_module1.setAngle(0);
     m_module2.setAngle(0);
-    // m_module3.setAngle(Math.PI/4);
+    m_module3.setAngle(0);
     m_module4.setAngle(0);
+
+    m_swervekinematics.fieldCentric = Constants.OperatorConstants.fieldCentric;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    thetas = m_swervekinematics.getTheta();
+    vels = m_swervekinematics.getVel();
+
+    m_module1.setAngle(thetas[0]);
+    m_module2.setAngle(thetas[1]);
+    m_module3.setAngle(thetas[2]);
+    m_module4.setAngle(thetas[3]);
     
     this.angleRun();
 
-    if ((counter++ % 100) == 0) {
-      m_module1.setAngle(this.angle);
-      m_module2.setAngle(this.angle);
-      // m_module3.setAngle(this.angle);
-      m_module4.setAngle(this.angle);
-
-      m_module1.setDriveSpeed(0.3);
-      m_module2.setDriveSpeed(0.3);
-      // m_module3.setDriveSpeed(1);
-      m_module4.setDriveSpeed(0.3);
-    }
+    m_module1.setDriveSpeed(vels[0]);
+    m_module2.setDriveSpeed(vels[1]);
+    m_module3.setDriveSpeed(vels[2]);
+    m_module4.setDriveSpeed(vels[3]);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // m_module1.resetDriveAngleEncoder();
-    // m_module2.resetDriveAngleEncoder();
-    // m_module3.resetDriveAngleEncoder();
-    // m_module4.resetDriveAngleEncoder();
+    m_module1.resetDriveAngleEncoder();
+    m_module2.resetDriveAngleEncoder();
+    m_module3.resetDriveAngleEncoder();
+    m_module4.resetDriveAngleEncoder();
   }
 
   // Returns true when the command should end.
@@ -92,7 +98,5 @@ public class DriveCommand extends CommandBase {
     if (!m_module4.pid.atSetpoint()) {
       m_module4.angleMotor.set(MathUtil.clamp(m_module4.pid.calculate(m_module4.getAngleInRadians()), -1, 1));
     }
-
-
   }
 }

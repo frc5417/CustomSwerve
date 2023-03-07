@@ -15,11 +15,10 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final boolean fieldCentric = true;
   }
   public static class MotorConstants {
-
     // 0 indexing
-
     public static final Integer[] driveMotorIDS = {11, 21, 31, 40}; 
     public static final Integer[] angleMotorIDS = {10, 20, 30, 41};
     public static final Integer[] pwmIDS = {0, 1, 2, 3};

@@ -6,20 +6,30 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.Constants;
+
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SerialPort;
 
 public class Compute extends SubsystemBase {
   /** Creates a new Compute. */
   private double[] vel = new double[4];
   private double[] theta = new double[4];
-  public boolean fieldCentric = true;
+  public boolean fieldCentric;
   private double gyro = 0;
 
-  public Compute() {}
+  public static final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
+
+  public Compute() {
+    this.fieldCentric = Constants.OperatorConstants.fieldCentric;
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    this.call(1.0, 0.0, 0.0);
+    this.gyro = ahrs.getYaw();
+    this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -80,19 +90,19 @@ public class Compute extends SubsystemBase {
     this.conv(this.computeUnicorn(this.computeStrafe(l_joy_x, l_joy_y), this.computeRotation(r_joy_x)));
   }
 
-  public static double[] getVel() {
+  public double[] getVel() {
   	return this.vel;
   }
   
-  public static double[] getTheta() {
+  public double[] getTheta() {
   	return this.theta;
   }
   
-  public static double getGyro() {
+  public double getGyro() {
   	return this.gyro;
   }
   
-  public static void setGyro(double gyro_in) {
+  public void setGyro(double gyro_in) {
   	this.gyro = gyro_in;
   }
 }

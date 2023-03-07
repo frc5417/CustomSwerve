@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
+import frc.robot.subsystems.Compute;
 import frc.robot.subsystems.Module;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -23,11 +24,12 @@ public class RobotContainer {
   private final Module m_Module2 = new Module(2);
   private final Module m_Module3 = new Module(3);
   private final Module m_Module4 = new Module(4);
+  private final Compute m_Compute = new Compute();
 
-  private final DriveCommand m_DriveCommand = new DriveCommand(m_Module1, m_Module2, m_Module3, m_Module4);
+  private final DriveCommand m_DriveCommand = new DriveCommand(m_Module1, m_Module2, m_Module3, m_Module4, m_Compute);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
+  private final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -51,6 +53,16 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     m_driverController.b().onTrue(m_DriveCommand);
+  }
+
+  public static double getLeftJoyX() {
+    return m_driverController.getLeftX();
+  }
+  public static double getLeftJoyY() {
+    return m_driverController.getLeftY();
+  }
+  public static double getRightJoyX() {
+    return m_driverController.getRightX();
   }
 
   /**
