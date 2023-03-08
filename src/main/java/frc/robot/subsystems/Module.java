@@ -24,8 +24,8 @@ public class Module extends SubsystemBase {
   private final SparkMaxPIDController driveController;
   private final SparkMaxPIDController angleController;
 
-  private RelativeEncoder integratedDriveEncoder;
-  private RelativeEncoder integratedAngleEncoder;
+  private final RelativeEncoder integratedDriveEncoder;
+  private final RelativeEncoder integratedAngleEncoder;
 
   private DutyCycleEncoder angleEncoder;
 
@@ -75,19 +75,17 @@ public class Module extends SubsystemBase {
   }
 
   public double getAngleInRadians() {
-    return angleEncoder.getAbsolutePosition() * Math.PI * 2;
+    return (angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset()) * Math.PI * 2;
   }
 
   public double getAngle() {
-    return angleEncoder.getAbsolutePosition();
+    return angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset();
   }
 
   public void setAngle(double angle_in_rad) {
-    if (this.module_num == 2) {
-      pid.setSetpoint(-angle_in_rad); // angles are in TRUE BEARING ( angles are negated )
-    } else {
-      pid.setSetpoint(angle_in_rad); // angles are in TRUE BEARING ( angles are negated )
-    }
+
+    pid.setSetpoint(angle_in_rad + Constants.MotorConstants.angleOffsets[this.module_num - 1]); // angles are in TRUE BEARING ( angles are negated )
+
   }
   public void resetDriveAngleEncoder() {
     angleEncoder.reset();

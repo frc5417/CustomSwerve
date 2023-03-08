@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.Constants;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -16,18 +15,21 @@ public class Compute extends SubsystemBase {
   private double[] vel = new double[4];
   private double[] theta = new double[4];
   public boolean fieldCentric;
-  private double gyro = 0;
+  private double gyro = 0.0;
 
-  public static final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
+  public final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
 
   public Compute() {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
+    this.ahrs.reset();
+    this.ahrs.calibrate();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
+    // this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
+    this.call(0, 1, 0);
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -49,6 +51,7 @@ public class Compute extends SubsystemBase {
 
   private double[][] addVect(double[][] a, double[][] b) {
     double temp[][] = new double[4][2];
+    assert(a.length == b.length);
     for(int n=0; n<a.length; n++) {
       temp[n][0] = a[n][0] + b[n][0];
       temp[n][1] = a[n][1] + b[n][1];
@@ -78,9 +81,9 @@ public class Compute extends SubsystemBase {
   public void call(double l_joy_x, double l_joy_y, double r_joy_x) {
     // System.out.printf("Strafe: %f \n", this.computeStrafe(l_joy_x, l_joy_y));
     // System.out.printf("Rotation: %f \n", this.computeRotation(r_joy_x));
-    gyro *= Math.PI/180;
     if (fieldCentric) {
       this.gyro = this.ahrs.getYaw();
+      this.gyro *= Math.PI/180;
     } else {
       this.gyro = 0;
     }

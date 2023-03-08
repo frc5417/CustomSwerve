@@ -51,17 +51,29 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().onTrue(m_DriveCommand);
+    // m_driverController.b().onTrue(m_DriveCommand);
   }
 
   public static double getLeftJoyX() {
-    return m_driverController.getLeftX();
+    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_driverController.getLeftX();
+    } else {
+      return 0;
+    }
   }
   public static double getLeftJoyY() {
-    return m_driverController.getLeftY();
+    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_driverController.getLeftY();
+    } else {
+      return 0;
+    }
   }
   public static double getRightJoyX() {
-    return m_driverController.getRightX();
+    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_driverController.getRightX();
+    } else {
+      return 0;
+    }
   }
 
   /**
@@ -73,4 +85,7 @@ public class RobotContainer {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
   // }
+  public void runTeleopCommand() {
+    m_DriveCommand.schedule();
+  }
 }

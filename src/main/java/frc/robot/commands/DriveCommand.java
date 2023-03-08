@@ -46,25 +46,31 @@ public class DriveCommand extends CommandBase {
     m_module2.setAngle(0);
     m_module3.setAngle(0);
     m_module4.setAngle(0);
+
+
+    m_module1.setDriveSpeed(0);
+    m_module2.setDriveSpeed(0);
+    m_module3.setDriveSpeed(0);
+    m_module4.setDriveSpeed(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    thetas = m_swervekinematics.getTheta();
-    vels = m_swervekinematics.getVel();
+    this.thetas = m_swervekinematics.getTheta();
+    this.vels = m_swervekinematics.getVel();
 
-    m_module1.setAngle(thetas[0]);
-    m_module2.setAngle(thetas[1]);
-    m_module3.setAngle(thetas[2]);
-    m_module4.setAngle(thetas[3]);
-    
+    m_module1.setAngle(this.thetas[0]);
+    m_module2.setAngle(this.thetas[1]);
+    m_module3.setAngle(this.thetas[2]);
+    m_module4.setAngle(this.thetas[3]);
+
+    m_module1.setDriveSpeed(this.vels[0]);
+    m_module2.setDriveSpeed(this.vels[1]);
+    m_module3.setDriveSpeed(this.vels[2]);
+    m_module4.setDriveSpeed(this.vels[3]);
+
     this.angleRun();
-
-    m_module1.setDriveSpeed(vels[0]);
-    m_module2.setDriveSpeed(vels[1]);
-    m_module3.setDriveSpeed(vels[2]);
-    m_module4.setDriveSpeed(vels[3]);
   }
 
   // Called once the command ends or is interrupted.
@@ -94,16 +100,16 @@ public class DriveCommand extends CommandBase {
 
   public void angleRun() {
     if (!m_module1.pid.atSetpoint()) {
-      m_module1.angleMotor.set(MathUtil.clamp(m_module1.pid.calculate(m_module1.getAngleInRadians()), -1, 1));
+      m_module1.angleMotor.set(MathUtil.clamp(m_module1.pid.calculate(m_module1.getAngleInRadians()), -0.8, 0.8));
     }
     if (!m_module2.pid.atSetpoint()) {
-      m_module2.angleMotor.set(MathUtil.clamp(m_module2.pid.calculate(m_module2.getAngleInRadians()), -1, 1));
+      m_module2.angleMotor.set(MathUtil.clamp(m_module2.pid.calculate(m_module2.getAngleInRadians()), -0.8, 0.8));
     }
     if (!m_module3.pid.atSetpoint()) {
-      m_module3.angleMotor.set(MathUtil.clamp(m_module3.pid.calculate(m_module3.getAngleInRadians()), -1, 1));
+      m_module3.angleMotor.set(MathUtil.clamp(m_module3.pid.calculate(m_module3.getAngleInRadians()), -0.8, 0.8));
     }
     if (!m_module4.pid.atSetpoint()) {
-      m_module4.angleMotor.set(MathUtil.clamp(m_module4.pid.calculate(m_module4.getAngleInRadians()), -1, 1));
+      m_module4.angleMotor.set(MathUtil.clamp(m_module4.pid.calculate(m_module4.getAngleInRadians()), -0.8, 0.8));
     }
   }
 }
