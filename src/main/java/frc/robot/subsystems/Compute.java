@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
+import frc.robot.RobotContainer;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
 
@@ -28,16 +28,18 @@ public class Compute extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
-    this.call(0, 1, 0);
+    this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
+    
+    // this.call(0, 1, 0);
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
     double[][] temp_vel = new double[4][2];
     for(int n=0; n<4; n++) {
-      temp_vel[n][0] = ((joy_x*Math.cos(this.gyro)) + (joy_y*Math.sin(this.gyro)));
-      temp_vel[n][1] = ((joy_y*Math.cos(this.gyro)) - (joy_x*Math.sin(this.gyro)));
+      temp_vel[n][0] = ((joy_x*Math.cos(gyro)) - (joy_y*Math.sin(gyro)));
+      temp_vel[n][1] = ((joy_x*Math.sin(gyro)) + (joy_y*Math.cos(gyro)));
     }
+    
     return temp_vel;
   }
 
@@ -68,12 +70,16 @@ public class Compute extends SubsystemBase {
       double a = unicorn[i][0];
       double b = unicorn[i][1];
 
-      this.vel[i] = Math.sqrt((a*a) + (b*b));
-      
+      Main.vel[i] = Math.sqrt((a*a) + (b*b));
+
       if(a == 0) {
-        this.theta[i] = (b/Math.abs(b)) * (Math.PI/2);
+        if(b == 0) {
+          Main.theta[i] = 0;
+        } else {
+          Main.theta[i] = (b/Math.abs(b)) * (Math.PI/2);
+        }
       } else {
-        this.theta[i] = (a/Math.abs(a)) * Math.atan(b/a);
+        Main.theta[i] = (a/Math.abs(a)) * Math.atan(b/a);
       }
     }
   }
