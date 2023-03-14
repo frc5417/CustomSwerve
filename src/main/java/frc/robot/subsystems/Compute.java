@@ -70,16 +70,25 @@ public class Compute extends SubsystemBase {
       double a = unicorn[i][0];
       double b = unicorn[i][1];
 
-      Main.vel[i] = Math.sqrt((a*a) + (b*b));
+      this.vel[i] = Math.sqrt((a*a) + (b*b));
 
       if(a == 0) {
         if(b == 0) {
-          Main.theta[i] = 0;
+          this.theta[i] = 0;
         } else {
-          Main.theta[i] = (b/Math.abs(b)) * (Math.PI/2);
+          this.theta[i] = (b/Math.abs(b)) * (Math.PI/2);
         }
       } else {
-        Main.theta[i] = (a/Math.abs(a)) * Math.atan(b/a);
+        this.theta[i] = Math.atan(b/a);
+        if (a > 0) {
+          if (b >= 0) {
+            this.theta[i] += 0;
+          } else {
+            this.theta[i] += Math.PI*2;
+          }
+        } else {
+          this.theta[i] += Math.PI;
+        }
       }
     }
   }
