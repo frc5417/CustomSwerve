@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -27,7 +28,7 @@ public class Module extends SubsystemBase {
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
 
-  private DutyCycleEncoder angleEncoder;
+  private CANCoder angleEncoder;
 
   private final int module_num;
 
@@ -40,7 +41,7 @@ public class Module extends SubsystemBase {
 
   public Module(int module) {
     this.module_num = module;
-    angleEncoder = new DutyCycleEncoder(Constants.MotorConstants.pwmIDS[this.module_num-1]);
+    angleEncoder = new CANCoder(Constants.MotorConstants.pwmIDS[this.module_num-1],"canivore");
     System.out.printf("Initial encoder value: %f\n", angleEncoder.getAbsolutePosition());
      /* Angle Motor Config */
      angleMotor = new CANSparkMax(Constants.MotorConstants.angleMotorIDS[this.module_num-1], MotorType.kBrushless);
@@ -53,7 +54,8 @@ public class Module extends SubsystemBase {
      integratedDriveEncoder = driveMotor.getEncoder();
      driveController = driveMotor.getPIDController();
 
-     angleEncoder.reset();
+     angleEncoder.setPosition(0);
+     //angleEncoder.reset();
     //  configDriveMotor();
 
     pid.enableContinuousInput(0, Math.PI * 2);
@@ -75,21 +77,22 @@ public class Module extends SubsystemBase {
   }
 
   public double getAngleInRadians() {
-    return (angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset()) * Math.PI * 2;
+    return (angleEncoder.getAbsolutePosition()) * Math.PI / 180.0;
   }
 
   public double getAngle() {
-    return angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset();
+    return angleEncoder.getAbsolutePosition();
   }
 
   public void setAngle(double angle_in_rad) {
-
     pid.setSetpoint(angle_in_rad + Constants.MotorConstants.angleOffsets[this.module_num - 1]); // angles are in TRUE BEARING ( angles are negated )
-
   }
+
   public void resetDriveAngleEncoder() {
-    angleEncoder.reset();
-    angleEncoder.close();
+    angleEncoder.setPosition(0);
+    
+    //angleEncoder.reset();
+    //angleEncoder.close();
   }
 
   // private void configAngleMotor() {
