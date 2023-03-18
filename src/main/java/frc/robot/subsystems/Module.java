@@ -11,6 +11,12 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.CANCoderFaults;
+import com.ctre.phoenix.sensors.CANCoderStickyFaults;
+import com.ctre.phoenix.sensors.MagnetFieldStrength;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
+
 import edu.wpi.first.math.controller.PIDController;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,6 +43,8 @@ public class Module extends SubsystemBase {
 
   public final PIDController pid = new PIDController(kP, kI, kD);
   
+  WPI_CANCoder _CANCoder;
+  CANCoderConfiguration _canCoderConfiguration = new CANCoderConfiguration();
 
   public Module(int module) {
     this.module_num = module;
@@ -46,6 +54,8 @@ public class Module extends SubsystemBase {
      angleMotor = new CANSparkMax(Constants.MotorConstants.angleMotorIDS[this.module_num-1], MotorType.kBrushless);
      integratedAngleEncoder = angleMotor.getEncoder();
      angleController = angleMotor.getPIDController();
+
+     _CANCoder = new WPI_CANCoder(Constants.MotorConstants.angleMotorIDS[this.module_num-1], "canivore");
     //  configAngleMotor();
     
      /* Drive Motor Config */
@@ -54,6 +64,7 @@ public class Module extends SubsystemBase {
      driveController = driveMotor.getPIDController();
 
      angleEncoder.reset();
+     _CANCoder.setPosition(0);
     //  configDriveMotor();
 
     pid.enableContinuousInput(0, Math.PI * 2);
@@ -79,7 +90,8 @@ public class Module extends SubsystemBase {
   }
 
   public double getAngle() {
-    return angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset();
+    // return angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset();
+    return _CANCoder.getAbsolutePosition();
   }
 
   public void setAngle(double angle_in_rad) {
@@ -90,6 +102,7 @@ public class Module extends SubsystemBase {
   public void resetDriveAngleEncoder() {
     angleEncoder.reset();
     angleEncoder.close();
+    _CANCoder.close();
   }
 
   // private void configAngleMotor() {
