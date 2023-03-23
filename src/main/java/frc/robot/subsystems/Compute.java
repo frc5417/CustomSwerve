@@ -44,10 +44,10 @@ public class Compute extends SubsystemBase {
   }
 
   private double[][] computeRotation(double omega) {
-    double[][] temp = {{omega * Math.cos(Math.PI/4), omega * Math.sin(Math.PI/4)}, 
-                       {omega * Math.cos(7*(Math.PI/4)), omega * Math.sin(7*(Math.PI/4))}, 
-                       {omega * Math.cos(5*(Math.PI/4)), omega * Math.sin(5*(Math.PI/4))}, 
-                       {omega * Math.cos(3*(Math.PI/4)), omega * Math.sin(3*(Math.PI/4))}};
+    double[][] temp = {{omega * Math.cos(1*(Math.PI/4)), omega * Math.sin(1*(Math.PI/4))},
+                       {omega * Math.cos(7*(Math.PI/4)), omega * Math.sin(7*(Math.PI/4))},
+                       {omega * Math.cos(3*(Math.PI/4)), omega * Math.sin(3*(Math.PI/4))},
+                       {omega * Math.cos(5*(Math.PI/4)), omega * Math.sin(5*(Math.PI/4))}};
     return temp;
   }
 

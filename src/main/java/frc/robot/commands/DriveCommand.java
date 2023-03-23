@@ -23,6 +23,8 @@ public class DriveCommand extends CommandBase {
   private double[] thetas = new double[4];  
   private double[] vels = new double[4];  
 
+  private int counter = 0;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -42,16 +44,17 @@ public class DriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_module1.setAngle(0);
-    m_module2.setAngle(0);
-    m_module3.setAngle(0);
-    m_module4.setAngle(0);
+    // m_module1.setAngle(0);
+    // m_module2.setAngle(0);
+    // m_module3.setAngle(0);
+    // m_module4.setAngle(0);
 
 
     m_module1.setDriveSpeed(0);
     m_module2.setDriveSpeed(0);
     m_module3.setDriveSpeed(0);
     m_module4.setDriveSpeed(0);
+    System.out.print("HIIIIIIIIII!");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -71,6 +74,10 @@ public class DriveCommand extends CommandBase {
     m_module4.setDriveSpeed(this.vels[3]);
 
     this.angleRun();
+
+    // if ((counter++%10) == 0) {
+    //   System.out.println(m_module1.getAngle());
+    // }
   }
 
   // Called once the command ends or is interrupted.

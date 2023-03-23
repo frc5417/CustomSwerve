@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import com.revrobotics.RelativeEncoder;
@@ -37,7 +39,7 @@ public class Module extends SubsystemBase {
 
   private final int module_num;
 
-  private static final double kP = 0.1;
+  private static final double kP = 0.4;
   private static final double kI = 0.0;
   private static final double kD = 0.005;
 
@@ -55,7 +57,7 @@ public class Module extends SubsystemBase {
      integratedAngleEncoder = angleMotor.getEncoder();
      angleController = angleMotor.getPIDController();
 
-     _CANCoder = new WPI_CANCoder(Constants.MotorConstants.angleMotorIDS[this.module_num-1], "canivore");
+     _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.module_num-1], "canivore");
     //  configAngleMotor();
     
      /* Drive Motor Config */
@@ -68,6 +70,8 @@ public class Module extends SubsystemBase {
     //  configDriveMotor();
 
     pid.enableContinuousInput(0, Math.PI * 2);
+
+    angleMotor.setIdleMode(IdleMode.kCoast);
   }
 
   @Override
@@ -82,16 +86,21 @@ public class Module extends SubsystemBase {
   }
 
   public void setDriveSpeed(double speed) {
-    driveMotor.set(speed);
+    if (this.module_num == 3 || this.module_num == 4) {
+      driveMotor.set(-speed);
+    } else {
+      driveMotor.set(speed);
+    }
   }
 
   public double getAngleInRadians() {
-    return (angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset()) * Math.PI * 2;
+    // return (angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset()) * Math.PI * 2;
+    return _CANCoder.getPosition() * (Math.PI/180.0);
   }
 
   public double getAngle() {
     // return angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset();
-    return _CANCoder.getAbsolutePosition();
+    return _CANCoder.getPosition();
   }
 
   public void setAngle(double angle_in_rad) {
