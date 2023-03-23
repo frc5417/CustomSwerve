@@ -24,5 +24,7 @@ public final class Constants {
     public static final Integer[] angleMotorIDS = {10, 20, 30, 41};
     public static final Integer[] pwmIDS = {0, 1, 2, 3};
     public static final Double[] angleOffsets = {0.0, 0.0, 0.0, 0.0};
+    public static final Double[][] angleMotorPID = {
+      {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {1.0, 0.0, 0.0}};
   }
 }

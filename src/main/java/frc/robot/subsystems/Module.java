@@ -7,8 +7,11 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 import frc.robot.Constants;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -37,16 +40,22 @@ public class Module extends SubsystemBase {
   private static final double kD = 0.005;
 
   public final PIDController pid = new PIDController(kP, kI, kD);
+
+  private Boolean invertDriveSpeed = false;
   
 
   public Module(int module) {
     this.module_num = module;
     angleEncoder = new CANCoder(Constants.MotorConstants.pwmIDS[this.module_num-1],"canivore");
-    System.out.printf("Initial encoder value: %f\n", angleEncoder.getAbsolutePosition());
+    //angleEncoder.configFactoryDefault();
+    //angleEncoder.configAllSettings(returnCANConfig());
      /* Angle Motor Config */
      angleMotor = new CANSparkMax(Constants.MotorConstants.angleMotorIDS[this.module_num-1], MotorType.kBrushless);
      integratedAngleEncoder = angleMotor.getEncoder();
      angleController = angleMotor.getPIDController();
+     /*angleController.setP(Constants.MotorConstants.angleMotorPID[this.module_num-1][0]);
+     angleController.setI(Constants.MotorConstants.angleMotorPID[this.module_num-1][1]);
+     angleController.setD(Constants.MotorConstants.angleMotorPID[this.module_num-1][2]);*/
     //  configAngleMotor();
     
      /* Drive Motor Config */
@@ -72,8 +81,22 @@ public class Module extends SubsystemBase {
 
   }
 
+  public void invertSpeed() {
+    invertDriveSpeed = !invertDriveSpeed;
+  }
+
+  //angle to normalize between 0 and 360 degrees
+  public double normalizeAngle(double angle) {
+    double fixedAngle = angle;
+    if (fixedAngle > 360.0) { fixedAngle -= 360.0; }
+    else if (fixedAngle < 0.0 ) { fixedAngle += 360.0; }
+    return fixedAngle;
+  }
+
   public void setDriveSpeed(double speed) {
-    driveMotor.set(speed);
+    int invertMultiplier = 1;
+    if (invertDriveSpeed) { invertMultiplier = -1; }
+    driveMotor.set(speed * invertMultiplier);
   }
 
   public double getAngleInRadians() {
@@ -85,14 +108,36 @@ public class Module extends SubsystemBase {
   }
 
   public void setAngle(double angle_in_rad) {
-    pid.setSetpoint(angle_in_rad + Constants.MotorConstants.angleOffsets[this.module_num - 1]); // angles are in TRUE BEARING ( angles are negated )
+    //code to make the angle motor turn the least amount possible and drive direction if necessary
+    double targetAngle = angle_in_rad + Constants.MotorConstants.angleOffsets[this.module_num - 1];
+    double currentAngle = getAngle();
+    double normalDifference = currentAngle - targetAngle;
+    double difference180 = currentAngle - normalizeAngle(targetAngle+180.0);
+
+    //if going to targetAngle + 180 degrees is not less than the distance of going just to targetAngle
+    //then turn normally and also do not invert the motor direction
+    if (Math.abs(normalDifference) <= Math.abs(difference180)) {
+      pid.setSetpoint(targetAngle); // angles are in TRUE BEARING ( angles are negated )
+    } else {
+      pid.setSetpoint(targetAngle+180.0); // angles are in TRUE BEARING ( angles are negated )
+      invertSpeed();
+    }
+    
   }
 
   public void resetDriveAngleEncoder() {
     angleEncoder.setPosition(0);
     
     //angleEncoder.reset();
-    //angleEncoder.close();
+    //angleEncoder.DestroyObject();
+  }
+
+  public CANCoderConfiguration returnCANConfig() {
+    CANCoderConfiguration canConfig = new CANCoderConfiguration();
+    canConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+    canConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+    canConfig.sensorTimeBase = SensorTimeBase.PerSecond;
+    return canConfig;
   }
 
   // private void configAngleMotor() {
