@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import frc.robot.Constants;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -14,6 +16,12 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.CANCoderFaults;
+import com.ctre.phoenix.sensors.CANCoderStickyFaults;
+import com.ctre.phoenix.sensors.MagnetFieldStrength;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.controller.PIDController;
 
@@ -31,11 +39,11 @@ public class Module extends SubsystemBase {
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
 
-  private CANCoder angleEncoder;
+//  private CANCoder angleEncoder;
 
   private final int module_num;
 
-  private static final double kP = 0.1;
+  private static final double kP = 0.4;
   private static final double kI = 0.0;
   private static final double kD = 0.005;
 
@@ -43,19 +51,21 @@ public class Module extends SubsystemBase {
 
   private Boolean invertDriveSpeed = false;
   
+  WPI_CANCoder _CANCoder;
+  CANCoderConfiguration _canCoderConfiguration = new CANCoderConfiguration();
 
   public Module(int module) {
     this.module_num = module;
-    angleEncoder = new CANCoder(Constants.MotorConstants.pwmIDS[this.module_num-1],"canivore");
-    //angleEncoder.configFactoryDefault();
+    //angleEncoder = new CANCoder(Constants.MotorConstants.pwmIDS[this.module_num-1],"canivore");
     //angleEncoder.configAllSettings(returnCANConfig());
      /* Angle Motor Config */
      angleMotor = new CANSparkMax(Constants.MotorConstants.angleMotorIDS[this.module_num-1], MotorType.kBrushless);
      integratedAngleEncoder = angleMotor.getEncoder();
      angleController = angleMotor.getPIDController();
-     /*angleController.setP(Constants.MotorConstants.angleMotorPID[this.module_num-1][0]);
+    /*angleController.setP(Constants.MotorConstants.angleMotorPID[this.module_num-1][0]);
      angleController.setI(Constants.MotorConstants.angleMotorPID[this.module_num-1][1]);
      angleController.setD(Constants.MotorConstants.angleMotorPID[this.module_num-1][2]);*/
+     _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.module_num-1], "canivore");
     //  configAngleMotor();
     
      /* Drive Motor Config */
@@ -63,11 +73,13 @@ public class Module extends SubsystemBase {
      integratedDriveEncoder = driveMotor.getEncoder();
      driveController = driveMotor.getPIDController();
 
-     angleEncoder.setPosition(0);
      //angleEncoder.reset();
+     _CANCoder.setPosition(0);
     //  configDriveMotor();
 
     pid.enableContinuousInput(0, Math.PI * 2);
+
+    angleMotor.setIdleMode(IdleMode.kCoast);
   }
 
   @Override
@@ -96,15 +108,21 @@ public class Module extends SubsystemBase {
   public void setDriveSpeed(double speed) {
     int invertMultiplier = 1;
     if (invertDriveSpeed) { invertMultiplier = -1; }
-    driveMotor.set(speed * invertMultiplier);
+    if (this.module_num == 3 || this.module_num == 4) {
+      driveMotor.set(-speed * invertMultiplier);
+    } else {
+      driveMotor.set(speed * invertMultiplier);
+    }
   }
 
   public double getAngleInRadians() {
-    return (angleEncoder.getAbsolutePosition()) * Math.PI / 180.0;
+    // return (angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset()) * Math.PI * 2;
+    return _CANCoder.getPosition() * (Math.PI/180.0);
   }
 
   public double getAngle() {
-    return angleEncoder.getAbsolutePosition();
+    // return angleEncoder.getAbsolutePosition() - angleEncoder.getPositionOffset();
+    return _CANCoder.getPosition();
   }
 
   public void setAngle(double angle_in_rad) {
@@ -126,10 +144,10 @@ public class Module extends SubsystemBase {
   }
 
   public void resetDriveAngleEncoder() {
-    angleEncoder.setPosition(0);
-    
+    //angleEncoder.setPosition(0);
     //angleEncoder.reset();
-    //angleEncoder.DestroyObject();
+    //angleEncoder.close();
+    _CANCoder.close();
   }
 
   public CANCoderConfiguration returnCANConfig() {

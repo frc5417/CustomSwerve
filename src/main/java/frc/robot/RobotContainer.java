@@ -51,7 +51,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    // m_driverController.b().onTrue(m_DriveCommand);
+    m_driverController.b().onTrue(m_DriveCommand);
   }
 
   public static double getLeftJoyX() {
@@ -62,14 +62,14 @@ public class RobotContainer {
     }
   }
   public static double getLeftJoyY() {
-    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+    if (Math.abs(m_driverController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
       return m_driverController.getLeftY();
     } else {
       return 0;
     }
   }
   public static double getRightJoyX() {
-    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+    if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
       return m_driverController.getRightX();
     } else {
       return 0;
@@ -86,6 +86,6 @@ public class RobotContainer {
     // return Autos.exampleAuto(m_exampleSubsystem);
   // }
   public void runTeleopCommand() {
-    m_DriveCommand.schedule();
+    // m_DriveCommand.schedule();
   }
 }

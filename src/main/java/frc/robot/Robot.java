@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.runTeleopCommand();
+    // m_robotContainer.runTeleopCommand();
   }
 
   /** This function is called periodically during operator control. */

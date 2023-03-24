@@ -44,16 +44,17 @@ public class DriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_module1.setAngle(0);
-    m_module2.setAngle(0);
-    m_module3.setAngle(0);
-    m_module4.setAngle(0);
+    // m_module1.setAngle(0);
+    // m_module2.setAngle(0);
+    // m_module3.setAngle(0);
+    // m_module4.setAngle(0);
 
 
     m_module1.setDriveSpeed(0);
     m_module2.setDriveSpeed(0);
     m_module3.setDriveSpeed(0);
     m_module4.setDriveSpeed(0);
+    System.out.print("HIIIIIIIIII!");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
