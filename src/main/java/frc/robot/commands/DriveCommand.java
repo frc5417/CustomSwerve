@@ -23,8 +23,6 @@ public class DriveCommand extends CommandBase {
   private double[] thetas = new double[4];  
   private double[] vels = new double[4];  
 
-  private int counter = 0;
-
   /**
    * Creates a new ExampleCommand.
    *
@@ -49,12 +47,10 @@ public class DriveCommand extends CommandBase {
     // m_module3.setAngle(0);
     // m_module4.setAngle(0);
 
-
     m_module1.setDriveSpeed(0);
     m_module2.setDriveSpeed(0);
     m_module3.setDriveSpeed(0);
     m_module4.setDriveSpeed(0);
-    System.out.print("HIIIIIIIIII!");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -120,6 +116,6 @@ public class DriveCommand extends CommandBase {
       m_module4.angleMotor.set(MathUtil.clamp(m_module4.pid.calculate(m_module4.getAngleInRadians()), -0.8, 0.8));
       status[3] = 0;
     }
-    System.out.println("A1: "+status[0]+" A2: "+status[1]+" A3: "+status[2]+"A4: "+status[3]);
+    // System.out.println("A1: "+status[0]+" A2: "+status[1]+" A3: "+status[2]+"A4: "+status[3]);
   }
 }

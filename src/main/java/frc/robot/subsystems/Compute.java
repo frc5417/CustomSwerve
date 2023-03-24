@@ -27,10 +27,9 @@ public class Compute extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // This method will be called once per scheduler 
+    // if(RobotContainer.getLeftJoyX() != 0 || RobotContainer.getLeftJoyY() != 0 || RobotContainer.getRightJoyX() != 0) {
     this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
-    
-    // this.call(0, 1, 0);
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
