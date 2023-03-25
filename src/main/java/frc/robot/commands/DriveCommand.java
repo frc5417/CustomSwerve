@@ -23,6 +23,8 @@ public class DriveCommand extends CommandBase {
   private double[] thetas = new double[4];  
   private double[] vels = new double[4];  
 
+  private int counter = 0;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -42,10 +44,10 @@ public class DriveCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_module1.setAngle(0);
-    // m_module2.setAngle(0);
-    // m_module3.setAngle(0);
-    // m_module4.setAngle(0);
+    m_module1.setAngle(0);
+    m_module2.setAngle(0);
+    m_module3.setAngle(0);
+    m_module4.setAngle(0);
 
     m_module1.setDriveSpeed(0);
     m_module2.setDriveSpeed(0);
@@ -71,6 +73,8 @@ public class DriveCommand extends CommandBase {
 
     this.angleRun();
     //if (counter++ % 50 == 0) { System.out.println("E1: "+m_module1.getAngle()+" E2: "+m_module2.getAngle()+" E3: "+m_module3.getAngle()+" E4: "+m_module4.getAngle()); }
+    //calculated thetas
+    //if (counter++ % 50 == 0) { System.out.println("A1: "+this.thetas[0]+" A2: "+this.thetas[1]+" A3: "+this.thetas[2]+" A4: "+this.thetas[3]); }
   }
 
   // Called once the command ends or is interrupted.
@@ -103,19 +107,27 @@ public class DriveCommand extends CommandBase {
     if (!m_module1.pid.atSetpoint()) {
       m_module1.angleMotor.set(MathUtil.clamp(m_module1.pid.calculate(m_module1.getAngleInRadians()), -0.8, 0.8));
       status[0] = 0;
+    } else {
+      m_module1.angleMotor.set(0.0);
     }
     if (!m_module2.pid.atSetpoint()) {
       m_module2.angleMotor.set(MathUtil.clamp(m_module2.pid.calculate(m_module2.getAngleInRadians()), -0.8, 0.8));
       status[1] = 0;
+    } else {
+      m_module2.angleMotor.set(0.0);
     }
     if (!m_module3.pid.atSetpoint()) {
       m_module3.angleMotor.set(MathUtil.clamp(m_module3.pid.calculate(m_module3.getAngleInRadians()), -0.8, 0.8));
       status[2] = 0;
+    } else {
+      m_module3.angleMotor.set(0.0);
     }
     if (!m_module4.pid.atSetpoint()) {
       m_module4.angleMotor.set(MathUtil.clamp(m_module4.pid.calculate(m_module4.getAngleInRadians()), -0.8, 0.8));
       status[3] = 0;
+    } else {
+      m_module4.angleMotor.set(0.0);
     }
-    // System.out.println("A1: "+status[0]+" A2: "+status[1]+" A3: "+status[2]+"A4: "+status[3]);
+    if (counter++ % 50 == 0) { System.out.println("A1: "+status[0]+" A2: "+status[1]+" A3: "+status[2]+"A4: "+status[3]); }
   }
 }

@@ -48,7 +48,7 @@ public class Module extends SubsystemBase {
 
   private Boolean invertDriveSpeed = false;
   
-  WPI_CANCoder _CANCoder;
+  private WPI_CANCoder _CANCoder;
 
   public Module(int module) {
     this.module_num = module;
@@ -114,11 +114,11 @@ public class Module extends SubsystemBase {
   }
 
   public double getAngleInRadians() {
-    return _CANCoder.getPosition() * (Math.PI/180.0);
+    return _CANCoder.getAbsolutePosition() * (Math.PI/180.0);
   }
 
   public double getAngle() {
-    return _CANCoder.getPosition();
+    return _CANCoder.getAbsolutePosition();
   }
 
   public void setAngle(double angle_in_rad) {
