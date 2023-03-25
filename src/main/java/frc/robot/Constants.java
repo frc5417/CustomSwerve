@@ -28,6 +28,7 @@ public final class Constants {
     public static final Double[] angleOffsets = {0.0, 0.0, 0.0, 0.0};
     public static final Double[][] angleMotorPID = {
       {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}};
+    public static final Double degTolerance = 2.5;
   }
   public static class Swerve {
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;

@@ -61,7 +61,10 @@ public class Module extends SubsystemBase {
      angleController = angleMotor.getPIDController();
 
      _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.module_num-1], "canivore");
+
+    //  _CANCoder.setPositionToAbsolute(0);
      _CANCoder.configAllSettings(returnCANConfig());
+     _CANCoder.setPosition(0);
     
      /* Drive Motor Config */
      driveMotor = new CANSparkMax(Constants.MotorConstants.driveMotorIDS[this.module_num-1], MotorType.kBrushless);
@@ -73,15 +76,15 @@ public class Module extends SubsystemBase {
 
     pid.enableContinuousInput(0, Math.PI * 2);
 
-    if (this.module_num == 3 || this.module_num == 4) {
-      this.invertSpeed();
+    if (this.module_num == 1 || this.module_num == 2) {
+      this.invertDriveSpeed = true;
     } else {
-      this.invertSpeed();
+      this.invertDriveSpeed = false;
     }
 
-    if(_CANCoder.getMagnetFieldStrength() != MagnetFieldStrength.Good_GreenLED) {
-      throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.module_num).toString() + " is not green!");
-    }
+    // if(_CANCoder.getMagnetFieldStrength() != MagnetFieldStrength.Good_GreenLED) {
+      // throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.module_num).toString() + " is not green!");
+    // }
   }
 
   @Override
@@ -114,11 +117,11 @@ public class Module extends SubsystemBase {
   }
 
   public double getAngleInRadians() {
-    return _CANCoder.getAbsolutePosition() * (Math.PI/180.0);
+    return _CANCoder.getPosition() * (Math.PI/180.0);
   }
 
   public double getAngle() {
-    return _CANCoder.getAbsolutePosition();
+    return _CANCoder.getPosition();
   }
 
   public void setAngle(double angle_in_rad) {
@@ -146,7 +149,7 @@ public class Module extends SubsystemBase {
   public CANCoderConfiguration returnCANConfig() {
     CANCoderConfiguration canConfig = new CANCoderConfiguration();
     canConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-    canConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+    canConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
     canConfig.sensorTimeBase = SensorTimeBase.PerSecond;
     return canConfig;
   }
