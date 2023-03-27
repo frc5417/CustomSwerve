@@ -18,26 +18,31 @@ public class Compute extends SubsystemBase {
   public boolean fieldCentric;
   private double gyro = 0.0;
 
+  private double oldAngle = 0.0;
+  private double newAngle = 0.0;
   private int counter = 0;
 
   public final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
 
   public final PIDController xVelocityPid = new PIDController(Constants.Swerve.velocitykP, Constants.Swerve.velocitykI, Constants.Swerve.velocitykD);
   public final PIDController yVelocityPid = new PIDController(Constants.Swerve.velocitykP, Constants.Swerve.velocitykI, Constants.Swerve.velocitykD);
+  public final PIDController angularVelocityPid = new PIDController(Constants.Swerve.aVelocitykP, Constants.Swerve.aVelocitykI, Constants.Swerve.aVelocitykD);
 
   public Compute() {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
     this.ahrs.reset();
     this.ahrs.calibrate();
-    this.xVelocityPid.setTolerance(0.2); // m/s
-    this.yVelocityPid.setTolerance(0.2); // m/s
+    this.xVelocityPid.setTolerance(0.1); // m/s
+    this.yVelocityPid.setTolerance(0.1); // m/s
+    this.angularVelocityPid.setTolerance(0.1); // rad/s
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler 
-    // if(RobotContainer.getLeftJoyX() != 0 || RobotContainer.getLeftJoyY() != 0 || RobotContainer.getRightJoyX() != 0) {
-    this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
+    xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX*Constants.Swerve.maxVelocity);
+    yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY*Constants.Swerve.maxVelocity);
+    angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX*Constants.Swerve.maxAngularVelocity)
+    this.call(xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity, yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity, angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity);
     //if ((counter++ % 50) == 0) { System.out.println("X: "+getNavXVelocityX()+" Y: "+getNavXVelocityY()); }
     if ((counter++ % 50) == 0) { System.out.println("TX: "+xVelocityPid.getSetpoint()+" AX: "+getNavXVelocityX()+" TY: "+yVelocityPid.getSetpoint()+" AY: "+getNavXVelocityY()); }
   }
@@ -79,16 +84,7 @@ public class Compute extends SubsystemBase {
       double a = unicorn[i][0];
       double b = unicorn[i][1];
 
-      double x = a + (xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity);
-      if (Math.abs(x) > 1.0) { x = 1.0; }
-      double y = b + (yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity);
-      if (Math.abs(y) > 1.0) { y = 1.0; }
-
-      double combinedVel = Math.sqrt((x*x) + (y*y));
-      //double combinedVel = Math.sqrt((a*a) + (b*b));
-      if (combinedVel > 1.0) { combinedVel = 1.0; }
-      this.vel[i] = combinedVel;
-      //if ((counter++ % 50) == 0) { System.out.println("Set: "+xVelocityPid.getSetpoint()+" X: "+xVelocityPid.calculate(getNavXVelocityX())+" NavX: "+getNavXVelocityX()); }
+      this.vel[i] = Math.sqrt((a*a) + (b*b));
 
       if(a == 0) {
         if(b == 0) {
@@ -121,9 +117,6 @@ public class Compute extends SubsystemBase {
       this.gyro = 0;
     }
 
-    xVelocityPid.setSetpoint(l_joy_x*Constants.Swerve.maxVelocity);
-    yVelocityPid.setSetpoint(l_joy_y*Constants.Swerve.maxVelocity);
-
     this.conv(this.computeUnicorn(this.computeStrafe(l_joy_x, l_joy_y), this.computeRotation(r_joy_x)));
   }
 
@@ -143,12 +136,19 @@ public class Compute extends SubsystemBase {
   	this.gyro = gyro_in;
   }
 
-  //note that these are flipped on purpose to account for gyro rotation
   public double getNavXVelocityX() {
     return this.ahrs.getVelocityX();
   }
 
   public double getNavXVelocityY() {
     return this.ahrs.getVelocityY();
+  }
+
+  //radians / second
+  public double getNavXAngularVelocity() {
+    this.newAngle = this.ahrs.getYaw() * (Math.PI / 180.0);
+    double angularVelocity = (this.newAngle - this.oldAngle) / 0.02;
+    this.oldAngle = this.newAngle;
+    return angularVelocity;
   }
 }
