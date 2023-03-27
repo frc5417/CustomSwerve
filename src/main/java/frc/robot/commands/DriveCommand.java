@@ -73,7 +73,7 @@ public class DriveCommand extends CommandBase {
     m_module4.setDriveSpeed(this.vels[3]);
 
     this.angleRun();
-    if (counter++ % 50 == 0) { System.out.println("E1: "+m_module1.getAngle()+" E2: "+m_module2.getAngle()+" E3: "+m_module3.getAngle()+" E4: "+m_module4.getAngle()); }
+    //if (counter++ % 50 == 0) { System.out.println("E1: "+m_module1.getAngle()+" E2: "+m_module2.getAngle()+" E3: "+m_module3.getAngle()+" E4: "+m_module4.getAngle()); }
     //calculated thetas
     //if (counter++ % 50 == 0) { System.out.println("A1: "+this.thetas[0]+" A2: "+this.thetas[1]+" A3: "+this.thetas[2]+" A4: "+this.thetas[3]); }
   }

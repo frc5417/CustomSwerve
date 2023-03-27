@@ -9,6 +9,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.math.controller.PIDController;
 
 public class Compute extends SubsystemBase {
   /** Creates a new Compute. */
@@ -17,12 +18,19 @@ public class Compute extends SubsystemBase {
   public boolean fieldCentric;
   private double gyro = 0.0;
 
+  private int counter = 0;
+
   public final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
+
+  public final PIDController xVelocityPid = new PIDController(Constants.Swerve.velocitykP, Constants.Swerve.velocitykI, Constants.Swerve.velocitykD);
+  public final PIDController yVelocityPid = new PIDController(Constants.Swerve.velocitykP, Constants.Swerve.velocitykI, Constants.Swerve.velocitykD);
 
   public Compute() {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
     this.ahrs.reset();
     this.ahrs.calibrate();
+    this.xVelocityPid.setTolerance(0.2); // m/s
+    this.yVelocityPid.setTolerance(0.2); // m/s
   }
 
   @Override
@@ -30,6 +38,8 @@ public class Compute extends SubsystemBase {
     // This method will be called once per scheduler 
     // if(RobotContainer.getLeftJoyX() != 0 || RobotContainer.getLeftJoyY() != 0 || RobotContainer.getRightJoyX() != 0) {
     this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
+    if ((counter++ % 50) == 0) { System.out.println("X: "+getNavXVelocityX()+" Y: "+getNavXVelocityY()); }
+    //if ((counter++ % 50) == 0) { System.out.println("TX: "+xVelocityPid.getSetpoint()+" AX: "+getNavXVelocityX()+" TY: "+yVelocityPid.getSetpoint()+" AY: "+getNavXVelocityY()); }
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -69,7 +79,16 @@ public class Compute extends SubsystemBase {
       double a = unicorn[i][0];
       double b = unicorn[i][1];
 
-      this.vel[i] = Math.sqrt((a*a) + (b*b));
+      double x = a + xVelocityPid.calculate(getNavXVelocityX());
+      if (Math.abs(x) > Constants.Swerve.maxVelocity) { x = (x / Math.abs(x)) * Constants.Swerve.maxVelocity; }
+      double y = b + yVelocityPid.calculate(getNavXVelocityY());
+      if (Math.abs(y) > Constants.Swerve.maxVelocity) { y = (y / Math.abs(y)) * Constants.Swerve.maxVelocity; }
+
+      //double combinedVel = Math.sqrt((x*x) + (y*y));
+      double combinedVel = Math.sqrt((a*a) + (b*b));
+      //if (combinedVel > Constants.Swerve.maxVelocity) { combinedVel = Constants.Swerve.maxVelocity; }
+      this.vel[i] = combinedVel;
+      //if ((counter++ % 50) == 0) { System.out.println("Set: "+xVelocityPid.getSetpoint()+" X: "+xVelocityPid.calculate(getNavXVelocityX())+" NavX: "+getNavXVelocityX()); }
 
       if(a == 0) {
         if(b == 0) {
@@ -102,6 +121,9 @@ public class Compute extends SubsystemBase {
       this.gyro = 0;
     }
 
+    xVelocityPid.setSetpoint(l_joy_x*Constants.Swerve.maxVelocity);
+    yVelocityPid.setSetpoint(l_joy_y*Constants.Swerve.maxVelocity);
+
     this.conv(this.computeUnicorn(this.computeStrafe(l_joy_x, l_joy_y), this.computeRotation(r_joy_x)));
   }
 
@@ -119,5 +141,14 @@ public class Compute extends SubsystemBase {
   
   public void setGyro(double gyro_in) {
   	this.gyro = gyro_in;
+  }
+
+  //note that these are flipped on purpose to account for gyro rotation
+  public double getNavXVelocityX() {
+    return this.ahrs.getVelocityY();
+  }
+
+  public double getNavXVelocityY() {
+    return this.ahrs.getVelocityX();
   }
 }

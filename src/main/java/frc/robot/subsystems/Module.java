@@ -124,6 +124,14 @@ public class Module extends SubsystemBase {
     return _CANCoder.getPosition();
   }
 
+  public double getDriveVelocity() {
+    return integratedDriveEncoder.getVelocity();
+  }
+
+  public double getAngularVelocity() {
+    return integratedAngleEncoder.getVelocity();
+  }
+
   public void setAngle(double angle_in_rad) {
     // //code to make the angle motor turn the least amount possible and drive direction if necessary
     // double targetAngle = angle_in_rad + Constants.MotorConstants.angleOffsets[this.module_num - 1];
