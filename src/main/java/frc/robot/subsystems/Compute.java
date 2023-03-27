@@ -38,8 +38,8 @@ public class Compute extends SubsystemBase {
     // This method will be called once per scheduler 
     // if(RobotContainer.getLeftJoyX() != 0 || RobotContainer.getLeftJoyY() != 0 || RobotContainer.getRightJoyX() != 0) {
     this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
-    if ((counter++ % 50) == 0) { System.out.println("X: "+getNavXVelocityX()+" Y: "+getNavXVelocityY()); }
-    //if ((counter++ % 50) == 0) { System.out.println("TX: "+xVelocityPid.getSetpoint()+" AX: "+getNavXVelocityX()+" TY: "+yVelocityPid.getSetpoint()+" AY: "+getNavXVelocityY()); }
+    //if ((counter++ % 50) == 0) { System.out.println("X: "+getNavXVelocityX()+" Y: "+getNavXVelocityY()); }
+    if ((counter++ % 50) == 0) { System.out.println("TX: "+xVelocityPid.getSetpoint()+" AX: "+getNavXVelocityX()+" TY: "+yVelocityPid.getSetpoint()+" AY: "+getNavXVelocityY()); }
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -79,14 +79,14 @@ public class Compute extends SubsystemBase {
       double a = unicorn[i][0];
       double b = unicorn[i][1];
 
-      double x = a + xVelocityPid.calculate(getNavXVelocityX());
-      if (Math.abs(x) > Constants.Swerve.maxVelocity) { x = (x / Math.abs(x)) * Constants.Swerve.maxVelocity; }
-      double y = b + yVelocityPid.calculate(getNavXVelocityY());
-      if (Math.abs(y) > Constants.Swerve.maxVelocity) { y = (y / Math.abs(y)) * Constants.Swerve.maxVelocity; }
+      double x = a + (xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity);
+      if (Math.abs(x) > 1.0) { x = 1.0; }
+      double y = b + (yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity);
+      if (Math.abs(y) > 1.0) { y = 1.0; }
 
-      //double combinedVel = Math.sqrt((x*x) + (y*y));
-      double combinedVel = Math.sqrt((a*a) + (b*b));
-      //if (combinedVel > Constants.Swerve.maxVelocity) { combinedVel = Constants.Swerve.maxVelocity; }
+      double combinedVel = Math.sqrt((x*x) + (y*y));
+      //double combinedVel = Math.sqrt((a*a) + (b*b));
+      if (combinedVel > 1.0) { combinedVel = 1.0; }
       this.vel[i] = combinedVel;
       //if ((counter++ % 50) == 0) { System.out.println("Set: "+xVelocityPid.getSetpoint()+" X: "+xVelocityPid.calculate(getNavXVelocityX())+" NavX: "+getNavXVelocityX()); }
 
@@ -145,10 +145,10 @@ public class Compute extends SubsystemBase {
 
   //note that these are flipped on purpose to account for gyro rotation
   public double getNavXVelocityX() {
-    return this.ahrs.getVelocityY();
+    return this.ahrs.getVelocityX();
   }
 
   public double getNavXVelocityY() {
-    return this.ahrs.getVelocityX();
+    return this.ahrs.getVelocityY();
   }
 }
