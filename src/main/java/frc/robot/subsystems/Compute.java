@@ -39,12 +39,14 @@ public class Compute extends SubsystemBase {
 
   @Override
   public void periodic() {
-    xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX*Constants.Swerve.maxVelocity);
-    yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY*Constants.Swerve.maxVelocity);
-    angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX*Constants.Swerve.maxAngularVelocity)
-    this.call(xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity, yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity, angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity);
+    xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity);
+    yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity);
+    angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity)
+    //this.call(xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity, yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity, angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity);
+    this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
     //if ((counter++ % 50) == 0) { System.out.println("X: "+getNavXVelocityX()+" Y: "+getNavXVelocityY()); }
-    if ((counter++ % 50) == 0) { System.out.println("TX: "+xVelocityPid.getSetpoint()+" AX: "+getNavXVelocityX()+" TY: "+yVelocityPid.getSetpoint()+" AY: "+getNavXVelocityY()); }
+    //if ((this.counter++ % 50) == 0) { System.out.println("TX: "+RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity+" AX: "+getNavXVelocityX()+" TY: "+RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity+" AY: "+getNavXVelocityY()+" TR: "+RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity+" AR: "+getNavXAngularVelocity()); }
+    if ((this.counter++ % 50) == 0) { System.out.println("AX: "+getNavXVelocityX()+" AY: "+getNavXVelocityY()+" AR: "+getNavXAngularVelocity()); }
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
