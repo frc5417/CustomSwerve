@@ -42,11 +42,15 @@ public class Compute extends SubsystemBase {
     xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity);
     yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity);
     angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity);
-    //this.call(xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity, yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity, angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity);
-    this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
+    this.call(xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity, RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
+    // angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity
+    // this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
     //if ((counter++ % 50) == 0) { System.out.println("X: "+getNavXVelocityX()+" Y: "+getNavXVelocityY()); }
     //if ((this.counter++ % 50) == 0) { System.out.println("TX: "+RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity+" AX: "+getNavXVelocityX()+" TY: "+RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity+" AY: "+getNavXVelocityY()+" TR: "+RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity+" AR: "+getNavXAngularVelocity()); }
-    if ((this.counter++ % 50) == 0) { System.out.println("AX: "+getNavXVelocityX()+" AY: "+getNavXVelocityY()+" AR: "+getNavXAngularVelocity()); }
+    // if ((this.counter++ % 10) == 0) { System.out.println("AX: "+getNavXVelocityX()+" AY: "+getNavXVelocityY()+" AR: "+getNavXAngularVelocity()); }
+    if ((counter++%10) == 0) {
+      System.out.println(yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity);
+    }
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -148,7 +152,7 @@ public class Compute extends SubsystemBase {
 
   //radians / second
   public double getNavXAngularVelocity() {
-    this.newAngle = this.ahrs.getYaw() * (Math.PI / 180.0);
+    this.newAngle = this.ahrs.getAngle() * (Math.PI / 180.0);
     double angularVelocity = (this.newAngle - this.oldAngle) / 0.02;
     this.oldAngle = this.newAngle;
     return angularVelocity;

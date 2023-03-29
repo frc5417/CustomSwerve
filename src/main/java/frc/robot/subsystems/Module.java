@@ -92,10 +92,6 @@ public class Module extends SubsystemBase {
 
   }
 
-  public void invertSpeed() {
-    invertDriveSpeed = !invertDriveSpeed;
-  }
-
   //angle to normalize between 0 and 2PI RAD
   public double normalizeAngle(double angle) {
     double fixedAngle = angle;
