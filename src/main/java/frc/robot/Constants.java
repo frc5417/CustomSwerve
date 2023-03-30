@@ -36,14 +36,15 @@ public final class Constants {
     public static final double maxVelocity = 3.8; // m/s
     public static final double maxAngularVelocity = 56.0; // rad/s
     //velocity PID tuning for overall swerve
-    public static final double velocitykP = 0.0001;
+    public static final double velocitykP = 0.0; // 0.0001
     public static final double velocitykI = 0.0;
     public static final double velocitykD = 0.0;
     public static final double aVelocitykP = 1.0;
-    public static final double aVelocitykI = 0.0;
+    public static final double aVelocitykI = 0.01;
     public static final double aVelocitykD = 0.0;
   }
 
 
   // Josh was here
+  // Hi Josh!
 }

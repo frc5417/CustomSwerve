@@ -32,25 +32,32 @@ public class Compute extends SubsystemBase {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
     this.ahrs.reset();
     this.ahrs.calibrate();
-    this.xVelocityPid.setTolerance(0.1); // m/s
-    this.yVelocityPid.setTolerance(0.1); // m/s
-    this.angularVelocityPid.setTolerance(0.1); // rad/s
+    this.xVelocityPid.setTolerance(0.2); // m/s
+    this.yVelocityPid.setTolerance(0.2); // m/s
+    this.angularVelocityPid.setTolerance(2.5); // rad/s
+    this.angularVelocityPid.setSetpoint(0.0);
+    this.xVelocityPid.setSetpoint(0.5);
+    this.yVelocityPid.setSetpoint(0);
   }
 
   @Override
   public void periodic() {
-    xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity);
-    yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity);
-    angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity);
-    this.call(xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity, RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
+    // xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity);
+    // yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity);
+    // angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity);
+    this.call(0.0, 0.0, 0.0);
     // angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity
-    // this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
+    //this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
     //if ((counter++ % 50) == 0) { System.out.println("X: "+getNavXVelocityX()+" Y: "+getNavXVelocityY()); }
-    //if ((this.counter++ % 50) == 0) { System.out.println("TX: "+RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity+" AX: "+getNavXVelocityX()+" TY: "+RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity+" AY: "+getNavXVelocityY()+" TR: "+RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity+" AR: "+getNavXAngularVelocity()); }
-    // if ((this.counter++ % 10) == 0) { System.out.println("AX: "+getNavXVelocityX()+" AY: "+getNavXVelocityY()+" AR: "+getNavXAngularVelocity()); }
-    if ((counter++%10) == 0) {
+    //if ((this.counter++ % 10) == 0) { System.out.println("TX: "+RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity+" AX: "+getNavXVelocityX()+" TY: "+RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity+" AY: "+getNavXVelocityY()+" TR: "+RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity+" AR: "+getNavXAngularVelocity()); }
+    
+    //angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity
+    //yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity
+    if ((counter++ % 10) == 0) { System.out.println("PID: "+(xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity)+" AX: "+getNavXVelocityX()); }
+    //if ((this.counter++ % 10) == 0) { System.out.println("AX: "+getNavXVelocityX()+" AY: "+getNavXVelocityY()+" AR: "+getNavXAngularVelocity()); }
+    /*if ((counter++%10) == 0) {
       System.out.println(yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity);
-    }
+    }*/
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -90,7 +97,16 @@ public class Compute extends SubsystemBase {
       double a = unicorn[i][0];
       double b = unicorn[i][1];
 
-      this.vel[i] = Math.sqrt((a*a) + (b*b));
+      /*double x = a + xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity;
+      if (Math.abs(x) > 1.0) { x = (x / Math.abs(x)); }
+      double y = b + yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity;
+      if (Math.abs(y) > 1.0) { y = (y / Math.abs(y)); }
+
+      double combinedVel = Math.sqrt((x*x) + (y*y));
+      if (Math.abs(combinedVel) > 1.0) { combinedVel = 1.0; }*/
+      double combinedVel = Math.sqrt((a*a) + (b*b));
+      //if (combinedVel > Constants.Swerve.maxVelocity) { combinedVel = Constants.Swerve.maxVelocity; }
+      this.vel[i] = combinedVel;
 
       if(a == 0) {
         if(b == 0) {
