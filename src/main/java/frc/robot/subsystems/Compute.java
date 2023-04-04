@@ -9,6 +9,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 
 public class Compute extends SubsystemBase {
@@ -20,7 +21,7 @@ public class Compute extends SubsystemBase {
 
   private double oldAngle = 0.0;
   private double newAngle = 0.0;
-  private int counter = 0;
+  private byte counter = 0; // never > 10
 
   public final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
 
@@ -32,32 +33,38 @@ public class Compute extends SubsystemBase {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
     this.ahrs.reset();
     this.ahrs.calibrate();
-    this.xVelocityPid.setTolerance(0.2); // m/s
-    this.yVelocityPid.setTolerance(0.2); // m/s
-    this.angularVelocityPid.setTolerance(2.5); // rad/s
-    this.angularVelocityPid.setSetpoint(0.0);
-    this.xVelocityPid.setSetpoint(0.5);
-    this.yVelocityPid.setSetpoint(0);
+    // this.xVelocityPid.setTolerance(0.2); // m/s
+    // this.yVelocityPid.setTolerance(0.2); // m/s
+    // this.angularVelocityPid.setTolerance(2.5); // rad/s
   }
 
   @Override
   public void periodic() {
+    this.angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX() * Constants.Swerve.maxAngularVelocity);
+    this.xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX() * Constants.Swerve.maxVelocity);
+    this.yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY() * Constants.Swerve.maxVelocity);
     // xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity);
     // yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity);
     // angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity);
-    this.call(0.0, 0.0, 0.0);
-    // angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity
-    //this.call(RobotContainer.getLeftJoyX(), RobotContainer.getLeftJoyY(), RobotContainer.getRightJoyX());
-    //if ((counter++ % 50) == 0) { System.out.println("X: "+getNavXVelocityX()+" Y: "+getNavXVelocityY()); }
-    //if ((this.counter++ % 10) == 0) { System.out.println("TX: "+RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity+" AX: "+getNavXVelocityX()+" TY: "+RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity+" AY: "+getNavXVelocityY()+" TR: "+RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity+" AR: "+getNavXAngularVelocity()); }
-    
-    //angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity
-    //yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity
-    if ((counter++ % 10) == 0) { System.out.println("PID: "+(xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity)+" AX: "+getNavXVelocityX()); }
-    //if ((this.counter++ % 10) == 0) { System.out.println("AX: "+getNavXVelocityX()+" AY: "+getNavXVelocityY()+" AR: "+getNavXAngularVelocity()); }
-    /*if ((counter++%10) == 0) {
-      System.out.println(yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity);
-    }*/
+    double x = xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity;
+    double y = yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity;
+    double w = angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity;
+
+    x = (Math.abs(x) <= 0.01 ? 0 : x);
+    y = (Math.abs(y) <= 0.01 ? 0 : y);
+    w = (Math.abs(w) <= 0.01 ? 0 : w);
+
+    x = MathUtil.clamp(x, -1, 1);
+    y = MathUtil.clamp(y, -1, 1);
+    w = MathUtil.clamp(w, -1, 1);
+  
+    this.call(x, y, w);
+
+    if ((counter++ % 10) == 0) {
+      System.out.printf("%f, %f, %f\n", xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity, yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity, angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity);
+    }
+
+    counter %= 10;
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -174,3 +181,16 @@ public class Compute extends SubsystemBase {
     return angularVelocity;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// Josh was here
