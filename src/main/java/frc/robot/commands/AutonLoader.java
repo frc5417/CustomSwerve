@@ -15,12 +15,13 @@ public class AutonLoader {
     private static HashMap<String, Command> eventMap;
     private SwerveAutoBuilder autoBuilder;
     private static DriveBase m_DriveBase;
+    
     private static List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
 
     public AutonLoader(DriveBase driveBase) {
         eventMap = new HashMap<>();
         eventMap.put("event1", new PrintCommand("event 1 passed"));    
-        eventMap.put("event1", new PrintCommand("event 2 passed"));    
+        eventMap.put("event2", new PrintCommand("event 2 passed"));    
         m_DriveBase = driveBase;
 
         autoBuilder = new SwerveAutoBuilder(
@@ -28,14 +29,14 @@ public class AutonLoader {
                 driveBase::resetOdometry,
                 Constants.DriveTrainConstants.TRANSLATION_PID,
                 Constants.DriveTrainConstants.ROTATION_PID,
-                (chassisSpeeds) -> m_DriveBase.setDriveSpeed(chassisSpeeds),
+                m_DriveBase::setDriveSpeed,
                 eventMap,
                 m_DriveBase);
         
     }
 
     public Command getAuton() {
-        return this.autoBuilder.fullAuto(pathGroup); 
+        return autoBuilder.fullAuto(pathGroup); 
         
         // TODO: add sequential commands for resetting gyro
     }
