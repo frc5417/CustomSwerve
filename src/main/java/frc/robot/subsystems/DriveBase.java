@@ -37,6 +37,14 @@ public class DriveBase extends SubsystemBase {
     public void setDriveSpeed(ChassisSpeeds chassisSpeeds) {
         m_chassisSpeeds = chassisSpeeds;
     }
+
+    public void resetModules() {
+        for (int i = 0; i < 4; i++) {
+            m_modules[i].setAngle(0);
+            m_modules[i].setDriveSpeed(0);
+            m_modules[i].resetDriveAngleEncoder();
+          }
+    }
     
 
     @Override
@@ -52,7 +60,7 @@ public class DriveBase extends SubsystemBase {
         compute.update(xVelRatio, yVelRatio, omegaRatio);
         double[] vels = compute.getVel();
         double[] dirs = compute.getTheta();
-        
+
         Compute.normalizeVelocity(vels);
 
         assert(vels.length == 4 && dirs.length == 4);
