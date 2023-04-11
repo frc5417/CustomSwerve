@@ -5,9 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.DriveCommand;
+import frc.robot.commands.AutonLoader;
+import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.Compute;
+import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Module;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -19,14 +22,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Module m_Module1 = new Module(1);
-  private final Module m_Module2 = new Module(2);
-  private final Module m_Module3 = new Module(3);
-  private final Module m_Module4 = new Module(4);
-  private final Compute m_Compute = new Compute();
+  public final static Module[] m_modules = {new Module(0), new Module(1), new Module(2), new Module(3)};
 
-  private final DriveCommand m_DriveCommand = new DriveCommand(m_Module1, m_Module2, m_Module3, m_Module4, m_Compute);
-
+  public final static DriveBase m_driveBase = new DriveBase();
+  public final static Compute m_Compute = new Compute();
+  public final static AutonLoader m_autonLoader = new AutonLoader(m_driveBase);
+  public final static TeleopDrive m_driveCommand = new TeleopDrive();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -51,7 +52,6 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().onTrue(m_DriveCommand);
   }
 
   public static double getLeftJoyX() {
@@ -81,11 +81,10 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  // public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    // return Autos.exampleAuto(m_exampleSubsystem);
-  // }
+  public Command getAutonomousCommand() {
+    return m_autonLoader.getAuton();
+  }
   public void runTeleopCommand() {
-    // m_DriveCommand.schedule();
+    m_driveCommand.schedule();
   }
 }
