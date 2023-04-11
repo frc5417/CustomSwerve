@@ -4,7 +4,16 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
+import com.pathplanner.lib.auto.PIDConstants;
 import com.revrobotics.CANSparkMax.IdleMode;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -20,6 +29,7 @@ public final class Constants {
     public static final boolean fieldCentric = true;
     public static final double joystickDeadband = 0.2;
   }
+
   public static class MotorConstants {
     // 0 indexing
     public static final Integer[] driveMotorIDS = {11, 21, 31, 40}; 
@@ -43,6 +53,16 @@ public final class Constants {
     public static final double aVelocitykI = 0.0;
     public static final double aVelocitykD = 0.0;
   }
+
+  public static class DriveTrainConstants {
+    public static final double DRIVETRAIN_WIDTH = 0.635; // in meters
+  
+    public static final PIDConstants ROTATION_PID = new PIDConstants(0, 0, 0);
+    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0, 0, 0);
+
+    //TODO: tune pid constants
+  }
+
 
 
   // Josh was here
