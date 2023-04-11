@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final static Module[] m_modules = {new Module(0), new Module(1), new Module(2), new Module(3)};
+  public final static Module[] m_modules = {new Module(1), new Module(2), new Module(3), new Module(4)};
 
   public final static DriveBase m_driveBase = new DriveBase();
   public final static Compute m_Compute = new Compute();
