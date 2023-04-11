@@ -27,7 +27,7 @@ public class RobotContainer {
   public final static DriveBase m_driveBase = new DriveBase();
   public final static Compute m_Compute = new Compute();
   public final static AutonLoader m_autonLoader = new AutonLoader(m_driveBase);
-  public final static TeleopDrive m_driveCommand = new TeleopDrive();
+  public final static TeleopDrive m_teleopDrive = new TeleopDrive();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -85,6 +85,6 @@ public class RobotContainer {
     return m_autonLoader.getAuton();
   }
   public void runTeleopCommand() {
-    m_driveCommand.schedule();
+    m_teleopDrive.schedule();
   }
 }
