@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.HashMap;
 
+import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -40,6 +41,7 @@ public final class Constants {
       {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}};
     public static final Double degTolerance = 2.5;
   }
+  
   public static class Swerve {
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
     public static final IdleMode driveNeutralMode = IdleMode.kBrake;
@@ -52,6 +54,8 @@ public final class Constants {
     public static final double aVelocitykP = 1.0;
     public static final double aVelocitykI = 0.0;
     public static final double aVelocitykD = 0.0;
+
+    public static final PathConstraints AUTON_CONSTRAINTS = new PathConstraints(maxVelocity, 2); // max velocity and acceleration during auton
   }
 
   public static class DriveTrainConstants {

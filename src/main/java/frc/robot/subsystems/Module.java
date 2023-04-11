@@ -22,6 +22,7 @@ import com.ctre.phoenix.sensors.CANCoderStickyFaults;
 import com.ctre.phoenix.sensors.MagnetFieldStrength;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -144,6 +145,12 @@ public class Module extends SubsystemBase {
     //   invertSpeed();
     // }
     pid.setSetpoint(angle_in_rad);
+
+    if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180))) {
+      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -0.8, 0.8));
+    } else {
+      this.angleMotor.set(0.0);
+    }
   }
 
   public void resetDriveAngleEncoder() {

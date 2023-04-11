@@ -40,31 +40,31 @@ public class Compute extends SubsystemBase {
 
   @Override
   public void periodic() {
-    this.angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX() * Constants.Swerve.maxAngularVelocity);
-    this.xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX() * Constants.Swerve.maxVelocity);
-    this.yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY() * Constants.Swerve.maxVelocity);
-    // xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity);
-    // yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity);
-    // angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity);
-    double x = xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity;
-    double y = yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity;
-    double w = angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity;
+    // this.angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX() * Constants.Swerve.maxAngularVelocity);
+    // this.xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX() * Constants.Swerve.maxVelocity);
+    // this.yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY() * Constants.Swerve.maxVelocity);
+    // // xVelocityPid.setSetpoint(RobotContainer.getLeftJoyX()*Constants.Swerve.maxVelocity);
+    // // yVelocityPid.setSetpoint(RobotContainer.getLeftJoyY()*Constants.Swerve.maxVelocity);
+    // // angularVelocityPid.setSetpoint(RobotContainer.getRightJoyX()*Constants.Swerve.maxAngularVelocity);
+    // double x = xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity;
+    // double y = yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity;
+    // double w = angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity;
 
-    x = (Math.abs(x) <= 0.01 ? 0 : x);
-    y = (Math.abs(y) <= 0.01 ? 0 : y);
-    w = (Math.abs(w) <= 0.01 ? 0 : w);
+    // x = (Math.abs(x) <= 0.01 ? 0 : x);
+    // y = (Math.abs(y) <= 0.01 ? 0 : y);
+    // w = (Math.abs(w) <= 0.01 ? 0 : w);
 
-    x = MathUtil.clamp(x, -1, 1);
-    y = MathUtil.clamp(y, -1, 1);
-    w = MathUtil.clamp(w, -1, 1);
+    // x = MathUtil.clamp(x, -1, 1);
+    // y = MathUtil.clamp(y, -1, 1);
+    // w = MathUtil.clamp(w, -1, 1);
   
-    this.call(x, y, w);
+    // this.call(x, y, w);
 
-    if ((counter++ % 10) == 0) {
-      System.out.printf("%f, %f, %f\n", xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity, yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity, angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity);
-    }
+    // if ((counter++ % 10) == 0) {
+    //   System.out.printf("%f, %f, %f\n", xVelocityPid.calculate(getNavXVelocityX()) / Constants.Swerve.maxVelocity, yVelocityPid.calculate(getNavXVelocityY()) / Constants.Swerve.maxVelocity, angularVelocityPid.calculate(getNavXAngularVelocity()) / Constants.Swerve.maxAngularVelocity);
+    // }
 
-    counter %= 10;
+    // counter %= 10;
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -136,7 +136,7 @@ public class Compute extends SubsystemBase {
     }
   }
 
-  public void call(double l_joy_x, double l_joy_y, double r_joy_x) {
+  public void update(double l_joy_x, double l_joy_y, double r_joy_x) {
     // System.out.printf("Strafe: %f \n", this.computeStrafe(l_joy_x, l_joy_y));
     // System.out.printf("Rotation: %f \n", this.computeRotation(r_joy_x));
     if (fieldCentric) {
@@ -148,6 +148,18 @@ public class Compute extends SubsystemBase {
 
     this.conv(this.computeUnicorn(this.computeStrafe(l_joy_x, l_joy_y), this.computeRotation(r_joy_x)));
   }
+
+  public static void normalizeVelocity(double[] vels) { // keeps the ratio of wheel velocities while ensuring that each never goes above 1
+    assert(vels.length == 4);
+    double maxVel = 0;
+    for (int i = 0; i < 4; i++)
+        Math.max(maxVel, vels[i]);
+
+    if (maxVel > 1) {
+      for (int i = 0; i < 4; i++)
+        vels[i] /= maxVel;
+    }
+  } 
 
   public double[] getVel() {
   	return this.vel;
