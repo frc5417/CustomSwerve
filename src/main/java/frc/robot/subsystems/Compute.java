@@ -153,7 +153,7 @@ public class Compute extends SubsystemBase {
     assert(vels.length == 4);
     double maxVel = 0;
     for (int i = 0; i < 4; i++)
-        Math.max(maxVel, vels[i]);
+        Math.max(maxVel, Math.abs(vels[i]));
 
     if (maxVel > 1) {
       for (int i = 0; i < 4; i++)
