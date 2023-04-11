@@ -6,11 +6,8 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Compute;
-import frc.robot.subsystems.Module;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 /** An example command that uses an example subsystem. */
@@ -26,7 +23,7 @@ public class TeleopDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    RobotContainer.m_moduleGroup.resetDrive();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,15 +33,13 @@ public class TeleopDrive extends CommandBase {
     double yVel = RobotContainer.getLeftJoyY() * Constants.Swerve.maxVelocity;
     double omega = RobotContainer.getRightJoyX() * Constants.Swerve.maxAngularVelocity;
 
-    ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xVel, yVel, omega);
-
-    RobotContainer.m_driveBase.setDriveSpeed(chassisSpeeds);
+    RobotContainer.m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel, yVel, omega));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.m_driveBase.resetModules();
+    RobotContainer.m_moduleGroup.resetDrive();
   }
 
   // Returns true when the command should end.

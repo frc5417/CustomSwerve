@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 
 import frc.robot.Constants;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
@@ -16,18 +15,14 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.CANCoderFaults;
-import com.ctre.phoenix.sensors.CANCoderStickyFaults;
-import com.ctre.phoenix.sensors.MagnetFieldStrength;
+
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Module extends SubsystemBase {
+public class Module {
   /** Creates a new Module. */
 
   public CANSparkMax angleMotor;
@@ -39,7 +34,7 @@ public class Module extends SubsystemBase {
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
 
-  private final int module_num;
+  private final int module_num; // ZERO INDEXED
 
   private static final double kP = 0.4;
   private static final double kI = 0.0;
@@ -51,24 +46,24 @@ public class Module extends SubsystemBase {
   
   private WPI_CANCoder _CANCoder;
 
-  public Module(int module) {
+  public Module(int module, boolean inverted) {
     this.module_num = module;
 
      /* Angle Motor Config */
-     angleMotor = new CANSparkMax(Constants.MotorConstants.angleMotorIDS[this.module_num-1], MotorType.kBrushless);
+     angleMotor = new CANSparkMax(Constants.MotorConstants.angleMotorIDS[this.module_num], MotorType.kBrushless);
      configAngleMotor();
 
      integratedAngleEncoder = angleMotor.getEncoder();
      angleController = angleMotor.getPIDController();
 
-     _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.module_num-1], "canivore");
+     _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.module_num], "canivore");
 
     //  _CANCoder.setPositionToAbsolute(0);
      _CANCoder.configAllSettings(returnCANConfig());
      _CANCoder.setPosition(0);
     
      /* Drive Motor Config */
-     driveMotor = new CANSparkMax(Constants.MotorConstants.driveMotorIDS[this.module_num-1], MotorType.kBrushless);
+     driveMotor = new CANSparkMax(Constants.MotorConstants.driveMotorIDS[this.module_num], MotorType.kBrushless);
      configDriveMotor();
 
      integratedDriveEncoder = driveMotor.getEncoder();
@@ -77,20 +72,15 @@ public class Module extends SubsystemBase {
 
     pid.enableContinuousInput(0, Math.PI * 2);
 
-    if (this.module_num == 1 || this.module_num == 2) {
-      this.invertDriveSpeed = true;
-    } else {
-      this.invertDriveSpeed = false;
-    }
-
+    this.invertDriveSpeed = inverted;
     // if(_CANCoder.getMagnetFieldStrength() != MagnetFieldStrength.Good_GreenLED) {
       // throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.module_num).toString() + " is not green!");
     // }
   }
 
-  @Override
-  public void periodic() {
-
+  public void setSpeedAndAngle(ModuleState targetState) {
+    setAngle(targetState.getDir());
+    setDriveSpeed(targetState.getVel());
   }
 
   //angle to normalize between 0 and 2PI RAD
