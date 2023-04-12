@@ -1,12 +1,7 @@
 package frc.robot.subsystems;
-import java.lang.module.ModuleDescriptor.Requires;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 
 
 public class DriveBase extends SubsystemBase {
@@ -20,6 +15,7 @@ public class DriveBase extends SubsystemBase {
         m_kinematics = system.kinematics;
 
         m_moduleGroup.resetDrive();
+        m_chassisSpeeds = new ChassisSpeeds(0, 0, 0);
     } 
 
     public Pose2d getCurrentPose() {

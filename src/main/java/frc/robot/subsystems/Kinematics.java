@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class Kinematics {
@@ -16,12 +14,13 @@ public class Kinematics {
   private double[] theta = new double[4];
   public boolean fieldCentric;
   private double gyro = 0.0;
+  private final AHRS m_ahrs;
 
-  public final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
 
-
-  public Kinematics() {
+  public Kinematics(Systems systems) {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
+    m_ahrs = systems.ahrs;
+
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -92,7 +91,7 @@ public class Kinematics {
     double targetAngVelRatio = targetChassisSpeed.omegaRadiansPerSecond / Constants.Swerve.maxAngularVelocity;
 
     if (fieldCentric) {
-      this.gyro = this.ahrs.getYaw();
+      this.gyro = this.m_ahrs.getYaw();
       this.gyro *= Math.PI/180;
     } else {
       this.gyro = 0;

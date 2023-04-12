@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Systems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -22,8 +21,6 @@ public class RobotContainer {
   Systems systems = new Systems();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final static CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -47,27 +44,6 @@ public class RobotContainer {
     // cancelling on release.
   }
 
-  public static double getLeftJoyX() {
-    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
-      return -1 * m_driverController.getLeftX();
-    } else {
-      return 0;
-    }
-  }
-  public static double getLeftJoyY() {
-    if (Math.abs(m_driverController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
-      return m_driverController.getLeftY();
-    } else {
-      return 0;
-    }
-  }
-  public static double getRightJoyX() {
-    if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
-      return m_driverController.getRightX();
-    } else {
-      return 0;
-    }
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

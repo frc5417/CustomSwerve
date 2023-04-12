@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxPIDController;
 
 import frc.robot.Constants;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -27,9 +26,6 @@ public class Module {
 
   public CANSparkMax angleMotor;
   private CANSparkMax driveMotor;
-
-  private final SparkMaxPIDController driveController;
-  private final SparkMaxPIDController angleController;
 
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
@@ -54,7 +50,7 @@ public class Module {
      configAngleMotor();
 
      integratedAngleEncoder = angleMotor.getEncoder();
-     angleController = angleMotor.getPIDController();
+     angleMotor.getPIDController();
 
      _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.module_num], "canivore");
 
@@ -67,7 +63,7 @@ public class Module {
      configDriveMotor();
 
      integratedDriveEncoder = driveMotor.getEncoder();
-     driveController = driveMotor.getPIDController();
+     driveMotor.getPIDController();
      
 
     pid.enableContinuousInput(0, Math.PI * 2);

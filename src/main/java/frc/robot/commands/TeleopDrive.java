@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.ModuleGroup;
 import frc.robot.subsystems.Systems;
@@ -41,9 +40,9 @@ public class TeleopDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xVel = RobotContainer.getLeftJoyX() * Constants.Swerve.maxVelocity;
-    double yVel = RobotContainer.getLeftJoyY() * Constants.Swerve.maxVelocity;
-    double omega = RobotContainer.getRightJoyX() * Constants.Swerve.maxAngularVelocity;
+    double xVel = Systems.getLeftJoyX() * Constants.Swerve.maxVelocity;
+    double yVel = Systems.getLeftJoyY() * Constants.Swerve.maxVelocity;
+    double omega = Systems.getRightJoyX() * Constants.Swerve.maxAngularVelocity;
 
     m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel, yVel, omega));
   }
