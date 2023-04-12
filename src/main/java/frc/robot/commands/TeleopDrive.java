@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveBase;
-import frc.robot.subsystems.ModuleGroup;
+import frc.robot.ModuleUtilities.ModuleGroup;
 import frc.robot.subsystems.Systems;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -27,9 +27,9 @@ public class TeleopDrive extends CommandBase {
   private final ModuleGroup m_moduleGroup;
   private final DriveBase m_driveBase;
 
-  public TeleopDrive(Systems systems) {
-    m_moduleGroup = systems.moduleGroup;
-    m_driveBase = systems.driveBase;
+  public TeleopDrive() {
+    m_moduleGroup = Systems.moduleGroup;
+    m_driveBase = Systems.driveBase;
   }
 
   @Override

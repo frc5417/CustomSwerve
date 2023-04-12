@@ -1,4 +1,6 @@
 package frc.robot.subsystems;
+import frc.robot.ModuleUtilities.ModuleGroup;
+import frc.robot.ModuleUtilities.ModuleState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -10,9 +12,9 @@ public class DriveBase extends SubsystemBase {
     private final ModuleGroup m_moduleGroup;
     private final Kinematics m_kinematics;
 
-    public DriveBase(Systems system) {
-        m_moduleGroup = system.moduleGroup; 
-        m_kinematics = system.kinematics;
+    public DriveBase() {
+        m_moduleGroup = Systems.moduleGroup; 
+        m_kinematics = Systems.kinematics;
 
         m_moduleGroup.resetDrive();
         m_chassisSpeeds = new ChassisSpeeds(0, 0, 0);
@@ -34,8 +36,8 @@ public class DriveBase extends SubsystemBase {
     @Override
     public void periodic() {
     
-        ModuleState[] targetModuleStates = m_kinematics.getModuleStates(m_chassisSpeeds);
-        targetModuleStates = Kinematics.normalizeVelocity(targetModuleStates);
+        ModuleState[] targetModuleStates = m_kinematics.getComputedModuleStates(m_chassisSpeeds);
+        // targetModuleStates = Kinematics.normalizeVelocity(targetModuleStates);
 
         m_moduleGroup.setDrive(targetModuleStates);
     }

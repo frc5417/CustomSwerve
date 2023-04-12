@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import frc.robot.ModuleUtilities.ModuleState;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
@@ -17,9 +19,9 @@ public class Kinematics {
   private final AHRS m_ahrs;
 
 
-  public Kinematics(Systems systems) {
+  public Kinematics() {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
-    m_ahrs = systems.ahrs;
+    m_ahrs = Systems.ahrs;
 
   }
 
@@ -84,7 +86,7 @@ public class Kinematics {
     }
   }
 
-  public ModuleState[] getModuleStates(ChassisSpeeds targetChassisSpeed) {
+  public ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeed) {
 
     double targetXVelRatio = targetChassisSpeed.vxMetersPerSecond / Constants.Swerve.maxVelocity;
     double targetYVelRatio = targetChassisSpeed.vyMetersPerSecond / Constants.Swerve.maxVelocity;
@@ -134,7 +136,5 @@ public class Kinematics {
   public double[] getTheta() {
   	return theta;
   }
-
-
 }
 

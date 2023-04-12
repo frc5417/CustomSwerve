@@ -18,8 +18,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  Systems systems = new Systems();
-
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -51,9 +49,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return systems.autonLoader.getAuton();
+    return Systems.autonLoader.getAuton();
   }
   public void runTeleopCommand() {
-    systems.teleopDrive.schedule();
+    Systems.teleopDrive.schedule();
   }
 }

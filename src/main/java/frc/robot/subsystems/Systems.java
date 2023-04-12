@@ -6,30 +6,33 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.ModuleUtilities.Module;
+import frc.robot.ModuleUtilities.ModuleGroup;
 import frc.robot.commands.AutonLoader;
 import frc.robot.commands.TeleopDrive;
 
 public class Systems {
     
     private final static Module[] modules = new Module[Constants.DriveTrainConstants.wheels];
-      public final ModuleGroup moduleGroup;
+    public static ModuleGroup moduleGroup;
     
-      public final DriveBase driveBase;
-      public final Kinematics kinematics;
-      public final AutonLoader autonLoader;
-      public final TeleopDrive teleopDrive;
-      private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-      public final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
+    public static DriveBase driveBase;
+    public static Kinematics kinematics;
+    public static AutonLoader autonLoader;
+    public static TeleopDrive teleopDrive;
+    private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    public static AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
 
     public Systems() {
-        for (int i = 0; i < Constants.DriveTrainConstants.wheels; i++)
+        for (int i = 0; i < Constants.DriveTrainConstants.wheels; i++) {
             modules[i] = new Module(i, Constants.DriveTrainConstants.invertedMotors[i]);
+        }
         moduleGroup = new ModuleGroup(modules);
 
-        driveBase = new DriveBase(this);
-        kinematics = new Kinematics(this);
-        autonLoader = new AutonLoader(this);
-        teleopDrive = new TeleopDrive(this);
+        driveBase = new DriveBase();
+        kinematics = new Kinematics();
+        autonLoader = new AutonLoader();
+        teleopDrive = new TeleopDrive();
     }
 
     public static double getLeftJoyX() {

@@ -1,10 +1,10 @@
-package frc.robot.subsystems;
+package frc.robot.ModuleUtilities;
 
 public class ModuleState {
     private final double m_vel;
     private final double m_dir;
 
-    ModuleState(double vel, double dir) {
+    public ModuleState(double vel, double dir) {
         m_vel = vel;
         m_dir = dir;
     }
