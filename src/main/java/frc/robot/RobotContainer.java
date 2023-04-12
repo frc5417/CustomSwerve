@@ -5,12 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AutonLoader;
-import frc.robot.commands.TeleopDrive;
-import frc.robot.subsystems.Kinematics;
-import frc.robot.subsystems.DriveBase;
-import frc.robot.subsystems.Module;
-import frc.robot.subsystems.ModuleGroup;
+import frc.robot.subsystems.Systems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -23,20 +18,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final static Module[] m_modules = {
-    new Module(0, Constants.DriveTrainConstants.invertedMotors[0]),
-    new Module(1, Constants.DriveTrainConstants.invertedMotors[1]),
-    new Module(2, Constants.DriveTrainConstants.invertedMotors[2]),
-    new Module(3, Constants.DriveTrainConstants.invertedMotors[3]),
-  };
 
-  public final static ModuleGroup m_moduleGroup = new ModuleGroup(m_modules);
+  Systems systems = new Systems();
 
-
-  public final static DriveBase m_driveBase = new DriveBase();
-  public final static Kinematics m_kinematics = new Kinematics();
-  public final static AutonLoader m_autonLoader = new AutonLoader(m_driveBase);
-  public final static TeleopDrive m_teleopDrive = new TeleopDrive();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final static CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -91,9 +75,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_autonLoader.getAuton();
+    return systems.autonLoader.getAuton();
   }
   public void runTeleopCommand() {
-    m_teleopDrive.schedule();
+    systems.teleopDrive.schedule();
   }
 }

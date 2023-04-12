@@ -19,9 +19,6 @@ public class Kinematics {
 
   public final AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
 
-  public final PIDController xVelocityPid = new PIDController(Constants.Swerve.velocitykP, Constants.Swerve.velocitykI, Constants.Swerve.velocitykD);
-  public final PIDController yVelocityPid = new PIDController(Constants.Swerve.velocitykP, Constants.Swerve.velocitykI, Constants.Swerve.velocitykD);
-  public final PIDController angularVelocityPid = new PIDController(Constants.Swerve.aVelocitykP, Constants.Swerve.aVelocitykI, Constants.Swerve.aVelocitykD);
 
   public Kinematics() {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
@@ -88,11 +85,11 @@ public class Kinematics {
     }
   }
 
-  public ModuleState[] getTargetSpeeds(ChassisSpeeds targetChassisSpeed) {
+  public ModuleState[] getModuleStates(ChassisSpeeds targetChassisSpeed) {
 
-    double targetXVel = targetChassisSpeed.vxMetersPerSecond / Constants.Swerve.maxVelocity;
-    double targetYVel = targetChassisSpeed.vyMetersPerSecond / Constants.Swerve.maxVelocity;
-    double targetAngVel = targetChassisSpeed.omegaRadiansPerSecond / Constants.Swerve.maxAngularVelocity;
+    double targetXVelRatio = targetChassisSpeed.vxMetersPerSecond / Constants.Swerve.maxVelocity;
+    double targetYVelRatio = targetChassisSpeed.vyMetersPerSecond / Constants.Swerve.maxVelocity;
+    double targetAngVelRatio = targetChassisSpeed.omegaRadiansPerSecond / Constants.Swerve.maxAngularVelocity;
 
     if (fieldCentric) {
       this.gyro = this.ahrs.getYaw();
@@ -101,7 +98,7 @@ public class Kinematics {
       this.gyro = 0;
     }
 
-    conv(computeUnicorn(computeStrafe(targetXVel, targetYVel), computeRotation(targetAngVel)));
+    conv(computeUnicorn(computeStrafe(targetXVelRatio, targetYVelRatio), computeRotation(targetAngVelRatio)));
 
     ModuleState[] targetModuleStates = new ModuleState[4];
 
@@ -142,6 +139,3 @@ public class Kinematics {
 
 }
 
-
-
-// Josh was here

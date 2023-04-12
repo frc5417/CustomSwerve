@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
+import java.lang.module.ModuleDescriptor.Requires;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
@@ -8,11 +12,14 @@ import frc.robot.RobotContainer;
 public class DriveBase extends SubsystemBase {
 
     private static ChassisSpeeds m_chassisSpeeds;
+    private final ModuleGroup m_moduleGroup;
     private final Kinematics m_kinematics;
 
-    public DriveBase() {
-        RobotContainer.m_moduleGroup.resetDrive();
-        m_kinematics = RobotContainer.m_kinematics;
+    public DriveBase(Systems system) {
+        m_moduleGroup = system.moduleGroup; 
+        m_kinematics = system.kinematics;
+
+        m_moduleGroup.resetDrive();
     } 
 
     public Pose2d getCurrentPose() {
@@ -30,14 +37,11 @@ public class DriveBase extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double xVel = m_chassisSpeeds.vxMetersPerSecond;
-        double yVel = m_chassisSpeeds.vyMetersPerSecond;
-        double omega = m_chassisSpeeds.omegaRadiansPerSecond;
-
-        ModuleState[] targetModuleStates = m_kinematics.getTargetSpeeds(new ChassisSpeeds(xVel, yVel, omega));
-
+    
+        ModuleState[] targetModuleStates = m_kinematics.getModuleStates(m_chassisSpeeds);
         targetModuleStates = Kinematics.normalizeVelocity(targetModuleStates);
 
-        RobotContainer.m_moduleGroup.setDrive(targetModuleStates);
+        m_moduleGroup.setDrive(targetModuleStates);
     }
+
 }

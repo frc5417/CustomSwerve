@@ -55,11 +55,14 @@ public final class Constants {
   
     public static final PIDConstants ROTATION_PID = new PIDConstants(0, 0, 0);
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(0, 0, 0);
-
+    public static final Integer wheels = 4;
     public static final boolean[] invertedMotors = {true, true, false, false};
     //TODO: tune pid constants
   }
 
+  public static class Auton {
+    public static final String[] paths = {"rotateInPlace, moveForward, PathPlannerTest"};
+  }
 
 
   // Josh was here
