@@ -6,8 +6,8 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveBase;
-import frc.robot.ModuleUtilities.ModuleGroup;
-import frc.robot.subsystems.Systems;
+import frc.robot.subsystems.RobotContainer;
+import frc.robot.subsystems.ModuleGroup;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -27,9 +27,11 @@ public class TeleopDrive extends CommandBase {
   private final ModuleGroup m_moduleGroup;
   private final DriveBase m_driveBase;
 
-  public TeleopDrive() {
-    m_moduleGroup = Systems.moduleGroup;
-    m_driveBase = Systems.driveBase;
+  private int cnt = 0;
+
+  public TeleopDrive(ModuleGroup moduleGroup, DriveBase driveBase) {
+    m_moduleGroup = moduleGroup;
+    m_driveBase = driveBase;
   }
 
   @Override
@@ -40,9 +42,12 @@ public class TeleopDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xVel = Systems.getLeftJoyX() * Constants.Swerve.maxVelocity;
-    double yVel = Systems.getLeftJoyY() * Constants.Swerve.maxVelocity;
-    double omega = Systems.getRightJoyX() * Constants.Swerve.maxAngularVelocity;
+    double xVel = RobotContainer.getLeftJoyX() * Constants.Swerve.maxVelocity;
+    double yVel = RobotContainer.getLeftJoyY() * Constants.Swerve.maxVelocity;
+    double omega = RobotContainer.getRightJoyX() * Constants.Swerve.maxAngularVelocity;
+
+    if (cnt++ % 50 == 0) 
+      System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
 
     m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel, yVel, omega));
   }

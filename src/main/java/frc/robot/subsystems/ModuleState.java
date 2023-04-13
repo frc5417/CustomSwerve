@@ -1,4 +1,4 @@
-package frc.robot.ModuleUtilities;
+package frc.robot.subsystems;
 
 public class ModuleState {
     private final double m_vel;

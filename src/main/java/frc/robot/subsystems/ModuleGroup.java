@@ -1,4 +1,4 @@
-package frc.robot.ModuleUtilities;
+package frc.robot.subsystems;
 
 public class ModuleGroup {
     private final Module[] m_modules;

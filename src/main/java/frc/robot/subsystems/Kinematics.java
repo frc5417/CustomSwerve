@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-import frc.robot.ModuleUtilities.ModuleState;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -19,10 +18,9 @@ public class Kinematics {
   private final AHRS m_ahrs;
 
 
-  public Kinematics() {
+  public Kinematics(AHRS ahrs) {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
-    m_ahrs = Systems.ahrs;
-
+    m_ahrs = ahrs;
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {

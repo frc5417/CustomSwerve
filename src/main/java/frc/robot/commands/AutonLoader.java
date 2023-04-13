@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveBase;
-import frc.robot.subsystems.Systems;
 
 public class AutonLoader {
     private static HashMap<String, Command> eventMap;
@@ -22,9 +21,11 @@ public class AutonLoader {
     private static SendableChooser<Command> chooser;
     private static List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
 
-    public AutonLoader() {
-        m_driveBase = Systems.driveBase;
-        
+    public AutonLoader(DriveBase driveBase) {
+
+        m_driveBase = driveBase;
+        chooser = new SendableChooser<>();
+
         eventMap = new HashMap<>();
         eventMap.put("event1", new PrintCommand("event 1 passed"));    
         eventMap.put("event2", new PrintCommand("event 2 passed"));    
@@ -46,19 +47,7 @@ public class AutonLoader {
     }
 
     private Command getAutonFromPath(String path) {
-        switch (path) {
-            case "rotateInPlace": 
-                return AutonCommands.ROTATE_IN_PLACE;
-            
-            case "moveForward":
-                return AutonCommands.MOVE_FORWARD;
-
-            case "PathPlannerTest":
-                return autoBuilder.fullAuto(pathGroup);
-                
-            default :
-                throw new IllegalArgumentException("Make sure you enter a valid Auton name!"); 
-        }
+        return new PrintCommand(path);
     }
 
     public Command getAuton() {
