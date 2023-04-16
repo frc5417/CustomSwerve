@@ -10,8 +10,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutonLoader;
 import frc.robot.commands.TeleopDrive;
-import frc.robot.subsystems.ModuleGroup;
-import frc.robot.subsystems.Module;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -29,17 +27,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
-  public static ModuleGroup moduleGroup = new ModuleGroup(new Module[]{
-    new Module(0, Constants.DriveTrainConstants.invertedMotors[0]),
-    new Module(1, Constants.DriveTrainConstants.invertedMotors[1]),
-    new Module(2, Constants.DriveTrainConstants.invertedMotors[2]),
-    new Module(3, Constants.DriveTrainConstants.invertedMotors[3]),
-  });
+
   public static AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
   public static Kinematics kinematics = new Kinematics(ahrs);
-  public static DriveBase driveBase = new DriveBase(moduleGroup, kinematics);
+  public static DriveBase driveBase = new DriveBase(kinematics);
   public static AutonLoader autonLoader = new AutonLoader(driveBase);
-  public static TeleopDrive teleopDrive = new TeleopDrive(moduleGroup, driveBase);
+  public static TeleopDrive teleopDrive = new TeleopDrive(driveBase);
   private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed

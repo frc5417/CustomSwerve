@@ -2,19 +2,24 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 
 public class DriveBase extends SubsystemBase {
 
     private static ChassisSpeeds m_chassisSpeeds;
-    private final ModuleGroup m_moduleGroup;
     private final Kinematics m_kinematics;
 
-    public DriveBase(ModuleGroup moduleGroup, Kinematics kinematics) {
-        m_moduleGroup = moduleGroup; 
+    public static Module[] moduleGroup;
+      
+
+    public DriveBase(Kinematics kinematics) {
         m_kinematics = kinematics;
 
-        m_moduleGroup.resetDrive();
+        moduleGroup = new Module[4];
+        for (int i = 0; i < 4; i++)
+            moduleGroup[i] = new Module(i, Constants.DriveTrainConstants.invertedMotors[i]);
+
         m_chassisSpeeds = new ChassisSpeeds(0, 0, 0);
     } 
 
@@ -31,13 +36,20 @@ public class DriveBase extends SubsystemBase {
         m_chassisSpeeds = chassisSpeeds;
     }
 
+    public void resetDrive() {
+        for (int i = 0; i < 4; i++) {
+            moduleGroup[i].resetDriveAngleEncoder();
+        }
+    }
+
     @Override
     public void periodic() {
     
-        ModuleState[] targetModuleStates = m_kinematics.getComputedModuleStates(m_chassisSpeeds);
-        // targetModuleStates = Kinematics.normalizeVelocity(targetModuleStates);
+        Module.ModuleState[] targetModuleStates = m_kinematics.getComputedModuleStates(m_chassisSpeeds);
 
-        m_moduleGroup.setDrive(targetModuleStates);
+        for (int i = 0; i < 4; i++)
+            moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
+
     }
 
 }
