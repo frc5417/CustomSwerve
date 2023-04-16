@@ -4,14 +4,4 @@ Team 5417's code for the swerve bot, _Vira_!
 
 [![CI](https://github.com/frc5417/CustomSwerve/actions/workflows/main.yml/badge.svg)](https://github.com/frc5417/CustomSwerve/actions/workflows/main.yml)
 
-This is our custom algorithm for swerve. Here are the developers:
-* Krishna Shah
-* Jordan Escobedo
-* Rupak Bhattacharya
-* Pranav Gattineni
-* Brennan Coil
-* Lucas Hatcher
-* Joshua Vigel
-* Matthew Caldarola
-* Jeevan Adhya Vinoth Babu 
-* Ethan Wallraven
+- This branch is an attempt by Joshua Vigel to refactor the code to more easily readable and compliable to Java standards.
