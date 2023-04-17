@@ -8,6 +8,7 @@ import frc.robot.Constants;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Kinematics {
   /** Creates a new Compute. */
@@ -107,8 +108,13 @@ public class Kinematics {
 
     Module.ModuleState[] targetModuleStates = new Module.ModuleState[4];
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
       targetModuleStates[i] = new Module.ModuleState(vel[i], theta[i]);
+      String name = "Swerve (" + String.valueOf(i) + ") Angle";
+      SmartDashboard.putNumber(name, theta[i]);
+      name = "Swerve (" + String.valueOf(i) + ") Speed";
+      SmartDashboard.putNumber(name, vel[i]);
+    }
     
     return targetModuleStates;
   }

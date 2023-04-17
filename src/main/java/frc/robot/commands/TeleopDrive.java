@@ -4,12 +4,12 @@
 
 package frc.robot.commands;
 
-import frc.robot.Constants;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** An example command that uses an example subsystem. */
 public class TeleopDrive extends CommandBase {
@@ -42,6 +42,10 @@ public class TeleopDrive extends CommandBase {
     double xVel = RobotContainer.getLeftJoyX(); //* Constants.Swerve.maxVelocity;
     double yVel = RobotContainer.getLeftJoyY(); //* Constants.Swerve.maxVelocity;
     double omega = RobotContainer.getRightJoyX(); //* Constants.Swerve.maxAngularVelocity;
+
+    SmartDashboard.putNumber("X-Vel Input", xVel);
+    SmartDashboard.putNumber("Y-Vel Input", yVel);
+    SmartDashboard.putNumber("Omega Vel Input", omega);
 
     if (cnt++ % 50 == 0) 
       System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
