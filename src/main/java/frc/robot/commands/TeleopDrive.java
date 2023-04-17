@@ -39,12 +39,12 @@ public class TeleopDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xVel = RobotContainer.getLeftJoyX() * Constants.Swerve.maxVelocity * 0.3;
-    double yVel = RobotContainer.getLeftJoyY() * Constants.Swerve.maxVelocity * 0.3;
-    double omega = RobotContainer.getRightJoyX() * Constants.Swerve.maxAngularVelocity * 0.3;
+    double xVel = RobotContainer.getLeftJoyX(); //* Constants.Swerve.maxVelocity;
+    double yVel = RobotContainer.getLeftJoyY(); //* Constants.Swerve.maxVelocity;
+    double omega = RobotContainer.getRightJoyX(); //* Constants.Swerve.maxAngularVelocity;
 
-    // if (cnt++ % 50 == 0) 
-    //   System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
+    if (cnt++ % 50 == 0) 
+      System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
 
     m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel, yVel, omega));
   }

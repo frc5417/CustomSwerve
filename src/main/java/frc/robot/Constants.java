@@ -42,8 +42,8 @@ public final class Constants {
   public static class Swerve {
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
     public static final IdleMode driveNeutralMode = IdleMode.kBrake;
-    public static final double maxVelocity = 3.8; // m/s
-    public static final double maxAngularVelocity = 56.0; // rad/s
+    public static final double maxVelocity = 1; //3.8; // m/s
+    public static final double maxAngularVelocity = 1; //56.0; // rad/s
     //velocity PID tuning for overall swerve
     public static final double velocitykP = 1.0; // 0.0001
     public static final double velocitykI = 0.0;

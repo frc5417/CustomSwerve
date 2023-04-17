@@ -32,7 +32,7 @@ public class Module {
 
   private final int moduleNum; // ZERO INDEXED
 
-  private static final double kP = 0.4;
+  private static final double kP = 0.04;
   private static final double kI = 0.0;
   private static final double kD = 0.005;
 
@@ -41,6 +41,8 @@ public class Module {
   private Boolean invertDriveSpeed = false;
   
   private WPI_CANCoder _CANCoder;
+
+  int cnt = 0;
 
   public Module(int module, boolean inverted) {
     
@@ -74,26 +76,6 @@ public class Module {
       // throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.moduleNum).toString() + " is not green!");
     // }
   }
-
-  public static class ModuleState {
-    private final double m_vel;
-    private final double m_dir;
-
-    public ModuleState(double vel, double dir) {
-        m_vel = vel;
-        m_dir = dir;
-    }
-
-    public double getVel() {
-        return m_vel;
-    }
-
-    public double getDir() {
-        return m_dir;
-    }
-}
-
-int cnt = 0;
 
   public void setSpeedAndAngle(ModuleState targetState) {
     double x = setAngle(targetState.getDir());
@@ -213,5 +195,23 @@ int cnt = 0;
     // driveController.setFF(Constants.Swerve.angleKFF);
     // driveMotor.enableVoltageCompensation(Constants.Swerve.voltageComp);
     driveMotor.burnFlash();
+  }
+
+  public static class ModuleState {
+    private final double m_vel;
+    private final double m_dir;
+
+    public ModuleState(double vel, double dir) {
+        m_vel = vel;
+        m_dir = dir;
+    }
+
+    public double getVel() {
+        return m_vel;
+    }
+
+    public double getDir() {
+        return m_dir;
+    }
   }
 }
