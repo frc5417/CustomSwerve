@@ -19,6 +19,7 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Module {
@@ -32,7 +33,7 @@ public class Module {
 
   private final int moduleNum; // ZERO INDEXED
 
-  private static final double kP = 0.04;
+  private static final double kP = 0.2;
   private static final double kI = 0.0;
   private static final double kD = 0.005;
 
@@ -58,7 +59,7 @@ public class Module {
      _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.moduleNum], "canivore");
 
     //  _CANCoder.setPositionToAbsolute(0);
-     _CANCoder.configAllSettings(returnCANConfig());
+    //  _CANCoder.configAllSettings(returnCANConfig());
      _CANCoder.setPosition(0);
     
      /* Drive Motor Config */
@@ -145,6 +146,9 @@ public class Module {
     double x = (angle_in_rad);
 
     pid.setSetpoint(angle_in_rad);
+
+    String name = "Mod" + String.valueOf(this.moduleNum);
+    SmartDashboard.putNumber(name, this.getAngleInRadians());
 
     if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180))) {
       this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -0.8, 0.8));
