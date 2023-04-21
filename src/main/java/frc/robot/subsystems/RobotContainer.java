@@ -69,14 +69,14 @@ public class RobotContainer {
       }
       public static double getLeftJoyY() {
         if (Math.abs(m_driverController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
-          return -1 * m_driverController.getLeftY();
+          return m_driverController.getLeftY();
         } else {
           return 0;
         }
       }
       public static double getRightJoyX() {
         if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
-          return m_driverController.getRightX();
+          return -1 * m_driverController.getRightX();
         } else {
           return 0;
         }

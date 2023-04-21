@@ -27,21 +27,30 @@ public class TeleopDrive extends CommandBase {
 
   private int cnt = 0;
 
+  double prev_omega = 0;
+  double prev_xVel = 0;
+  double prev_yVel = 0;
+
   public TeleopDrive(DriveBase driveBase) {
     m_driveBase = driveBase;
   }
 
   @Override
   public void initialize() {
-    m_driveBase.resetDrive();
+    // m_driveBase.resetDrive();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xVel = RobotContainer.getLeftJoyX(); //* Constants.Swerve.maxVelocity;
-    double yVel = RobotContainer.getLeftJoyY(); //* Constants.Swerve.maxVelocity;
-    double omega = RobotContainer.getRightJoyX(); //* Constants.Swerve.maxAngularVelocity;
+    double xVel = (RobotContainer.getLeftJoyX() * 0.45) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double yVel = (RobotContainer.getLeftJoyY() * 0.45) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double omega = (RobotContainer.getRightJoyX() * 0.45) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
+
+    prev_xVel = xVel;
+    prev_yVel = yVel;
+    prev_omega = omega;
+
 
     SmartDashboard.putNumber("X-Vel Input", xVel);
     SmartDashboard.putNumber("Y-Vel Input", yVel);
