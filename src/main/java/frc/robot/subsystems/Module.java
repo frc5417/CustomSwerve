@@ -71,6 +71,7 @@ public class Module {
      
 
     pid.enableContinuousInput(0, Math.PI * 2);
+    pid.setTolerance(0.0);
 
     this.invertDriveSpeed = inverted;
     // if(_CANCoder.getMagnetFieldStrength() != MagnetFieldStrength.Good_GreenLED) {
@@ -112,7 +113,7 @@ public class Module {
   }
 
   public double getAngleInRadians() { 
-    return _CANCoder.getPosition() * (Math.PI/180.0);
+    return (_CANCoder.getAbsolutePosition() - Constants.MotorConstants.motorDegrees[this.moduleNum]) * (Math.PI/180.0);
   }
 
   public double getAngle() {

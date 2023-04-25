@@ -62,7 +62,7 @@ public class RobotContainer {
 
     public static double getLeftJoyX() {
         if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
-          return m_driverController.getLeftX();
+          return -1 * m_driverController.getLeftX();
         } else {
           return 0;
         }
@@ -92,5 +92,6 @@ public class RobotContainer {
   }
   public void runTeleopCommand() {
     teleopDrive.schedule();
+    
   }
 }

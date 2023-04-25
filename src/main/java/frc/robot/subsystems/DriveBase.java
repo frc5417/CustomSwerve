@@ -7,7 +7,7 @@ import frc.robot.Constants;
 
 public class DriveBase extends SubsystemBase {
 
-    private static ChassisSpeeds m_chassisSpeeds;
+    private static Module.ModuleState targetModuleStates[];
     private final Kinematics m_kinematics;
 
     public static Module[] moduleGroup;
@@ -20,7 +20,10 @@ public class DriveBase extends SubsystemBase {
         for (int i = 0; i < 4; i++)
             moduleGroup[i] = new Module(i, Constants.DriveTrainConstants.invertedMotors[i]);
 
-        m_chassisSpeeds = new ChassisSpeeds(0, 0, 0);
+        targetModuleStates = new Module.ModuleState[4];
+
+        for (int i = 0; i < 4; i++)
+            targetModuleStates[i] = new Module.ModuleState(0, Constants.MotorConstants.motorDegrees[i] * (Math.PI/180));
     } 
 
     public Pose2d getCurrentPose() {
@@ -32,8 +35,12 @@ public class DriveBase extends SubsystemBase {
         //TODO: FIX THIS
     }
 
+    public void setHardStates(Module.ModuleState[] targetState) {
+        targetModuleStates = targetState;
+    }
+
     public void setDriveSpeed(ChassisSpeeds chassisSpeeds) {
-        m_chassisSpeeds = chassisSpeeds;
+        targetModuleStates = m_kinematics.getComputedModuleStates(chassisSpeeds);
     }
 
     public void resetDrive() {
@@ -44,12 +51,8 @@ public class DriveBase extends SubsystemBase {
 
     @Override
     public void periodic() {
-    
-        Module.ModuleState[] targetModuleStates = m_kinematics.getComputedModuleStates(m_chassisSpeeds);
-
         for (int i = 0; i < 4; i++)
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
-
     }
 
 }

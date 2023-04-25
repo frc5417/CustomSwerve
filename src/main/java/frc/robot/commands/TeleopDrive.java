@@ -4,12 +4,14 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Module;
 
 /** An example command that uses an example subsystem. */
 public class TeleopDrive extends CommandBase {
@@ -30,6 +32,8 @@ public class TeleopDrive extends CommandBase {
   double prev_omega = 0;
   double prev_xVel = 0;
   double prev_yVel = 0;
+ 
+  int counter = 0;
 
   public TeleopDrive(DriveBase driveBase) {
     m_driveBase = driveBase;
@@ -38,11 +42,21 @@ public class TeleopDrive extends CommandBase {
   @Override
   public void initialize() {
     // m_driveBase.resetDrive();
+    // Module.ModuleState[] temp = new Module.ModuleState[4];
+
+    // for (int i = 0; i < 4; i++)
+    //   temp[i] = new Module.ModuleState(0, Constants.MotorConstants.motorDegrees[i] * (Math.PI/180));
+
+    // m_driveBase.setHardStates(temp);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // if (counter++ <= 60)
+    //   return;
+    
     double xVel = (RobotContainer.getLeftJoyX() * 0.45) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
     double yVel = (RobotContainer.getLeftJoyY() * 0.45) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
     double omega = (RobotContainer.getRightJoyX() * 0.45) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
