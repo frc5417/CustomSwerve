@@ -18,12 +18,14 @@ public class AutonLoader {
     private static HashMap<String, Command> eventMap;
     private SwerveAutoBuilder autoBuilder;
     private final DriveBase m_driveBase;
+    private final AutonCommands m_autoncommands;
     private static SendableChooser<Command> chooser;
     private static List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
 
     public AutonLoader(DriveBase driveBase) {
 
         m_driveBase = driveBase;
+        m_autoncommands = new AutonCommands(driveBase);
         chooser = new SendableChooser<>();
 
         eventMap = new HashMap<>();
@@ -39,9 +41,10 @@ public class AutonLoader {
                 eventMap,
                 m_driveBase);
         
-        for (String path : Constants.Auton.paths) {
-            chooser.addOption(path, getAutonFromPath(path));
-        }
+        // for (String path : Constants.Auton.paths) {
+            // chooser.addOption(path, getAutonFromPath(path));
+        // }
+        chooser.addOption("forward", m_autoncommands.MOVE_FORWARD);
 
         SmartDashboard.putData(chooser);
     }
