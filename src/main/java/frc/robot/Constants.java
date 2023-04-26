@@ -33,11 +33,11 @@ public final class Constants {
     public static final Integer[] driveMotorIDS = {11, 21, 31, 40}; 
     public static final Integer[] angleMotorIDS = {10, 20, 30, 41};
     public static final Integer[] CANCoderID = {9, 12, 8, 13};
-    public static final Double[] motorDegrees = {92.109, 179.736, 344.268, 268.594};
+    public static final Double[] motorDegrees = {91.494, 182.373, 347.783, 315.615};
     public static final Double[] angleOffsets = {0.0, 0.0, 0.0, 0.0};
     public static final Double[][] angleMotorPID = {
       {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}};
-    public static final Double degTolerance = 1.0;
+    public static final Double degTolerance = 0.75;
   }
   
   public static class Swerve {
