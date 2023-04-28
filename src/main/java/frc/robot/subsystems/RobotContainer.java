@@ -1,13 +1,20 @@
+package frc.robot.subsystems;
+
+import frc.robot.Constants;
+
 // Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
+// Open Source Software; you can modify and/or share it u.nder the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.Compute;
-import frc.robot.subsystems.Module;
+import frc.robot.commands.AutonLoader;
+import frc.robot.commands.TeleopDrive;
+
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -19,17 +26,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Module m_Module1 = new Module(1);
-  private final Module m_Module2 = new Module(2);
-  private final Module m_Module3 = new Module(3);
-  private final Module m_Module4 = new Module(4);
-  private final Compute m_Compute = new Compute();
 
-  private final DriveCommand m_DriveCommand = new DriveCommand(m_Module1, m_Module2, m_Module3, m_Module4, m_Compute);
+
+  public static AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
+  public static Kinematics kinematics = new Kinematics(ahrs);
+  public static DriveBase driveBase = new DriveBase(kinematics);
+  public static AutonLoader autonLoader = new AutonLoader(driveBase);
+  public static TeleopDrive teleopDrive = new TeleopDrive(driveBase);
+  private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final static CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -51,41 +57,41 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().onTrue(m_DriveCommand);
   }
 
-  public static double getLeftJoyX() {
-    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
-      return -1 * m_driverController.getLeftX();
-    } else {
-      return 0;
-    }
-  }
-  public static double getLeftJoyY() {
-    if (Math.abs(m_driverController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
-      return m_driverController.getLeftY();
-    } else {
-      return 0;
-    }
-  }
-  public static double getRightJoyX() {
-    if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
-      return m_driverController.getRightX();
-    } else {
-      return 0;
-    }
-  }
+
+    public static double getLeftJoyX() {
+        if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+          return m_driverController.getLeftX();
+        } else {
+          return 0;
+        }
+      }
+      public static double getLeftJoyY() {
+        if (Math.abs(m_driverController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
+          return m_driverController.getLeftY();
+        } else {
+          return 0;
+        }
+      }
+      public static double getRightJoyX() {
+        if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
+          return m_driverController.getRightX();
+        } else {
+          return 0;
+        }
+      }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
-  // public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    // return Autos.exampleAuto(m_exampleSubsystem);
-  // }
+  public Command getAutonomousCommand() {
+    return autonLoader.getAuton();
+  }
   public void runTeleopCommand() {
-    // m_DriveCommand.schedule();
+    teleopDrive.schedule();
+    
   }
 }
