@@ -6,8 +6,12 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 
+import org.ejml.simple.SimpleMatrix;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Kinematics {
@@ -85,6 +89,35 @@ public class Kinematics {
         }
       }
     }
+  }
+
+  public ChassisSpeeds toChassisSpeeds(Module[] moduleGroup) { // converts an array of module states to the ChassisSpeed of the robot
+    //gets the independent x and y velocities of each module based on encoder values
+    SimpleMatrix xyVels = new SimpleMatrix(8, 1);
+    for (int i = 0; i < moduleGroup.length; i++) {
+      double vel = moduleGroup[i].getDriveVelocity();
+      double dir = moduleGroup[i].getAngleInRadians();
+
+      xyVels.set((i * 2), 0, vel * Math.cos(dir));
+      xyVels.set((i * 2) + 1, 0, vel * Math.sin(dir)); 
+    }
+
+    //multiply the current x, y velocity matrix by the inverse of the kinematics matrix
+    SimpleMatrix kinematicsMatrix = new SimpleMatrix(8, 3);
+    for (int i = 0; i < moduleGroup.length; i++) {
+      Translation2d distFromCenter = moduleGroup[i].getDistanceFromCenter();
+
+      xyVels.setRow((i * 2), 0, 1, 0, -distFromCenter.getY());
+      xyVels.setRow((i * 2) + 1, 0, 0, 1, distFromCenter.getX());
+    }
+
+    SimpleMatrix finalChassisSpeeds = xyVels.mult(kinematicsMatrix.invert());
+
+    double xVel = finalChassisSpeeds.get(0, 0);
+    double yVel = finalChassisSpeeds.get(1, 0);
+    double omega = finalChassisSpeeds.get(2, 0);
+
+    return new ChassisSpeeds(xVel, yVel, omega);
   }
 
   public Module.ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeed) {

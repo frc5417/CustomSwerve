@@ -19,6 +19,7 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -43,9 +44,19 @@ public class Module {
   
   private WPI_CANCoder _CANCoder;
 
+  private final Translation2d m_distFromCenter;
+
   int cnt = 0;
 
-  public Module(int module, boolean inverted) {
+  /*
+   * 
+   * @param 
+   * @param
+   * @param the x and y distance of the module from the robot's center of rotation
+   * 
+   */
+
+  public Module(int module, boolean inverted, Translation2d distFromCenter) {
     
     this.moduleNum = module;
 
@@ -77,6 +88,7 @@ public class Module {
     // if(_CANCoder.getMagnetFieldStrength() != MagnetFieldStrength.Good_GreenLED) {
       // throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.moduleNum).toString() + " is not green!");
     // }
+    m_distFromCenter = distFromCenter;
   }
 
   public void setSpeedAndAngle(ModuleState targetState) {
@@ -120,11 +132,11 @@ public class Module {
     return _CANCoder.getPosition();
   }
 
-  public double getDriveVelocity() {
+  public double getDriveVelocity() { //may need to multiply by the gear ratio to get an accurate wheel linear velocity
     return integratedDriveEncoder.getVelocity();
   }
 
-  public double getAngularVelocity() {
+  public double getAngularVelocity() { //may need to multiply by the gear ratio to get an accurate wheel angular velocity
     return integratedAngleEncoder.getVelocity();
   }
 
@@ -202,6 +214,10 @@ public class Module {
     driveMotor.burnFlash();
   }
 
+  public Translation2d getDistanceFromCenter() {
+    return m_distFromCenter;
+  }
+
   public static class ModuleState {
     private final double m_vel;
     private final double m_dir;
@@ -218,5 +234,7 @@ public class Module {
     public double getDir() {
         return m_dir;
     }
+
+
   }
 }

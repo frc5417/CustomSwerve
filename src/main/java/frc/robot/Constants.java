@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
@@ -58,11 +59,20 @@ public final class Constants {
 
   public static class DriveTrainConstants {
     public static final double DRIVETRAIN_WIDTH = 0.635; // in meters
-  
+    public static final double TRACK_WIDTH = 0.470; // in meters
+    public static final double WHEEL_BASE = 0.470; // in meters
+
     public static final PIDConstants ROTATION_PID = new PIDConstants(0, 0, 0);
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(0, 0, 0);
     public static final Integer wheels = 4;
     public static final boolean[] invertedMotors = {true, true, false, false};
+
+    public static final Translation2d[] wheelLocations = {
+      new Translation2d((TRACK_WIDTH / 2), -(WHEEL_BASE / 2)),
+      new Translation2d(-(TRACK_WIDTH / 2), -(WHEEL_BASE / 2)),
+      new Translation2d((TRACK_WIDTH / 2), (WHEEL_BASE / 2)),
+      new Translation2d(-(TRACK_WIDTH / 2), (WHEEL_BASE / 2)),
+    };
     //TODO: tune pid constants
   }
 
