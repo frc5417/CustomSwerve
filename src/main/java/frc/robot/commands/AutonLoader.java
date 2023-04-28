@@ -45,6 +45,7 @@ public class AutonLoader {
             // chooser.addOption(path, getAutonFromPath(path));
         // }
         chooser.addOption("forward", m_autoncommands.MOVE_FORWARD);
+        chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
 
         SmartDashboard.putData(chooser);
     }
