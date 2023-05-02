@@ -9,9 +9,12 @@ import frc.robot.Constants;
 import org.ejml.simple.SimpleMatrix;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.Matrix;
+
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+// import edu.wpi.first.math.Matrix;
+// import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Kinematics {
@@ -21,6 +24,8 @@ public class Kinematics {
   public boolean fieldCentric;
   private double gyro = 0.0;
   private final AHRS m_ahrs;
+
+  // private ChassisSpeeds odomSpeeds = new ChassisSpeeds(0, 0, 0);
 
   private int  cnt = 0;
 
@@ -91,11 +96,15 @@ public class Kinematics {
     }
   }
 
-  public ChassisSpeeds toChassisSpeeds(Module[] moduleGroup) { // converts an array of module states to the ChassisSpeed of the robot
+  // public ChassisSpeeds toChassisSpeeds() {
+  //   return odomSpeeds;
+  // }
+
+  public Twist2d toTwist(Module[] moduleGroup) { // converts an array of module states to the ChassisSpeed of the robot
     //gets the independent x and y velocities of each module based on encoder values
     SimpleMatrix xyVels = new SimpleMatrix(8, 1);
     for (int i = 0; i < moduleGroup.length; i++) {
-      double vel = moduleGroup[i].getDriveVelocity();
+      double vel = moduleGroup[i].getDeltaDist();
       double dir = moduleGroup[i].getAngleInRadians();
 
       xyVels.set((i * 2), 0, vel * Math.cos(dir));
@@ -104,20 +113,20 @@ public class Kinematics {
 
     //multiply the current x, y velocity matrix by the inverse of the kinematics matrix
     SimpleMatrix kinematicsMatrix = new SimpleMatrix(8, 3);
-    for (int i = 0; i < moduleGroup.length; i++) {
+    for (int i = 0; i < 4; i++) {
       Translation2d distFromCenter = moduleGroup[i].getDistanceFromCenter();
 
-      xyVels.setRow((i * 2), 0, 1, 0, -distFromCenter.getY());
-      xyVels.setRow((i * 2) + 1, 0, 0, 1, distFromCenter.getX());
+      kinematicsMatrix.setRow((i * 2), 0, 1, 0, -distFromCenter.getY());
+      kinematicsMatrix.setRow((i * 2) + 1, 0, 0, 1, distFromCenter.getX());
     }
 
-    SimpleMatrix finalChassisSpeeds = xyVels.mult(kinematicsMatrix.invert());
+    SimpleMatrix finalChassisSpeeds = kinematicsMatrix.pseudoInverse().mult(xyVels);
 
-    double xVel = finalChassisSpeeds.get(0, 0);
-    double yVel = finalChassisSpeeds.get(1, 0);
-    double omega = finalChassisSpeeds.get(2, 0);
+    double deltaX = finalChassisSpeeds.get(0, 0);
+    double deltaY = finalChassisSpeeds.get(1, 0);
+    double deltaOmega = finalChassisSpeeds.get(2, 0);
 
-    return new ChassisSpeeds(xVel, yVel, omega);
+    return new Twist2d(deltaX, deltaY, deltaOmega);
   }
 
   public Module.ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeed) {
@@ -126,12 +135,14 @@ public class Kinematics {
     double targetYVelRatio = targetChassisSpeed.vyMetersPerSecond; /// Constants.Swerve.maxVelocity;
     double targetAngVelRatio = targetChassisSpeed.omegaRadiansPerSecond; /// Constants.Swerve.maxAngularVelocity;
 
+    // odomSpeeds = targetChassisSpeed;
+
     if (cnt++ % 50 == 0) {
       System.out.printf("vel: %f, xVel: %f, yVel: %f", targetAngVelRatio, targetXVelRatio, targetYVelRatio);
     }
 
     if (fieldCentric) {
-      this.gyro = this.m_ahrs.getYaw();
+      this.gyro = 0; //this.m_ahrs.getYaw();
       this.gyro *= Math.PI/180;
     } else {
       this.gyro = 0;

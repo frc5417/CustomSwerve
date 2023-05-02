@@ -1,4 +1,4 @@
-package frc.robot.autons;
+package frc.robot.Autons;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 

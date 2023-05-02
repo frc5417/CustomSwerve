@@ -48,6 +48,8 @@ public class Module {
 
   int cnt = 0;
 
+  private double prev_angle = 0.0;
+
   /*
    * 
    * @param 
@@ -78,6 +80,7 @@ public class Module {
      configDriveMotor();
 
      integratedDriveEncoder = driveMotor.getEncoder();
+    //  integratedDriveEncoder.setPositionConversionFactor(1/6.12);
      driveMotor.getPIDController();
      
 
@@ -140,6 +143,14 @@ public class Module {
     return integratedAngleEncoder.getVelocity();
   }
 
+  public double getDeltaDist() {
+    double newWheelPos = integratedDriveEncoder.getPosition() * (2 * Math.PI) * (1/6.12);
+    double delta = (Constants.wheelDia_m * Math.PI) * (newWheelPos-prev_angle);
+    prev_angle = newWheelPos;
+    SmartDashboard.putNumber("deltaDist" + this.moduleNum, delta);
+    return delta;
+  }
+
   public double setAngle(double angle_in_rad) {
     // //code to make the angle motor turn the least amount possible and drive direction if necessary
     // double targetAngle = angle_in_rad + Constants.MotorConstants.angleOffsets[this.moduleNum - 1];
@@ -164,7 +175,7 @@ public class Module {
     SmartDashboard.putNumber(name, this.getAngleInRadians());
 
     if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180))) {
-      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -0.8, 0.8));
+      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -1, 0.1));
     } else {
       this.angleMotor.set(0.0);
     }
