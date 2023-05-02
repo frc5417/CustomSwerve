@@ -16,6 +16,7 @@ import frc.robot.Robot;
 public class DriveBase extends SubsystemBase {
 
     private static Module.ModuleState targetModuleStates[];
+    private final double[] moduleDeltas;
     private final Kinematics m_kinematics;
     // private Pose2d currentLocation = new Pose2d();
 
@@ -42,7 +43,8 @@ public class DriveBase extends SubsystemBase {
     public DriveBase(Kinematics kinematics) {
 
         m_kinematics = kinematics;
-
+        
+        moduleDeltas = new double[4];
         moduleGroup = new Module[4];
         for (int i = 0; i < 4; i++)
             moduleGroup[i] = new Module(i, 
@@ -113,6 +115,11 @@ public class DriveBase extends SubsystemBase {
 
         Pose2d newPose = m_pose.exp(twisting);
         m_pose = new Pose2d(newPose.getTranslation(), RobotContainer.ahrs.getRotation2d());
+
+        SmartDashboard.putNumber("X", m_pose.getX());
+        SmartDashboard.putNumber("Y", m_pose.getY());
+
+
     }
 
     public void setDriveSpeed(ChassisSpeeds chassisSpeeds) {
@@ -133,19 +140,11 @@ public class DriveBase extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // SwerveModulePosition[] ModulePoseOdom = {new SwerveModulePosition(0, new Rotation2d(0)),
-        //                                          new SwerveModulePosition(0, new Rotation2d(0)),
-        //                                          new SwerveModulePosition(0, new Rotation2d(0)),
-        //                                          new SwerveModulePosition(0, new Rotation2d(0)),};
+
         for (int i = 0; i < 4; i++) {
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
-            // ModulePoseOdom[i] = new SwerveModulePosition(targetModuleStates[i].getVel(), new Rotation2d(targetModuleStates[i].getDir()));
         }
             
-        // var gyroAngle = RobotContainer.ahrs.getRotation2d();
-
-        // m_pose = m_odometry.update(gyroAngle, ModulePoseOdom);
-
         updateOdom();
 
     }

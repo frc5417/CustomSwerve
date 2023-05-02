@@ -25,12 +25,27 @@ public class Kinematics {
   private double gyro = 0.0;
   private final AHRS m_ahrs;
 
+  private final SimpleMatrix m_forwardKinematics;
+  private final SimpleMatrix m_inverseKinematics;
+
   // private ChassisSpeeds odomSpeeds = new ChassisSpeeds(0, 0, 0);
 
   private int  cnt = 0;
 
 
-  public Kinematics(AHRS ahrs) {
+  public Kinematics(AHRS ahrs, Translation2d[] translations) {
+
+    m_inverseKinematics = new SimpleMatrix(8, 3);
+
+    for (int i = 0; i < 4; i++) {
+      Translation2d distFromCenter = translations[i];
+
+      m_inverseKinematics.setRow((i * 2), 0, 1, 0, -distFromCenter.getY());
+      m_inverseKinematics.setRow((i * 2) + 1, 0, 0, 1, distFromCenter.getX());
+    }
+
+    m_forwardKinematics = m_inverseKinematics.pseudoInverse();
+
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
     m_ahrs = ahrs;
   }
@@ -102,6 +117,7 @@ public class Kinematics {
 
   public Twist2d toTwist(Module[] moduleGroup) { // converts an array of module states to the ChassisSpeed of the robot
     //gets the independent x and y velocities of each module based on encoder values
+
     SimpleMatrix xyVels = new SimpleMatrix(8, 1);
     for (int i = 0; i < moduleGroup.length; i++) {
       double vel = moduleGroup[i].getDeltaDist();
@@ -112,15 +128,8 @@ public class Kinematics {
     }
 
     //multiply the current x, y velocity matrix by the inverse of the kinematics matrix
-    SimpleMatrix kinematicsMatrix = new SimpleMatrix(8, 3);
-    for (int i = 0; i < 4; i++) {
-      Translation2d distFromCenter = moduleGroup[i].getDistanceFromCenter();
 
-      kinematicsMatrix.setRow((i * 2), 0, 1, 0, -distFromCenter.getY());
-      kinematicsMatrix.setRow((i * 2) + 1, 0, 0, 1, distFromCenter.getX());
-    }
-
-    SimpleMatrix finalChassisSpeeds = kinematicsMatrix.pseudoInverse().mult(xyVels);
+    SimpleMatrix finalChassisSpeeds = m_forwardKinematics.mult(xyVels);
 
     double deltaX = finalChassisSpeeds.get(0, 0);
     double deltaY = finalChassisSpeeds.get(1, 0);

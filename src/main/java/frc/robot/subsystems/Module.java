@@ -28,6 +28,8 @@ public class Module {
 
   public CANSparkMax angleMotor;
   private CANSparkMax driveMotor;
+  
+  private double oldWheelPos = 0;
 
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
@@ -145,10 +147,9 @@ public class Module {
 
   public double getDeltaDist() {
     double newWheelPos = integratedDriveEncoder.getPosition() * (2 * Math.PI) * (1/6.12);
-    double delta = (Constants.wheelDia_m * Math.PI) * (newWheelPos-prev_angle);
-    prev_angle = newWheelPos;
-    SmartDashboard.putNumber("deltaDist" + this.moduleNum, delta);
-    return delta;
+    double ans =  (Constants.wheelDia_m * Math.PI) * (newWheelPos - oldWheelPos);
+    oldWheelPos = newWheelPos;
+    return ans;
   }
 
   public double setAngle(double angle_in_rad) {
