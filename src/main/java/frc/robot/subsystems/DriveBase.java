@@ -1,20 +1,10 @@
 package frc.robot.subsystems;
-import org.ejml.dense.row.decomposition.eig.WatchedDoubleStepQRDecomposition_DDRM;
-
-import com.fasterxml.jackson.annotation.SimpleObjectIdResolver;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 
 
 public class DriveBase extends SubsystemBase {
@@ -22,7 +12,6 @@ public class DriveBase extends SubsystemBase {
     private static Module.ModuleState targetModuleStates[];
     private static Module.ModuleState testModuleStates[];
     
-    private final double[] moduleDeltas;
     private final Kinematics m_kinematics;
     // private Pose2d currentLocation = new Pose2d();
 
@@ -51,7 +40,6 @@ public class DriveBase extends SubsystemBase {
 
         m_kinematics = kinematics;
         
-        moduleDeltas = new double[4];
         moduleGroup = new Module[4];
 
         testModuleStates = new Module.ModuleState[4];

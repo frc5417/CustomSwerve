@@ -61,8 +61,8 @@ public class Module {
 
   /*
    * 
-   * @param 
-   * @param
+   * @param the module number 
+   * @Param whether the module is inverted or not
    * @param the x and y distance of the module from the robot's center of rotation
    * 
    */
