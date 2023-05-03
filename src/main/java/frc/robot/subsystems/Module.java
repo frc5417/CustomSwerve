@@ -31,6 +31,9 @@ public class Module {
   
   private double oldWheelPos = 0;
 
+  private double currentSpeed = 0;
+  private double currentAngle = 0;
+
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
 
@@ -40,17 +43,21 @@ public class Module {
   private static final double kI = 0.0;
   private static final double kD = 0.005;
 
+  double lastSpeed = 0;
+  double lastdir = 0;
+
   public final PIDController pid = new PIDController(kP, kI, kD);
 
   private Boolean invertDriveSpeed = false;
   
   private WPI_CANCoder _CANCoder;
 
+  double curDrive = 0;
+
   private final Translation2d m_distFromCenter;
 
   int cnt = 0;
 
-  private double prev_angle = 0.0;
 
   /*
    * 
@@ -97,13 +104,14 @@ public class Module {
   }
 
   public void setSpeedAndAngle(ModuleState targetState) {
-    double x = setAngle(targetState.getDir());
-    double y = setDriveSpeed(targetState.getVel());
-
-    if (++cnt % 50 == 0) {
-      System.out.printf("Set module %d angle to %f, speed to %f\n", this.moduleNum, x, y);
+    if (Math.abs(currentAngle - targetState.getDir()) > Math.PI/2) { // makes the most optimal turn if angle delta is > Math.PI/2 radians
+      setAngle(targetState.getDir() + Math.PI);
+      setDriveSpeed(-targetState.getVel());  
+    } else {
+      setAngle(targetState.getDir());
+      setDriveSpeed(targetState.getVel());  
     }
-  }
+  } 
 
   //angle to normalize between 0 and 2PI RAD
   public double normalizeAngle(double angle) {
@@ -125,12 +133,13 @@ public class Module {
 
     double x = speed * invertMultiplier;
     
+    currentSpeed = x;
     driveMotor.set(x);
     return x;
   }
 
   public double getAngleInRadians() { 
-    return (_CANCoder.getAbsolutePosition() - Constants.MotorConstants.motorDegrees[this.moduleNum]) * (Math.PI/180.0);
+    return (_CANCoder.getAbsolutePosition()) * (Math.PI/180.0);
   }
 
   public double getAngle() {
@@ -152,25 +161,11 @@ public class Module {
     return ans;
   }
 
-  public double setAngle(double angle_in_rad) {
-    // //code to make the angle motor turn the least amount possible and drive direction if necessary
-    // double targetAngle = angle_in_rad + Constants.MotorConstants.angleOffsets[this.moduleNum - 1];
-    // double cudoublerrentAngle = getAngle();
-    // double normalDifference = currentAngle - targetAngle;
-    // double difference180 = currentAngle - normalizeAngle(targetAngle+180.0);
+  public void setAngle(double newAngle) {
 
-    // //if going to targetAngle + 180 degrees is not less than the distance of going just to targetAngle
-    // //then turn normally and also do not invert the motor direction
-    // if (Math.abs(normalDifference) <= Math.abs(difference180)) {
-    //   pid.setSetpoint(targetAngle); // angles are in TRUE BEARING ( angles are negated )
-    // } else {
-    //   pid.setSetpoint(targetAngle+180.0); // angles are in TRUE BEARING ( angles are negated )
-    //   invertSpeed();
-    // }
+    currentAngle = newAngle;
 
-    double x = (angle_in_rad);
-
-    pid.setSetpoint(angle_in_rad);
+    pid.setSetpoint(newAngle);
 
     String name = "Mod" + String.valueOf(this.moduleNum);
     SmartDashboard.putNumber(name, this.getAngleInRadians());
@@ -181,7 +176,6 @@ public class Module {
       this.angleMotor.set(0.0);
     }
 
-    return x;
   }
 
   public void resetDriveAngleEncoder() {

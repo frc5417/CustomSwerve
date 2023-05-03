@@ -1,4 +1,8 @@
 package frc.robot.subsystems;
+import org.ejml.dense.row.decomposition.eig.WatchedDoubleStepQRDecomposition_DDRM;
+
+import com.fasterxml.jackson.annotation.SimpleObjectIdResolver;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,6 +20,8 @@ import frc.robot.Robot;
 public class DriveBase extends SubsystemBase {
 
     private static Module.ModuleState targetModuleStates[];
+    private static Module.ModuleState testModuleStates[];
+    
     private final double[] moduleDeltas;
     private final Kinematics m_kinematics;
     // private Pose2d currentLocation = new Pose2d();
@@ -36,9 +42,10 @@ public class DriveBase extends SubsystemBase {
     // SwerveDriveOdometry m_odometry;
 
     Pose2d m_pose = new Pose2d();
+    Pose2d simPose = new Pose2d();
 
     double prevAHRS = 0;
-      
+    int cnt = 0;
 
     public DriveBase(Kinematics kinematics) {
 
@@ -46,11 +53,17 @@ public class DriveBase extends SubsystemBase {
         
         moduleDeltas = new double[4];
         moduleGroup = new Module[4];
+
+        testModuleStates = new Module.ModuleState[4];
+
         for (int i = 0; i < 4; i++)
             moduleGroup[i] = new Module(i, 
             Constants.DriveTrainConstants.invertedMotors[i],
             Constants.DriveTrainConstants.wheelLocations[i]
         );
+
+        for (int i = 0; i < 4; i++)
+            testModuleStates[i] = new Module.ModuleState(0, 0);
 
         // m_odometry = new SwerveDriveOdometry(
         //     m_sdskinematics, RobotContainer.ahrs.getRotation2d(),
@@ -106,6 +119,12 @@ public class DriveBase extends SubsystemBase {
     }
 
     private void updateOdom() {
+
+        /*
+         * ENSURE that Kinematics::toTwist and getDeltaOmegaAHRS are being called every code cycle
+         */
+
+        Twist2d simTwist = m_kinematics.toTwistTest(targetModuleStates);
         Twist2d twisting = m_kinematics.toTwist(moduleGroup);
         twisting.dtheta = getDeltaOmegaAHRS();
         
@@ -113,12 +132,18 @@ public class DriveBase extends SubsystemBase {
         SmartDashboard.putNumber("dY", twisting.dy);
         SmartDashboard.putNumber("dtheta", twisting.dtheta);
 
+        simPose = simPose.exp(simTwist);
+
         Pose2d newPose = m_pose.exp(twisting);
         m_pose = new Pose2d(newPose.getTranslation(), RobotContainer.ahrs.getRotation2d());
 
-        SmartDashboard.putNumber("X", m_pose.getX());
-        SmartDashboard.putNumber("Y", m_pose.getY());
-
+        if (cnt++ % 50 == 0) {
+            System.out.println("X: " +  simPose.getX());
+            System.out.println("Y: " +  simPose.getY());
+            for (int i = 0; i < 4; i++)
+                System.out.printf("m: %d, Δ: %f, vel: %f\n", i, moduleGroup[i].getAngleInRadians(), moduleGroup[i].getDeltaDist());
+            System.out.println();
+        }
 
     }
 
@@ -132,7 +157,7 @@ public class DriveBase extends SubsystemBase {
         }
     }
 
-    public double getDeltaOmegaAHRS() {
+    private double getDeltaOmegaAHRS() {
         double delta = RobotContainer.ahrs.getAngle() - prevAHRS;
         prevAHRS = RobotContainer.ahrs.getAngle();
         return delta;
@@ -146,6 +171,5 @@ public class DriveBase extends SubsystemBase {
         }
             
         updateOdom();
-
     }
 }
