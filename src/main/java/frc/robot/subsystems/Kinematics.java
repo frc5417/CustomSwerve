@@ -137,9 +137,9 @@ public class Kinematics {
 
     // odomSpeeds = targetChassisSpeed;
 
-    if (cnt++ % 50 == 0) {
+    /*if (cnt++ % 50 == 0) {
       System.out.printf("vel: %f, xVel: %f, yVel: %f", targetAngVelRatio, targetXVelRatio, targetYVelRatio);
-    }
+    }*/
 
     if (fieldCentric) {
       this.gyro = 0; //this.m_ahrs.getYaw();
@@ -186,9 +186,27 @@ public class Kinematics {
   public double[] getVel() {
   	return vel;
   }
+
+  public double getMVelocity(int moduleNum) {
+    return vel[moduleNum - 1];
+  }
+
+  public double setMVelocity(int moduleNum, double velocity) {
+    vel[moduleNum - 1] = velocity;
+    return velocity;
+  }
   
   public double[] getTheta() {
   	return theta;
+  }
+
+  public double getMTheta(int moduleNum) {
+    return theta[moduleNum - 1];
+  }
+
+  public double setMTheta(int moduleNum, double angle) {
+    theta[moduleNum - 1] = angle;
+    return angle;
   }
 }
 

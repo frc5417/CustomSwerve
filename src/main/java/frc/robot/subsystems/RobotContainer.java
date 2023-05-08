@@ -62,7 +62,7 @@ public class RobotContainer {
 
     public static double getLeftJoyX() {
         if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
-          return m_driverController.getLeftX();
+          return -m_driverController.getLeftX();
         } else {
           return 0;
         }

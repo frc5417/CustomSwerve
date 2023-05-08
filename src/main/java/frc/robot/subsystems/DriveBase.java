@@ -47,7 +47,8 @@ public class DriveBase extends SubsystemBase {
         for (int i = 0; i < 4; i++)
             moduleGroup[i] = new Module(i, 
             Constants.DriveTrainConstants.invertedMotors[i],
-            Constants.DriveTrainConstants.wheelLocations[i]
+            Constants.DriveTrainConstants.wheelLocations[i], 
+            kinematics
         );
 
         // m_odometry = new SwerveDriveOdometry(
@@ -64,6 +65,10 @@ public class DriveBase extends SubsystemBase {
         for (int i = 0; i < 4; i++)
             targetModuleStates[i] = new Module.ModuleState(0, Constants.MotorConstants.motorDegrees[i] * (Math.PI/180));
     } 
+
+    public Module[] getModuleGroup() {
+        return moduleGroup;
+    }
 
     public Pose2d getCurrentPose() {
         return m_pose;
@@ -105,19 +110,21 @@ public class DriveBase extends SubsystemBase {
 
     private void updateOdom() {
         Twist2d twisting = m_kinematics.toTwist(moduleGroup);
-        twisting.dtheta = getDeltaOmegaAHRS();
+        // twisting.dtheta = getDeltaOmegaAHRS();
         
         SmartDashboard.putNumber("dX", twisting.dx);
         SmartDashboard.putNumber("dY", twisting.dy);
         SmartDashboard.putNumber("dtheta", twisting.dtheta);
 
-        Pose2d newPose = m_pose.exp(twisting);
-        m_pose = new Pose2d(newPose.getTranslation(), RobotContainer.ahrs.getRotation2d());
+        m_pose = m_pose.exp(twisting);
+        
+        // m_pose = new Pose2d(newPose.getTranslation(), RobotContainer.ahrs.getRotation2d());
     }
 
     public void setDriveSpeed(ChassisSpeeds chassisSpeeds) {
         targetModuleStates = m_kinematics.getComputedModuleStates(chassisSpeeds);
     }
+
 
     public void resetDrive() {
         for (int i = 0; i < 4; i++) {
@@ -141,6 +148,8 @@ public class DriveBase extends SubsystemBase {
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
             // ModulePoseOdom[i] = new SwerveModulePosition(targetModuleStates[i].getVel(), new Rotation2d(targetModuleStates[i].getDir()));
         }
+
+        
             
         // var gyroAngle = RobotContainer.ahrs.getRotation2d();
 

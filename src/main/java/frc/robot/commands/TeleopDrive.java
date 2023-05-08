@@ -70,9 +70,12 @@ public class TeleopDrive extends CommandBase {
     SmartDashboard.putNumber("Y-Vel Input", yVel);
     SmartDashboard.putNumber("Omega Vel Input", omega);
 
-    if (cnt++ % 50 == 0) {
-      System.out.println(m_driveBase.getCurrentPose());
-    }
+    /*if (cnt++ % 50 == 0) {
+      //System.out.println(m_driveBase.getCurrentPose());
+      for (int i = 0; i < 4; i++) {
+        System.out.println("Module "+i+": "+m_driveBase.getModuleGroup()[i].angleMotor.getOutputCurrent());
+      }
+    }*/
 
     m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel, yVel, omega));
   }
