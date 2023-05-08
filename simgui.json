@@ -66,6 +66,13 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/SendableChooser[0]": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables View": {
@@ -73,6 +80,16 @@
   },
   "Plot": {
     "Plot <0>": {
+      "plots": [
+        {
+          "height": 332
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <1>": {
       "plots": [
         {
           "height": 332

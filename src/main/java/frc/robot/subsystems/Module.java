@@ -29,6 +29,11 @@ public class Module {
 
   public CANSparkMax angleMotor;
   private CANSparkMax driveMotor;
+  
+  private double oldWheelPos = 0;
+
+  private double currentSpeed = 0;
+  private double currentAngle = 0;
 
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
@@ -48,16 +53,17 @@ public class Module {
   
   private WPI_CANCoder _CANCoder;
 
+  double curDrive = 0;
+
   private final Translation2d m_distFromCenter;
 
   int cnt = 0;
 
-  private double prev_angle = 0.0;
 
   /*
    * 
-   * @param 
-   * @param
+   * @param the module number 
+   * @Param whether the module is inverted or not
    * @param the x and y distance of the module from the robot's center of rotation
    * 
    */
@@ -111,7 +117,7 @@ public class Module {
     if (++cnt % 50 == 0) {
       System.out.printf("Set module %d angle to %f, speed to %f\n", this.moduleNum, x, y);
     }
-  }
+  } 
 
   //angle to normalize between 0 and 2PI RAD
   public double normalizeAngle(double angle) {
@@ -133,7 +139,7 @@ public class Module {
   }
 
   public double getAngleInRadians() { 
-    return (_CANCoder.getAbsolutePosition() - Constants.MotorConstants.motorDegrees[this.moduleNum]) * (Math.PI/180.0);
+    return (_CANCoder.getAbsolutePosition()) * (Math.PI/180.0);
   }
 
   public double getAngle() {
@@ -150,10 +156,9 @@ public class Module {
 
   public double getDeltaDist() {
     double newWheelPos = integratedDriveEncoder.getPosition() * (2 * Math.PI) * (1/6.12);
-    double delta = (Constants.wheelDia_m * Math.PI) * (newWheelPos-prev_angle);
-    prev_angle = newWheelPos;
-    SmartDashboard.putNumber("deltaDist" + this.moduleNum, delta);
-    return delta;
+    double ans =  (Constants.wheelDia_m * Math.PI) * (newWheelPos - oldWheelPos);
+    oldWheelPos = newWheelPos;
+    return ans;
   }
 
   public double setAngle(double angle_in_rad) {

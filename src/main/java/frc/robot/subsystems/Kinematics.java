@@ -25,12 +25,26 @@ public class Kinematics {
   private double gyro = 0.0;
   private final AHRS m_ahrs;
 
+  private final SimpleMatrix m_forwardKinematics;
+  private final SimpleMatrix m_inverseKinematics;
+
   // private ChassisSpeeds odomSpeeds = new ChassisSpeeds(0, 0, 0);
 
-  private int  cnt = 0;
+  private int cnt = 0;
 
 
-  public Kinematics(AHRS ahrs) {
+  public Kinematics(AHRS ahrs, Translation2d[] translations) {
+    m_inverseKinematics = new SimpleMatrix(8, 3);
+
+    for (int i = 0; i < 4; i++) {
+      Translation2d distFromCenter = translations[i];
+
+      m_inverseKinematics.setRow((i * 2), 0, 1, 0, -distFromCenter.getY());
+      m_inverseKinematics.setRow((i * 2) + 1, 0, 0, 1, distFromCenter.getX());
+    }
+
+    m_forwardKinematics = m_inverseKinematics.pseudoInverse();
+
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
     m_ahrs = ahrs;
   }
@@ -100,10 +114,11 @@ public class Kinematics {
   //   return odomSpeeds;
   // }
 
-  public Twist2d toTwist(Module[] moduleGroup) { // converts an array of module states to the ChassisSpeed of the robot
+  public Twist2d toTwist(Module[] moduleGroup) { // uses forward kinematics to derive a Twist2d from wheel deltas
     //gets the independent x and y velocities of each module based on encoder values
+
     SimpleMatrix xyVels = new SimpleMatrix(8, 1);
-    for (int i = 0; i < moduleGroup.length; i++) {
+    for (int i = 0; i < 4; i++) {
       double vel = moduleGroup[i].getDeltaDist();
       double dir = moduleGroup[i].getAngleInRadians();
 
@@ -112,15 +127,8 @@ public class Kinematics {
     }
 
     //multiply the current x, y velocity matrix by the inverse of the kinematics matrix
-    SimpleMatrix kinematicsMatrix = new SimpleMatrix(8, 3);
-    for (int i = 0; i < 4; i++) {
-      Translation2d distFromCenter = moduleGroup[i].getDistanceFromCenter();
 
-      kinematicsMatrix.setRow((i * 2), 0, 1, 0, -distFromCenter.getY());
-      kinematicsMatrix.setRow((i * 2) + 1, 0, 0, 1, distFromCenter.getX());
-    }
-
-    SimpleMatrix finalChassisSpeeds = kinematicsMatrix.pseudoInverse().mult(xyVels);
+    SimpleMatrix finalChassisSpeeds = m_forwardKinematics.mult(xyVels);
 
     double deltaX = finalChassisSpeeds.get(0, 0);
     double deltaY = finalChassisSpeeds.get(1, 0);
@@ -129,39 +137,99 @@ public class Kinematics {
     return new Twist2d(deltaX, deltaY, deltaOmega);
   }
 
-  public Module.ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeed) {
+  public Twist2d toTwistTest(Module.ModuleState[] moduleStates) { // completely for testing purposes
+    //gets the independent x and y velocities of each module based on encoder values
 
-    double targetXVelRatio = targetChassisSpeed.vxMetersPerSecond; /// Constants.Swerve.maxVelocity;
-    double targetYVelRatio = targetChassisSpeed.vyMetersPerSecond; /// Constants.Swerve.maxVelocity;
-    double targetAngVelRatio = targetChassisSpeed.omegaRadiansPerSecond; /// Constants.Swerve.maxAngularVelocity;
+    SimpleMatrix xyVels = new SimpleMatrix(8, 1);
+    for (int i = 0; i < 4; i++) { 
+      double vel = moduleStates[i].getVel() * 0.02 * Constants.Swerve.maxVelocity;
+      double dir = moduleStates[i].getDir();
 
-    // odomSpeeds = targetChassisSpeed;
+      xyVels.set((i * 2), 0, vel * Math.cos(dir));
+      xyVels.set((i * 2) + 1, 0, vel * Math.sin(dir)); 
+    }
+
+    //multiply the current x, y velocity matrix by the inverse of the kinematics matrix
+
+    SimpleMatrix finalChassisSpeeds = m_forwardKinematics.mult(xyVels);
 
     /*if (cnt++ % 50 == 0) {
       System.out.printf("vel: %f, xVel: %f, yVel: %f", targetAngVelRatio, targetXVelRatio, targetYVelRatio);
     }*/
 
-    if (fieldCentric) {
-      this.gyro = 0; //this.m_ahrs.getYaw();
-      this.gyro *= Math.PI/180;
-    } else {
-      this.gyro = 0;
+    double deltaX = finalChassisSpeeds.get(0, 0);
+    double deltaY = finalChassisSpeeds.get(1, 0);
+    double deltaOmega = finalChassisSpeeds.get(2, 0);
+
+    if (Math.abs(deltaX) < 1e-9) {
+      deltaX = 0;
+    }
+    if (Math.abs(deltaY) < 1e-9) {
+      deltaY = 0;
+    }
+    if (Math.abs(deltaOmega) < 1e-9) {
+      deltaOmega = 0;
     }
 
-    conv(computeUnicorn(computeStrafe(targetXVelRatio, targetYVelRatio), computeRotation(targetAngVelRatio)));
-
-    Module.ModuleState[] targetModuleStates = new Module.ModuleState[4];
-
-    for (int i = 0; i < 4; i++) {
-      targetModuleStates[i] = new Module.ModuleState(vel[i], theta[i]);
-      String name = "Swerve (" + String.valueOf(i) + ") Angle";
-      SmartDashboard.putNumber(name, theta[i]);
-      name = "Swerve (" + String.valueOf(i) + ") Speed";
-      SmartDashboard.putNumber(name, vel[i]);
-    }
-    
-    return targetModuleStates;
+    return new Twist2d(deltaX, deltaY, deltaOmega);
   }
+
+  public Module.ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeeds) {
+      Module.ModuleState[] moduleStates = new Module.ModuleState[4];
+
+      SimpleMatrix velMatrix = new SimpleMatrix(3, 1);
+      velMatrix.set(0, 0, targetChassisSpeeds.vxMetersPerSecond);
+      velMatrix.set(1, 0, targetChassisSpeeds.vyMetersPerSecond);
+      velMatrix.set(2, 0, targetChassisSpeeds.omegaRadiansPerSecond);
+
+      SimpleMatrix results = m_inverseKinematics.mult(velMatrix);
+
+      for (int i = 0; i < 4; i++) {
+          double vx = results.get((i * 2), 0);
+          double vy = results.get((i * 2 + 1), 0);
+
+          double dir = Math.atan2(vy, vx);
+          double vel = Math.sqrt((vx * vx) + (vy * vy));
+
+          moduleStates[i] = new Module.ModuleState(vel, dir);
+      }
+
+      return moduleStates;
+  }
+
+  // public Module.ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeed) {
+
+  //   double targetXVelRatio = targetChassisSpeed.vxMetersPerSecond; /// Constants.Swerve.maxVelocity;
+  //   double targetYVelRatio = targetChassisSpeed.vyMetersPerSecond; /// Constants.Swerve.maxVelocity;
+  //   double targetAngVelRatio = targetChassisSpeed.omegaRadiansPerSecond; /// Constants.Swerve.maxAngularVelocity;
+
+  //   // odomSpeeds = targetChassisSpeed;
+
+  //   if (cnt++ % 50 == 0) {
+  //     System.out.printf("vel: %f, xVel: %f, yVel: %f", targetAngVelRatio, targetXVelRatio, targetYVelRatio);
+  //   }
+
+  //   if (fieldCentric) {
+  //     this.gyro = 0; //this.m_ahrs.getYaw();
+  //     this.gyro *= Math.PI/180;
+  //   } else {
+  //     this.gyro = 0;
+  //   }
+
+  //   conv(computeUnicorn(computeStrafe(targetXVelRatio, targetYVelRatio), computeRotation(targetAngVelRatio)));
+
+  //   Module.ModuleState[] targetModuleStates = new Module.ModuleState[4];
+
+  //   for (int i = 0; i < 4; i++) {
+  //     targetModuleStates[i] = new Module.ModuleState(vel[i], theta[i]);
+  //     String name = "Swerve (" + String.valueOf(i) + ") Angle";
+  //     SmartDashboard.putNumber(name, theta[i]);
+  //     name = "Swerve (" + String.valueOf(i) + ") Speed";
+  //     SmartDashboard.putNumber(name, vel[i]);
+  //   }
+    
+  //   return targetModuleStates;
+  // }
 
   // public static ModuleState[] normalizeVelocity(ModuleState[] moduleStates) { // keeps the ratio of wheel velocities while ensuring that each never goes above 1
   //   assert(moduleStates.length == 4);
@@ -182,31 +250,5 @@ public class Kinematics {
 
   //   return newModuleStates;
   // } 
-
-  public double[] getVel() {
-  	return vel;
-  }
-
-  public double getMVelocity(int moduleNum) {
-    return vel[moduleNum - 1];
-  }
-
-  public double setMVelocity(int moduleNum, double velocity) {
-    vel[moduleNum - 1] = velocity;
-    return velocity;
-  }
-  
-  public double[] getTheta() {
-  	return theta;
-  }
-
-  public double getMTheta(int moduleNum) {
-    return theta[moduleNum - 1];
-  }
-
-  public double setMTheta(int moduleNum, double angle) {
-    theta[moduleNum - 1] = angle;
-    return angle;
-  }
 }
 
