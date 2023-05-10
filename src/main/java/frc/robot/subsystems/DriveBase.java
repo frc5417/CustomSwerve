@@ -131,11 +131,13 @@ public class DriveBase extends SubsystemBase {
         m_pose = new Pose2d(newPose.getTranslation(), RobotContainer.ahrs.getRotation2d());
 
         if (cnt++ % 50 == 0) {
-            System.out.println("X: " +  simPose.getX());
-            System.out.println("Y: " +  simPose.getY());
-            for (int i = 0; i < 4; i++)
-                System.out.printf("m: %d, Δ: %f, vel: %f\n", i, moduleGroup[i].getAngleInRadians(), moduleGroup[i].getDeltaDist());
-            System.out.println();
+            System.out.println("X: " +  m_pose.getX());
+            System.out.println("Y: " +  m_pose.getY());
+            /*for (int i = 0; i < 4; i++)
+                System.out.printf("m: %d, actual: %f, test: %f\n\n", i, 
+                    moduleGroup[i].getDeltaDist(),
+                    targetModuleStates[i].getVel() * 0.02 * Constants.Swerve.maxVelocity);
+            System.out.println();*/
         }
 
     }
@@ -163,9 +165,7 @@ public class DriveBase extends SubsystemBase {
         for (int i = 0; i < 4; i++) {
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
         }
-
-        
-            
+  
         updateOdom();
     }
 }
