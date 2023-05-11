@@ -119,7 +119,7 @@ public class Kinematics {
 
     SimpleMatrix xyVels = new SimpleMatrix(8, 1);
     for (int i = 0; i < 4; i++) {
-      double vel = moduleGroup[i].getDeltaDist();
+      double vel = moduleGroup[i].updateDeltaDist();
       double dir = moduleGroup[i].getAngleInRadians();
 
       xyVels.set((i * 2), 0, vel * Math.cos(dir));

@@ -41,7 +41,6 @@ public class TeleopDrive extends CommandBase {
 
   @Override
   public void initialize() {
-    // m_driveBase.resetDrive();
     // Module.ModuleState[] temp = new Module.ModuleState[4];
 
     // for (int i = 0; i < 4; i++)
@@ -57,13 +56,17 @@ public class TeleopDrive extends CommandBase {
     // if (counter++ <= 60)
     //   return;
     
-    double xVel = (RobotContainer.getLeftJoyX() * 0.45) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double yVel = (RobotContainer.getLeftJoyY() * 0.45) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double omega = (RobotContainer.getRightJoyX() * 0.45) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
+    double xVel = ((RobotContainer.getLeftJoyX()) * 0.45) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double yVel = ((RobotContainer.getLeftJoyY()) * 0.45) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double omega = ((RobotContainer.getRightJoyX()) * 0.45) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
 
-    prev_xVel = xVel;
-    prev_yVel = yVel;
-    prev_omega = omega;
+    xVel *= 0.2;
+    yVel *= 0.2;
+    omega *= 0.2;
+
+    // prev_xVel = xVel;
+    // prev_yVel = yVel;
+    // prev_omega = omega;
 
 
     SmartDashboard.putNumber("X-Vel Input", xVel);

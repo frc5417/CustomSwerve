@@ -64,9 +64,13 @@ public class DriveBase extends SubsystemBase {
         //     }, new Pose2d(5.0, 13.5, new Rotation2d()));
 
         targetModuleStates = new Module.ModuleState[4];
+        
+        // for (int i = 0; i < 4; i++)
+        //     System.out.printf("initial value for %d is %f\n", i, moduleGroup[i].getAngleInRadians());
 
-        for (int i = 0; i < 4; i++)
-            targetModuleStates[i] = new Module.ModuleState(0, Constants.MotorConstants.motorDegrees[i] * (Math.PI/180));
+        for (int i = 0; i < 4; i++) 
+            targetModuleStates[i] = new Module.ModuleState(0, 0);
+        
     } 
 
     public Module[] getModuleGroup() {
@@ -76,6 +80,11 @@ public class DriveBase extends SubsystemBase {
     public Pose2d getCurrentPose() {
         return m_pose;
     }
+
+    // public void resetAngles() {
+    //     for (int i = 0; i < 4; i++)
+    //         moduleGroup[i].resetAngleOffset();
+    // }
 
     // private void updatePoseManual() { // updates current position of the robot
     //     ChassisSpeeds currentChassisSpeed = m_kinematics.toChassisSpeeds(moduleGroup);
@@ -130,13 +139,20 @@ public class DriveBase extends SubsystemBase {
         Pose2d newPose = m_pose.exp(twisting);
         m_pose = new Pose2d(newPose.getTranslation(), RobotContainer.ahrs.getRotation2d());
 
-        if (cnt++ % 50 == 0) {
-            System.out.println("X: " +  m_pose.getX());
-            System.out.println("Y: " +  m_pose.getY());
-            for (int i = 0; i < 4; i++)
-                System.out.printf("m: %d, Δ: %f, vel: %f\n", i, moduleGroup[i].getAngleInRadians(), moduleGroup[i].getDeltaDist());
-            System.out.println();
-        }
+        SmartDashboard.putNumber("X", m_pose.getX());
+        SmartDashboard.putNumber("Y", m_pose.getY());
+
+
+        // if (cnt++ % 50 == 0) {
+        //     System.out.println("X: " +  m_pose.getX());
+        //     System.out.println("Y: " +  m_pose.getY());
+            
+        //     for (int i = 0; i < 4; i++)
+        //         System.out.printf("m: %d, actual: %f, test: %f\n\n", i, 
+        //             moduleGroup[i].getAngleInRadians(),
+        //             targetModuleStates[i].getDir());
+        //     System.out.println();
+        // }
 
     }
 
@@ -164,8 +180,8 @@ public class DriveBase extends SubsystemBase {
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
         }
 
-        
-            
+
+  
         updateOdom();
     }
 }

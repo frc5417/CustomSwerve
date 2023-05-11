@@ -29,14 +29,14 @@ public final class Constants {
     public static final double joystickDeadband = 0.2;
   }
 
-  public static final double wheelDia_m = 0.1;
+  public static final double wheelDia_m = 0.097;
 
   public static class MotorConstants {
     // 0 indexing
     public static final Integer[] driveMotorIDS = {11, 21, 31, 40};
     public static final Integer[] angleMotorIDS = {10, 20, 30, 41};
     public static final Integer[] CANCoderID = {9, 12, 8, 19};
-    public static final Double[] motorDegrees = {91.494, 182.373, 347.783, 188.174};
+    public static final Double[] motorDegrees = {91.494, 182.373, 347.783, 153.281};
     public static final Double[] angleOffsets = {0.0, 0.0, 0.0, 0.0};
     public static final Double[][] angleMotorPID = {
       {0.5, 0.0, 0.005}, {0.5, 0.0, 0.005}, {0.5, 0.0, 0.005}, {0.5, 0.0, 0.005}};
@@ -69,7 +69,7 @@ public final class Constants {
     public static final PIDConstants ROTATION_PID = new PIDConstants(0.1, 0, 0);
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.1, 0, 0);
     public static final Integer wheels = 4;
-    public static final boolean[] invertedMotors = {true, true, false, true};
+    public static final boolean[] invertedMotors = {true, true, false, false};
 
     public static final Translation2d[] wheelLocations = {
       new Translation2d((TRACK_WIDTH / 2), -(WHEEL_BASE / 2)),

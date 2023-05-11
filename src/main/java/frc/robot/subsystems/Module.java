@@ -30,7 +30,7 @@ public class Module {
   public CANSparkMax angleMotor;
   private CANSparkMax driveMotor;
   
-  private double oldWheelPos = 0;
+  private double oldWheelPos = 0.0;
 
   private double currentSpeed = 0;
   private double currentAngle = 0;
@@ -50,6 +50,8 @@ public class Module {
   private int invertMultiplier = 1; // inverts drive speed if 180 degree code tripped
   private boolean invertMultiplierAvailable = true;
   private boolean trigger = true;
+
+  private double angleOffset = 0;
   
   private WPI_CANCoder _CANCoder;
 
@@ -58,6 +60,7 @@ public class Module {
   private final Translation2d m_distFromCenter;
 
   int cnt = 0;
+  private double deltaDist = 0.0;
 
 
   /*
@@ -104,6 +107,10 @@ public class Module {
     pid.enableContinuousInput(0, Math.PI * 2);
     pid.setTolerance(0.0);
 
+    angleOffset = _CANCoder.getPosition() * Math.PI / 180.0;
+
+    System.out.printf("module %d, %f\n", moduleNum, angleOffset);
+
     this.invertDriveSpeed = (inverted)? -1 : 1;
     // if(_CANCoder.getMagnetFieldStrength() != MagnetFieldStrength.Good_GreenLED) {
       // throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.moduleNum).toString() + " is not green!");
@@ -114,10 +121,18 @@ public class Module {
   public void setSpeedAndAngle(ModuleState targetState) {
     double x = setAngle(targetState.getDir());
     double y = setDriveSpeed(targetState.getVel());
-    if (++cnt % 50 == 0) {
+    /*if (++cnt % 50 == 0) {
       System.out.printf("Set module %d angle to %f, speed to %f\n", this.moduleNum, x, y);
-    }
+    }*/
   } 
+
+  // public void resetAngleOffset() {
+  //   System.out.printf("Reset module %d to %f\n", this.moduleNum, angleOffset);
+  // }
+
+  // public void updateAngleOffset() {
+  //   angleOffset = _CANCoder.getAbsolutePosition() * Math.PI / 180;
+  // }
 
   //angle to normalize between 0 and 2PI RAD
   public double normalizeAngle(double angle) {
@@ -139,7 +154,7 @@ public class Module {
   }
 
   public double getAngleInRadians() { 
-    return (_CANCoder.getAbsolutePosition()) * (Math.PI/180.0);
+    return ((_CANCoder.getPosition()) * (Math.PI/180.0));
   }
 
   public double getAngle() {
@@ -155,31 +170,45 @@ public class Module {
   }
 
   public double getDeltaDist() {
-    double newWheelPos = integratedDriveEncoder.getPosition() * (2 * Math.PI) * (1/6.12);
-    double ans =  (Constants.wheelDia_m * Math.PI) * (newWheelPos - oldWheelPos);
+    double thisInverted = 1.0;
+    if ((this.moduleNum == 0) || (this.moduleNum == 1) || (this.moduleNum == 3)) {
+      thisInverted = -1.0;
+    }
+    return this.deltaDist * thisInverted;
+  }
+
+  public double updateDeltaDist() {
+    double newWheelPos = integratedDriveEncoder.getPosition() * (1/6.12) * (Constants.wheelDia_m * Math.PI);
+    this.deltaDist = newWheelPos - oldWheelPos;
     oldWheelPos = newWheelPos;
-    return ans;
+    double thisInverted = 1.0;
+    if ((this.moduleNum == 0) || (this.moduleNum == 1) || (this.moduleNum == 3)) {
+      thisInverted = -1.0;
+    }
+    return this.deltaDist * thisInverted / 2.08;
   }
 
   public double setAngle(double angle_in_rad) {
     //code to make the angle motor turn the least amount possible and drive direction if necessary
-    double targetAngle = angle_in_rad + Constants.MotorConstants.angleOffsets[this.moduleNum];
-    double currentAngle = getAngleInRadians();
-    double normalDifference = currentAngle - targetAngle;
-    double difference180 = currentAngle - normalizeAngle(targetAngle - Math.PI);
+    double targetAngle = angle_in_rad;
+    // double currentAngle = getAngleInRadians();
+    // double normalDifference = currentAngle - targetAngle;
+    // double difference180 = currentAngle - normalizeAngle(targetAngle - Math.PI);
 
-    //if going to targetAngle + 180 degrees is not less than the distance of going just to targetAngle
-    //then turn normally and also do not invert the motor direction
+    // //if going to targetAngle + 180 degrees is not less than the distance of going just to targetAngle
+    // //then turn normally and also do not invert the motor direction
     
-    //what it does not do: does not go right or go forwards
-    if (Math.abs(normalDifference) > Math.abs(difference180)) {
-      targetAngle = normalizeAngle(targetAngle - Math.PI);
-      System.out.println("module "+moduleNum+" target: "+targetAngle);
-      if (invertMultiplierAvailable) {
-        invertMultiplier *= -1;
-        invertMultiplierAvailable = false;
-      }
-    }
+    // //what it does not do: does not go right or go forwards
+    // if (Math.abs(normalDifference) > Math.abs(difference180)) {
+    //   targetAngle = normalizeAngle(targetAngle - Math.PI);
+    //   // System.out.println("module "+moduleNum+" target: "+targetAngle);
+    //   if (invertMultiplierAvailable) {
+    //     invertMultiplier *= -1;
+    //     invertMultiplierAvailable = false;
+    //   }
+    // }
+
+    // System.out.printf("target %f, actual %f\n", targetAngle, this.getAngleInRadians());
 
     pid.setSetpoint(targetAngle); // angles are in TRUE BEARING ( angles are negated )
 
