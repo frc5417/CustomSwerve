@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Module;
 
 /** An example command that uses an example subsystem. */
 public class TeleopDrive extends CommandBase {
@@ -26,8 +25,6 @@ public class TeleopDrive extends CommandBase {
   // Called when the command is initially scheduled.
 
   private final DriveBase m_driveBase;
-
-  private int cnt = 0;
 
   double prev_omega = 0;
   double prev_xVel = 0;
@@ -53,34 +50,26 @@ public class TeleopDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // if (counter++ <= 60)
-    //   return;
     
-    double xVel = ((RobotContainer.getLeftJoyX()) * 0.45) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double yVel = ((RobotContainer.getLeftJoyY()) * 0.45) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double omega = ((RobotContainer.getRightJoyX()) * 0.45) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
+    double xVel = ((RobotContainer.getLeftJoyX()) * 0.45 * Constants.Swerve.maxVelocity) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double yVel = ((RobotContainer.getLeftJoyY()) * 0.45 * Constants.Swerve.maxVelocity) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double omega = ((RobotContainer.getRightJoyX()) * 0.45 * Constants.Swerve.maxAngularVelocity) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
 
-    xVel *= 0.2;
-    yVel *= 0.2;
-    omega *= 0.2;
 
-    // prev_xVel = xVel;
-    // prev_yVel = yVel;
-    // prev_omega = omega;
-
+    prev_xVel = xVel;
+    prev_yVel = yVel;
+    prev_omega = omega;
 
     SmartDashboard.putNumber("X-Vel Input", xVel);
     SmartDashboard.putNumber("Y-Vel Input", yVel);
     SmartDashboard.putNumber("Omega Vel Input", omega);
 
-    /*if (cnt++ % 50 == 0) {
-      //System.out.println(m_driveBase.getCurrentPose());
-      for (int i = 0; i < 4; i++) {
-        System.out.println("Module "+i+": "+m_driveBase.getModuleGroup()[i].angleMotor.getOutputCurrent());
-      }
-    }*/
+    ChassisSpeeds newSpeed = new ChassisSpeeds(xVel, yVel, omega);
+    m_driveBase.setDriveSpeed(newSpeed);
 
-    m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel, yVel, omega));
+    if (counter++ % 50 == 0) {
+      System.out.println(newSpeed);
+    }
   }
 
   // Called once the command ends or is interrupted.

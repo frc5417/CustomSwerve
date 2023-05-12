@@ -29,7 +29,7 @@ public class RobotContainer {
 
 
   public static AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
-  public static Kinematics kinematics = new Kinematics(ahrs, Constants.DriveTrainConstants.wheelLocations);
+  public static Kinematics kinematics = new Kinematics(Constants.DriveTrainConstants.wheelLocations);
   public static DriveBase driveBase = new DriveBase(kinematics);
   public static AutonLoader autonLoader = new AutonLoader(driveBase);
   public static TeleopDrive teleopDrive = new TeleopDrive(driveBase);

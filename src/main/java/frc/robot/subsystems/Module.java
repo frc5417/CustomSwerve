@@ -25,15 +25,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Module {
   /** Creates a new Module. */
-  private final Kinematics m_kinematics;
 
   public CANSparkMax angleMotor;
   private CANSparkMax driveMotor;
   
   private double oldWheelPos = 0.0;
-
-  private double currentSpeed = 0;
-  private double currentAngle = 0;
 
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
@@ -71,7 +67,7 @@ public class Module {
    * 
    */
 
-  public Module(int module, boolean inverted, Translation2d distFromCenter, Kinematics kinematics) {
+  public Module(int module, boolean inverted, Translation2d distFromCenter) {
     
     this.moduleNum = module;
     this.kP = Constants.MotorConstants.angleMotorPID[module][0];
@@ -79,7 +75,6 @@ public class Module {
     this.kD = Constants.MotorConstants.angleMotorPID[module][2];
     this.pid = new PIDController(kP, kI, kD);
 
-    m_kinematics = kinematics;
 
     /* Angle Motor Config */
     angleMotor = new CANSparkMax(Constants.MotorConstants.angleMotorIDS[this.moduleNum], MotorType.kBrushless);
@@ -100,9 +95,8 @@ public class Module {
     configDriveMotor();
 
     integratedDriveEncoder = driveMotor.getEncoder();
-    //  integratedDriveEncoder.setPositionConversionFactor(1/6.12);
-    driveMotor.getPIDController();
-     
+
+    integratedDriveEncoder.setPositionConversionFactor(1/6.12);
 
     pid.enableContinuousInput(0, Math.PI * 2);
     pid.setTolerance(0.0);
@@ -112,27 +106,18 @@ public class Module {
     System.out.printf("module %d, %f\n", moduleNum, angleOffset);
 
     this.invertDriveSpeed = (inverted)? -1 : 1;
+
     // if(_CANCoder.getMagnetFieldStrength() != MagnetFieldStrength.Good_GreenLED) {
       // throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.moduleNum).toString() + " is not green!");
     // }
+
     m_distFromCenter = distFromCenter;
   }
 
   public void setSpeedAndAngle(ModuleState targetState) {
-    double x = setAngle(targetState.getDir());
-    double y = setDriveSpeed(targetState.getVel());
-    /*if (++cnt % 50 == 0) {
-      System.out.printf("Set module %d angle to %f, speed to %f\n", this.moduleNum, x, y);
-    }*/
+    setAngle(targetState.getDir());
+    setDriveSpeed(targetState.getVel() / Constants.Swerve.maxVelocity);
   } 
-
-  // public void resetAngleOffset() {
-  //   System.out.printf("Reset module %d to %f\n", this.moduleNum, angleOffset);
-  // }
-
-  // public void updateAngleOffset() {
-  //   angleOffset = _CANCoder.getAbsolutePosition() * Math.PI / 180;
-  // }
 
   //angle to normalize between 0 and 2PI RAD
   public double normalizeAngle(double angle) {
@@ -178,14 +163,18 @@ public class Module {
   }
 
   public double updateDeltaDist() {
-    double newWheelPos = integratedDriveEncoder.getPosition() * (1/6.12) * (Constants.wheelDia_m * Math.PI);
+    double newWheelPos = getTotalDist();
     this.deltaDist = newWheelPos - oldWheelPos;
     oldWheelPos = newWheelPos;
-    double thisInverted = 1.0;
-    if ((this.moduleNum == 0) || (this.moduleNum == 1) || (this.moduleNum == 3)) {
-      thisInverted = -1.0;
-    }
-    return this.deltaDist * thisInverted / 2.08;
+
+    return this.deltaDist * 
+          ((this.moduleNum == 0) || (this.moduleNum == 1) || (this.moduleNum == 3) ? -1 : 1);
+
+  //TODO: STORE THESE CONVERSIONS IN CONSTANTS
+  }
+
+  public double getTotalDist() {
+    return integratedDriveEncoder.getPosition() * (Constants.wheelDia_m * Math.PI);
   }
 
   public double setAngle(double angle_in_rad) {
@@ -223,6 +212,8 @@ public class Module {
       if (trigger) {
         invertMultiplierAvailable = true;
         trigger = false;
+      } else {
+        invertMultiplierAvailable = false;
       }
     }
 
@@ -292,6 +283,9 @@ public class Module {
         return m_dir;
     }
 
+    public String toString() {
+      return String.format("Direction: %f, Velocity: %f", m_dir, m_vel);      
+    }
 
   }
 }
