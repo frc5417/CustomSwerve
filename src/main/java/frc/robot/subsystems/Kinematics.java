@@ -72,7 +72,7 @@ public class Kinematics {
 
     SimpleMatrix xyVels = new SimpleMatrix(8, 1);
     for (int i = 0; i < 4; i++) { 
-      double vel = moduleStates[i].getVel() * 0.02 * Constants.Swerve.maxVelocity;
+      double vel = moduleStates[i].getVel() * 0.02 * Constants.Swerve.maxSetVelocity;
       double dir = moduleStates[i].getDir();
 
       xyVels.set((i * 2), 0, vel * Math.cos(dir));

@@ -96,7 +96,7 @@ public class Module {
 
     integratedDriveEncoder = driveMotor.getEncoder();
 
-    integratedDriveEncoder.setPositionConversionFactor(1/6.12);
+    // integratedDriveEncoder.setPositionConversionFactor(1/6.12);
 
     pid.enableContinuousInput(0, Math.PI * 2);
     pid.setTolerance(0.0);
@@ -155,11 +155,7 @@ public class Module {
   }
 
   public double getDeltaDist() {
-    double thisInverted = 1.0;
-    if ((this.moduleNum == 0) || (this.moduleNum == 1) || (this.moduleNum == 3)) {
-      thisInverted = -1.0;
-    }
-    return this.deltaDist * thisInverted;
+    return Math.abs(this.deltaDist);
   }
 
   public double updateDeltaDist() {
@@ -167,14 +163,12 @@ public class Module {
     this.deltaDist = newWheelPos - oldWheelPos;
     oldWheelPos = newWheelPos;
 
-    return this.deltaDist * 
-          ((this.moduleNum == 0) || (this.moduleNum == 1) || (this.moduleNum == 3) ? -1 : 1);
-
-  //TODO: STORE THESE CONVERSIONS IN CONSTANTS
+    return Math.abs(this.deltaDist);
+    // TODO: Make deltas negative with 180
   }
 
   public double getTotalDist() {
-    return integratedDriveEncoder.getPosition() * (Constants.wheelDia_m * Math.PI);
+    return integratedDriveEncoder.getPosition() / 6.12 * (Math.PI * Constants.DriveTrainConstants.wheelDia_m);
   }
 
   public double setAngle(double angle_in_rad) {

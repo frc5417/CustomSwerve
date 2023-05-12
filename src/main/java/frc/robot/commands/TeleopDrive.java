@@ -51,10 +51,9 @@ public class TeleopDrive extends CommandBase {
   @Override
   public void execute() {
     
-    double xVel = ((RobotContainer.getLeftJoyX()) * 0.45 * Constants.Swerve.maxVelocity) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double yVel = ((RobotContainer.getLeftJoyY()) * 0.45 * Constants.Swerve.maxVelocity) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double omega = ((RobotContainer.getRightJoyX()) * 0.45 * Constants.Swerve.maxAngularVelocity) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
-
+    double xVel = ((RobotContainer.getLeftJoyX()) * 0.45 * Constants.Swerve.maxSetVelocity) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double yVel = ((RobotContainer.getLeftJoyY()) * 0.45 * Constants.Swerve.maxSetVelocity) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double omega = ((RobotContainer.getRightJoyX()) * 0.45 * Constants.Swerve.maxSetAngularVelocity) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
 
     prev_xVel = xVel;
     prev_yVel = yVel;

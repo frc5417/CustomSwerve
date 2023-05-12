@@ -143,15 +143,15 @@ public class DriveBase extends SubsystemBase {
 
         SmartDashboard.putNumber("X", m_pose.getX());
         SmartDashboard.putNumber("Y", m_pose.getY());
+        SmartDashboard.putNumber("tX", simPose.getX());
+        SmartDashboard.putNumber("tY", simPose.getY());
 
-        if (cnt++ % 50 == 0) {
-            System.out.println(simPose);
-
-            
+        /*if (cnt++ % 50 == 0) {
+            System.out.println(m_pose);
             for (int i = 0; i < 4; i++)
-                System.out.printf("m: %d, %s\n", i, targetModuleStates[i]);
+                System.out.printf("m: %d, %f, %f\n", i, moduleGroup[i].getDeltaDist(), moduleGroup[i].getAngleInRadians());
             System.out.println();
-        }
+        }*/
     }
 
     public void setDriveSpeed(ChassisSpeeds chassisSpeeds) {
@@ -161,9 +161,10 @@ public class DriveBase extends SubsystemBase {
         double angle = Math.atan2(yVel, xVel);
         double vel = Math.sqrt((xVel * xVel) + (yVel * yVel));
 
-        // TODO: Ensure that angles from AHRS are along the same coordinate plan as odom
-        //angle -= simPose.getRotation().getRadians(); // for simulation
-        angle -= RobotContainer.ahrs.getRotation2d().getRadians();
+        if (Constants.OperatorConstants.fieldCentric) {
+            angle -= RobotContainer.ahrs.getRotation2d().getRadians();
+            //angle -= simPose.getRotation().getRadians(); // modify for when not field centric
+        }
         chassisSpeeds = new ChassisSpeeds(vel * Math.cos(angle), vel * Math.sin(angle), chassisSpeeds.omegaRadiansPerSecond);
 
         targetModuleStates = m_kinematics.getComputedModuleStates(chassisSpeeds);

@@ -25,11 +25,10 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
-    public static final boolean fieldCentric = true;
+    public static final boolean fieldCentric = false;
     public static final double joystickDeadband = 0.2;
   }
 
-  public static final double wheelDia_m = 0.097;
 
   public static class MotorConstants {
     // 0 indexing
@@ -48,8 +47,14 @@ public final class Constants {
   public static class Swerve {
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
     public static final IdleMode driveNeutralMode = IdleMode.kBrake;
-    public static final double maxVelocity = 1; //3.8; // m/s
-    public static final double maxAngularVelocity = 1; //56.0; // rad/s
+    public static final double maxVelocity = 4; // m/s
+    public static final double maxAngularVelocity = 56.0; // rad/s
+
+    public static final double maxSetVelocity = 1.5;
+    public static final double maxSetAngularVelocity = 2.0;
+
+    public static final double maxAutonAcceleration = 0.5;
+
     //velocity PID tuning for overall swerve
     public static final double velocitykP = 1.0; // 0.0001
     public static final double velocitykI = 0.0;
@@ -58,10 +63,11 @@ public final class Constants {
     public static final double aVelocitykI = 0.0;
     public static final double aVelocitykD = 0.0;
 
-    public static final PathConstraints AUTON_CONSTRAINTS = new PathConstraints(maxVelocity, 2); // max velocity and acceleration during auton
+    public static final PathConstraints AUTON_CONSTRAINTS = new PathConstraints(maxSetVelocity, maxAutonAcceleration); // max velocity and acceleration during auton
   }
 
   public static class DriveTrainConstants {
+    public static final double wheelDia_m = 0.097;
     public static final double DRIVETRAIN_WIDTH = 0.635; // in meters
     public static final double TRACK_WIDTH = 0.470; // in meters
     public static final double WHEEL_BASE = 0.470; // in meters

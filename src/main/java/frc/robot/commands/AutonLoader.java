@@ -20,6 +20,7 @@ public class AutonLoader {
     // private final AutonCommands m_autoncommands;
     private static SendableChooser<Command> chooser;
     private static List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
+    private static List<PathPlannerTrajectory> pathGroup2 = PathPlanner.loadPathGroup("straight_line", Constants.Swerve.AUTON_CONSTRAINTS);
 
     public AutonLoader(DriveBase driveBase) {
 
@@ -30,7 +31,7 @@ public class AutonLoader {
 
         eventMap = new HashMap<>();
         eventMap.put("event1", new PrintCommand("event 1 passed"));    
-        eventMap.put("event2", new PrintCommand("event 2 passed"));    
+        eventMap.put("event2", new PrintCommand("event 2 passed"));
 
         autoBuilder = new SwerveAutoBuilder(
                 m_driveBase::getCurrentPose,
@@ -42,6 +43,7 @@ public class AutonLoader {
                 m_driveBase);
         
         chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
+        chooser.addOption("straight line", autoBuilder.fullAuto(pathGroup2));
 
         SmartDashboard.putData(chooser);
     }
