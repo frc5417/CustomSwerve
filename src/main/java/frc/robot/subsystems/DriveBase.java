@@ -1,4 +1,7 @@
 package frc.robot.subsystems;
+import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -33,7 +36,7 @@ public class DriveBase extends SubsystemBase {
     Pose2d m_pose = new Pose2d();
     Pose2d simPose = new Pose2d();
 
-    double prevAHRS = 0;
+    double prevAngle = 0;
     int cnt = 0;
 
     public DriveBase(Kinematics kinematics) {
@@ -47,8 +50,7 @@ public class DriveBase extends SubsystemBase {
         for (int i = 0; i < 4; i++)
             moduleGroup[i] = new Module(i, 
             Constants.DriveTrainConstants.invertedMotors[i],
-            Constants.DriveTrainConstants.wheelLocations[i], 
-            kinematics
+            Constants.DriveTrainConstants.wheelLocations[i]
         );
 
         for (int i = 0; i < 4; i++)
@@ -128,38 +130,44 @@ public class DriveBase extends SubsystemBase {
 
         Twist2d simTwist = m_kinematics.toTwistTest(targetModuleStates);
         Twist2d twisting = m_kinematics.toTwist(moduleGroup);
-        // twisting.dtheta = getDeltaOmegaAHRS();
-        
+        //twisting.dtheta = getDeltaOmegaAHRS(); // needs to be tested
+
         SmartDashboard.putNumber("dX", twisting.dx);
         SmartDashboard.putNumber("dY", twisting.dy);
         SmartDashboard.putNumber("dtheta", twisting.dtheta);
 
         simPose = simPose.exp(simTwist);
-
         Pose2d newPose = m_pose.exp(twisting);
+
         m_pose = new Pose2d(newPose.getTranslation(), RobotContainer.ahrs.getRotation2d());
 
         SmartDashboard.putNumber("X", m_pose.getX());
         SmartDashboard.putNumber("Y", m_pose.getY());
 
+        if (cnt++ % 50 == 0) {
+            System.out.println(simPose);
 
-        // if (cnt++ % 50 == 0) {
-        //     System.out.println("X: " +  m_pose.getX());
-        //     System.out.println("Y: " +  m_pose.getY());
             
-        //     for (int i = 0; i < 4; i++)
-        //         System.out.printf("m: %d, actual: %f, test: %f\n\n", i, 
-        //             moduleGroup[i].getAngleInRadians(),
-        //             targetModuleStates[i].getDir());
-        //     System.out.println();
-        // }
-
+            for (int i = 0; i < 4; i++)
+                System.out.printf("m: %d, %s\n", i, targetModuleStates[i]);
+            System.out.println();
+        }
     }
 
     public void setDriveSpeed(ChassisSpeeds chassisSpeeds) {
+        double xVel = chassisSpeeds.vxMetersPerSecond;
+        double yVel = chassisSpeeds.vyMetersPerSecond;
+        
+        double angle = Math.atan2(yVel, xVel);
+        double vel = Math.sqrt((xVel * xVel) + (yVel * yVel));
+
+        // TODO: Ensure that angles from AHRS are along the same coordinate plan as odom
+        //angle -= simPose.getRotation().getRadians(); // for simulation
+        angle -= RobotContainer.ahrs.getRotation2d().getRadians();
+        chassisSpeeds = new ChassisSpeeds(vel * Math.cos(angle), vel * Math.sin(angle), chassisSpeeds.omegaRadiansPerSecond);
+
         targetModuleStates = m_kinematics.getComputedModuleStates(chassisSpeeds);
     }
-
 
     public void resetDrive() {
         for (int i = 0; i < 4; i++) {
@@ -168,19 +176,17 @@ public class DriveBase extends SubsystemBase {
     }
 
     private double getDeltaOmegaAHRS() {
-        double delta = RobotContainer.ahrs.getAngle() - prevAHRS;
-        prevAHRS = RobotContainer.ahrs.getAngle();
+        double curAngle = (RobotContainer.ahrs.getAngle() * Math.PI/180);
+        double delta = curAngle - prevAngle;
+        prevAngle = curAngle;
         return delta;
     }
 
     @Override
     public void periodic() {
-
         for (int i = 0; i < 4; i++) {
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
         }
-
-
   
         updateOdom();
     }

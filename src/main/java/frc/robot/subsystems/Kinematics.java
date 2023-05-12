@@ -8,32 +8,19 @@ import frc.robot.Constants;
 
 import org.ejml.simple.SimpleMatrix;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-// import edu.wpi.first.math.Matrix;
-// import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Kinematics {
   /** Creates a new Compute. */
-  private double[] vel = new double[4];
-  private double[] theta = new double[4];
-  public boolean fieldCentric;
-  private double gyro = 0.0;
-  private final AHRS m_ahrs;
 
   private final SimpleMatrix m_forwardKinematics;
   private final SimpleMatrix m_inverseKinematics;
 
   // private ChassisSpeeds odomSpeeds = new ChassisSpeeds(0, 0, 0);
 
-  private int cnt = 0;
-
-
-  public Kinematics(AHRS ahrs, Translation2d[] translations) {
+  public Kinematics(Translation2d[] translations) {
     m_inverseKinematics = new SimpleMatrix(8, 3);
 
     for (int i = 0; i < 4; i++) {
@@ -45,88 +32,22 @@ public class Kinematics {
 
     m_forwardKinematics = m_inverseKinematics.pseudoInverse();
 
-    this.fieldCentric = Constants.OperatorConstants.fieldCentric;
-    m_ahrs = ahrs;
   }
 
-  private double[][] computeStrafe(double joy_x, double joy_y) {
-    double[][] temp_vel = new double[4][2];
-    for(int n=0; n<4; n++) {
-      temp_vel[n][0] = ((joy_x*Math.cos(gyro)) - (joy_y*Math.sin(gyro)));
-      temp_vel[n][1] = ((joy_x*Math.sin(gyro)) + (joy_y*Math.cos(gyro)));
-    }
-    
-    return temp_vel;
-  }
-
-  private double[][] computeRotation(double omega) {
-    double[][] temp = {{omega * Math.cos(1*(Math.PI/4)), omega * Math.sin(1*(Math.PI/4))},
-                       {omega * Math.cos(7*(Math.PI/4)), omega * Math.sin(7*(Math.PI/4))},
-                       {omega * Math.cos(3*(Math.PI/4)), omega * Math.sin(3*(Math.PI/4))},
-                       {omega * Math.cos(5*(Math.PI/4)), omega * Math.sin(5*(Math.PI/4))}};
-    return temp;
-  }
-
-  private double[][] addVect(double[][] a, double[][] b) {
-    double temp[][] = new double[4][2];
-    assert(a.length == b.length);
-    for(int n=0; n<a.length; n++) {
-      temp[n][0] = a[n][0] + b[n][0];
-      temp[n][1] = a[n][1] + b[n][1];
-    } 
-    return temp;
-  }
-
-  public double[][] computeUnicorn(double[][] strafe, double[][] rotation) {
-    return this.addVect(strafe, rotation);
-  }
-
-  public void conv(double[][] unicorn) {
-    for(int i=0; i<unicorn.length; i++) {
-      double a = unicorn[i][0];
-      double b = unicorn[i][1];
-      double combinedVel = Math.sqrt((a*a) + (b*b));
-
-      this.vel[i] = combinedVel;
-
-      if(a == 0) {
-        if(b == 0) {
-          this.theta[i] = 0;
-        } else {
-          this.theta[i] = (b/Math.abs(b)) * (Math.PI/2);
-        }
-      } else {
-        this.theta[i] = Math.atan(b/a);
-        if (a > 0) {
-          if (b >= 0) {
-            this.theta[i] += 0;
-          } else {
-            this.theta[i] += Math.PI*2;
-          }
-        } else {
-          this.theta[i] += Math.PI;
-        }
-      }
-    }
-  }
-
-  // public ChassisSpeeds toChassisSpeeds() {
-  //   return odomSpeeds;
-  // }
 
   public Twist2d toTwist(Module[] moduleGroup) { // uses forward kinematics to derive a Twist2d from wheel deltas
-    //gets the independent x and y velocities of each module based on encoder values
+    //gets the independent x and y deltas of each module based on encoder values
 
     SimpleMatrix xyVels = new SimpleMatrix(8, 1);
     for (int i = 0; i < 4; i++) {
-      double vel = moduleGroup[i].updateDeltaDist();
+      double delta = moduleGroup[i].updateDeltaDist();
       double dir = moduleGroup[i].getAngleInRadians();
 
-      xyVels.set((i * 2), 0, vel * Math.cos(dir));
-      xyVels.set((i * 2) + 1, 0, vel * Math.sin(dir)); 
+      xyVels.set((i * 2), 0, delta * Math.cos(dir));
+      xyVels.set((i * 2) + 1, 0, delta * Math.sin(dir)); 
     }
 
-    //multiply the current x, y velocity matrix by the inverse of the kinematics matrix
+    //multiply the current x, y delta matrix by the inverse of the kinematics matrix
 
     SimpleMatrix finalChassisSpeeds = m_forwardKinematics.mult(xyVels);
 
@@ -134,11 +55,20 @@ public class Kinematics {
     double deltaY = finalChassisSpeeds.get(1, 0);
     double deltaOmega = finalChassisSpeeds.get(2, 0);
 
+    if (Math.abs(deltaX) < 1e-9)
+      deltaX = 0;
+    if (Math.abs(deltaY) < 1e-9)
+      deltaX = 0;
+    if (Math.abs(deltaOmega) < 1e-9)
+      deltaX = 0;
+
     return new Twist2d(deltaX, deltaY, deltaOmega);
   }
 
+
+
   public Twist2d toTwistTest(Module.ModuleState[] moduleStates) { // completely for testing purposes
-    //gets the independent x and y velocities of each module based on encoder values
+    //gets the independent x and y velocities of each module based on theoretical values
 
     SimpleMatrix xyVels = new SimpleMatrix(8, 1);
     for (int i = 0; i < 4; i++) { 
@@ -149,13 +79,7 @@ public class Kinematics {
       xyVels.set((i * 2) + 1, 0, vel * Math.sin(dir)); 
     }
 
-    //multiply the current x, y velocity matrix by the inverse of the kinematics matrix
-
     SimpleMatrix finalChassisSpeeds = m_forwardKinematics.mult(xyVels);
-
-    /*if (cnt++ % 50 == 0) {
-      System.out.printf("vel: %f, xVel: %f, yVel: %f", targetAngVelRatio, targetXVelRatio, targetYVelRatio);
-    }*/
 
     double deltaX = finalChassisSpeeds.get(0, 0);
     double deltaY = finalChassisSpeeds.get(1, 0);
@@ -173,6 +97,8 @@ public class Kinematics {
 
     return new Twist2d(deltaX, deltaY, deltaOmega);
   }
+
+
 
   public Module.ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeeds) {
       Module.ModuleState[] moduleStates = new Module.ModuleState[4];
@@ -195,7 +121,12 @@ public class Kinematics {
       }
 
       return moduleStates;
-  }
+  } 
+
+  
+
+
+  // Old Kinematics Method
 
   // public Module.ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeed) {
 
@@ -250,5 +181,66 @@ public class Kinematics {
 
   //   return newModuleStates;
   // } 
+  // private double[][] computeStrafe(double joy_x, double joy_y) {
+  //   double[][] temp_vel = new double[4][2];
+  //   for(int n=0; n<4; n++) {
+  //     temp_vel[n][0] = ((joy_x*Math.cos(gyro)) - (joy_y*Math.sin(gyro)));
+  //     temp_vel[n][1] = ((joy_x*Math.sin(gyro)) + (joy_y*Math.cos(gyro)));
+  //   }
+    
+  //   return temp_vel;
+  // }
+
+  // private double[][] computeRotation(double omega) {
+  //   double[][] temp = {{omega * Math.cos(1*(Math.PI/4)), omega * Math.sin(1*(Math.PI/4))},
+  //                      {omega * Math.cos(7*(Math.PI/4)), omega * Math.sin(7*(Math.PI/4))},
+  //                      {omega * Math.cos(3*(Math.PI/4)), omega * Math.sin(3*(Math.PI/4))},
+  //                      {omega * Math.cos(5*(Math.PI/4)), omega * Math.sin(5*(Math.PI/4))}};
+  //   return temp;
+  // }
+
+  // private double[][] addVect(double[][] a, double[][] b) {
+  //   double temp[][] = new double[4][2];
+  //   assert(a.length == b.length);
+  //   for(int n=0; n<a.length; n++) {
+  //     temp[n][0] = a[n][0] + b[n][0];
+  //     temp[n][1] = a[n][1] + b[n][1];
+  //   } 
+  //   return temp;
+  // }
+
+  // public double[][] computeUnicorn(double[][] strafe, double[][] rotation) {
+  //   return this.addVect(strafe, rotation);
+  // }
+
+  // public void conv(double[][] unicorn) {
+  //   for(int i=0; i<unicorn.length; i++) {
+  //     double a = unicorn[i][0];
+  //     double b = unicorn[i][1];
+  //     double combinedVel = Math.sqrt((a*a) + (b*b));
+
+  //     this.vel[i] = combinedVel;
+
+  //     if(a == 0) {
+  //       if(b == 0) {
+  //         this.theta[i] = 0;
+  //       } else {
+  //         this.theta[i] = (b/Math.abs(b)) * (Math.PI/2);
+  //       }
+  //     } else {
+  //       this.theta[i] = Math.atan(b/a);
+  //       if (a > 0) {
+  //         if (b >= 0) {
+  //           this.theta[i] += 0;
+  //         } else {
+  //           this.theta[i] += Math.PI*2;
+  //         }
+  //       } else {
+  //         this.theta[i] += Math.PI;
+  //       }
+  //     }
+  //   }
+  // }
+
 }
 
