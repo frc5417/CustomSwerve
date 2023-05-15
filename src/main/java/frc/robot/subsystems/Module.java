@@ -157,7 +157,7 @@ public class Module {
   }
 
   public double getDeltaDist() {
-    return Math.abs(this.deltaDist);
+    return this.deltaDist;
   }
 
   public double updateDeltaDist() {
@@ -165,7 +165,7 @@ public class Module {
     this.deltaDist = newWheelPos - oldWheelPos;
     oldWheelPos = newWheelPos;
 
-    return Math.abs(this.deltaDist);
+    return this.deltaDist;
     // TODO: Make deltas negative with 180
   }
 
