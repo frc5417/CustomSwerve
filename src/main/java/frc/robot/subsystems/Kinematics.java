@@ -11,6 +11,9 @@ import org.ejml.simple.SimpleMatrix;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class Kinematics {
   /** Creates a new Compute. */
@@ -98,7 +101,17 @@ public class Kinematics {
     return new Twist2d(deltaX, deltaY, deltaOmega);
   }
 
+  public static Module.ModuleState optimize(Module.ModuleState cur, Module.ModuleState set) {
+    Module.ModuleState ret;
 
+    if (Math.abs(cur.getDir() - set.getDir()) > Math.PI/2) {
+      ret = new Module.ModuleState(set.getDir() - Math.PI, -set.getVel());
+    } else {
+      ret = set;
+    }
+
+    return ret;
+  }
 
   public Module.ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeeds) {
       Module.ModuleState[] moduleStates = new Module.ModuleState[4];

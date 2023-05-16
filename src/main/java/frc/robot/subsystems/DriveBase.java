@@ -168,6 +168,9 @@ public class DriveBase extends SubsystemBase {
         chassisSpeeds = new ChassisSpeeds(vel * Math.cos(angle), vel * Math.sin(angle), chassisSpeeds.omegaRadiansPerSecond);
 
         targetModuleStates = m_kinematics.getComputedModuleStates(chassisSpeeds);
+        for (int i = 0; i < 4; i++)
+            targetModuleStates[i] = Kinematics.optimize(moduleGroup[i].getCurrentState(), targetModuleStates[i]);
+            
     }
 
     public void resetDrive() {

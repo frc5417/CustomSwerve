@@ -44,7 +44,7 @@ public class Module {
 
   private int invertDriveSpeed = 1; // global, always applied to drive speed if motor inverted
   private int invertMultiplier = 1; // inverts drive speed if 180 degree code tripped
-  private boolean invertMultiplierAvailable = true;
+  private Module.ModuleState currentState;
   private boolean trigger = true;
 
   private double angleOffset = 0;
@@ -111,10 +111,12 @@ public class Module {
       // throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.moduleNum).toString() + " is not green!");
     // }
 
+    currentState = new Module.ModuleState(0, 0);
     m_distFromCenter = distFromCenter;
   }
 
   public void setSpeedAndAngle(ModuleState targetState) {
+    currentState = targetState;
     setAngle(targetState.getDir());
     setDriveSpeed(targetState.getVel() / Constants.Swerve.maxVelocity);
   } 
@@ -172,44 +174,9 @@ public class Module {
   }
 
   public double setAngle(double angle_in_rad) {
-    //code to make the angle motor turn the least amount possible and drive direction if necessary
+
     double targetAngle = angle_in_rad;
-    // double currentAngle = getAngleInRadians();
-    // double normalDifference = currentAngle - targetAngle;
-    // double difference180 = currentAngle - normalizeAngle(targetAngle - Math.PI);
-
-    // //if going to targetAngle + 180 degrees is not less than the distance of going just to targetAngle
-    // //then turn normally and also do not invert the motor direction
-    
-    // //what it does not do: does not go right or go forwards
-    // if (Math.abs(normalDifference) > Math.abs(difference180)) {
-    //   targetAngle = normalizeAngle(targetAngle - Math.PI);
-    //   // System.out.println("module "+moduleNum+" target: "+targetAngle);
-    //   if (invertMultiplierAvailable) {
-    //     invertMultiplier *= -1;
-    //     invertMultiplierAvailable = false;
-    //   }
-    // }
-
-    // System.out.printf("target %f, actual %f\n", targetAngle, this.getAngleInRadians());
-
     pid.setSetpoint(targetAngle); // angles are in TRUE BEARING ( angles are negated )
-
-    String name = "Mod" + String.valueOf(this.moduleNum);
-    SmartDashboard.putNumber(name, this.getAngleInRadians());
-
-    if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180))) {
-      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -1.0, 1.0));
-      trigger = true;
-    } else {
-      this.angleMotor.set(0.0);
-      if (trigger) {
-        invertMultiplierAvailable = true;
-        trigger = false;
-      } else {
-        invertMultiplierAvailable = false;
-      }
-    }
 
     return angle_in_rad;
   }
@@ -243,21 +210,16 @@ public class Module {
 
   private void configDriveMotor() {
     driveMotor.restoreFactoryDefaults();
-    // CANSparkMaxUtil.setCANSparkMaxBusUsage(driveMotor, Usage.kVelocityOnly);
-    // driveMotor.setSmartCurrentLimit(Constants.Swerve.driveContinuousCurrentLimit);
-    // driveMotor.setInverted(Constants.Swerve.driveInvert);
     driveMotor.setIdleMode(Constants.Swerve.driveNeutralMode);
-    // driveEncoder.setVelocityConversionFactor(Constants.Swerve.driveConversionVelocityFactor);
-    // driveController.setP(Constants.Swerve.angleKP);
-    // driveController.setI(Constants.Swerve.angleKI);
-    // driveController.setD(Constants.Swerve.angleKD);
-    // driveController.setFF(Constants.Swerve.angleKFF);
-    // driveMotor.enableVoltageCompensation(Constants.Swerve.voltageComp);
     driveMotor.burnFlash();
   }
 
   public Translation2d getDistanceFromCenter() {
     return m_distFromCenter;
+  }
+
+  public Module.ModuleState getCurrentState() {
+    return currentState;
   }
 
   public static class ModuleState {
