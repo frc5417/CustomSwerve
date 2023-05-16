@@ -146,12 +146,12 @@ public class DriveBase extends SubsystemBase {
         SmartDashboard.putNumber("tX", simPose.getX());
         SmartDashboard.putNumber("tY", simPose.getY());
 
-        /*if (cnt++ % 50 == 0) {
+        if (cnt++ % 50 == 0) {
             System.out.println(m_pose);
             for (int i = 0; i < 4; i++)
                 System.out.printf("m: %d, %f, %f\n", i, moduleGroup[i].getDeltaDist(), moduleGroup[i].getAngleInRadians());
             System.out.println();
-        }*/
+        }
     }
 
     public void setDriveSpeed(ChassisSpeeds chassisSpeeds) {
@@ -168,9 +168,9 @@ public class DriveBase extends SubsystemBase {
         chassisSpeeds = new ChassisSpeeds(vel * Math.cos(angle), vel * Math.sin(angle), chassisSpeeds.omegaRadiansPerSecond);
 
         targetModuleStates = m_kinematics.getComputedModuleStates(chassisSpeeds);
-        for (int i = 0; i < 4; i++)
-            targetModuleStates[i] = Kinematics.optimize(moduleGroup[i].getCurrentState(), targetModuleStates[i]);
-            
+        
+        for (int index = 0; index < 4; index++)
+            targetModuleStates[index] = Kinematics.optimize(moduleGroup[index].getCurrentState(), targetModuleStates[index]);
     }
 
     public void resetDrive() {

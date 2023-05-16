@@ -162,11 +162,12 @@ public class Module {
 
   public double updateDeltaDist() {
     double newWheelPos = getTotalDist();
-    this.deltaDist = newWheelPos - oldWheelPos;
+    this.deltaDist = (newWheelPos - oldWheelPos) * (
+      this.moduleNum == 0 || this.moduleNum == 1 ? -1 : 1
+    );
     oldWheelPos = newWheelPos;
 
     return this.deltaDist;
-    // TODO: Make deltas negative with 180
   }
 
   public double getTotalDist() {
@@ -177,6 +178,12 @@ public class Module {
 
     double targetAngle = angle_in_rad;
     pid.setSetpoint(targetAngle); // angles are in TRUE BEARING ( angles are negated )
+
+    if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180.0))) {
+      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -1.0, 1.0));
+    } else {
+      this.angleMotor.set(0.0);
+    }
 
     return angle_in_rad;
   }

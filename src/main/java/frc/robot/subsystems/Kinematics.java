@@ -105,7 +105,9 @@ public class Kinematics {
     Module.ModuleState ret;
 
     if (Math.abs(cur.getDir() - set.getDir()) > Math.PI/2) {
-      ret = new Module.ModuleState(set.getDir() - Math.PI, -set.getVel());
+      double newAngle = set.getDir() - Math.PI;
+      newAngle = (newAngle < 0)? newAngle + Math.PI * 2.0 : newAngle; 
+      ret = new Module.ModuleState(-set.getVel(), newAngle);
     } else {
       ret = set;
     }
