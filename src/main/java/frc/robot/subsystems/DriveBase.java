@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -7,6 +8,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants;
 
 
@@ -149,7 +151,7 @@ public class DriveBase extends SubsystemBase {
         if (cnt++ % 50 == 0) {
             System.out.println(m_pose);
             for (int i = 0; i < 4; i++)
-                System.out.printf("m: %d, %f, %f\n", i, moduleGroup[i].getDeltaDist(), moduleGroup[i].getAngleInRadians());
+                System.out.printf("m: %d, %f, %f\n", i, targetModuleStates[i].getDir(), targetModuleStates[i].getVel());
             System.out.println();
         }
     }
@@ -191,7 +193,7 @@ public class DriveBase extends SubsystemBase {
         for (int i = 0; i < 4; i++) {
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
         }
-  
+        
         updateOdom();
     }
 }

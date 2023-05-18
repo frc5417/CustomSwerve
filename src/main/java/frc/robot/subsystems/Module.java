@@ -97,6 +97,7 @@ public class Module {
     integratedDriveEncoder = driveMotor.getEncoder();
 
     // integratedDriveEncoder.setPositionConversionFactor(1/6.12);
+    //driveMotor.getPIDController();
 
     pid.enableContinuousInput(0, Math.PI * 2);
     pid.setTolerance(0.0);
@@ -175,9 +176,8 @@ public class Module {
   }
 
   public double setAngle(double angle_in_rad) {
-
     double targetAngle = angle_in_rad;
-    pid.setSetpoint(targetAngle); // angles are in TRUE BEARING ( angles are negated )
+    pid.setSetpoint(targetAngle);
 
     if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180.0))) {
       this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -1.0, 1.0));

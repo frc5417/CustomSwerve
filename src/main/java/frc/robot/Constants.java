@@ -25,7 +25,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
-    public static final boolean fieldCentric = false;
+    public static final boolean fieldCentric = true;
     public static final double joystickDeadband = 0.2;
   }
 
@@ -50,7 +50,7 @@ public final class Constants {
     public static final double maxVelocity = 4; // m/s
     public static final double maxAngularVelocity = 56.0; // rad/s
 
-    public static final double maxSetVelocity = 1.5;
+    public static final double maxSetVelocity = 1.5; //1.5
     public static final double maxSetAngularVelocity = 2.0;
 
     public static final double maxAutonAcceleration = 0.5;
