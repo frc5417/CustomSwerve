@@ -32,7 +32,7 @@ public final class Constants {
     // 0 indexing
     public static final Integer[] driveMotorIDS = {11, 21, 31, 40}; 
     public static final Integer[] angleMotorIDS = {10, 20, 30, 41};
-    public static final Integer[] CANCoderID = {9, 12, 8, 13};
+    public static final Integer[] CANCoderID = {9, 12, 8, 19};
     public static final Double[] motorDegrees = {91.494, 182.373, 347.783, 315.615};
     public static final Double[] angleOffsets = {0.0, 0.0, 0.0, 0.0};
     public static final Double[][] angleMotorPID = {
