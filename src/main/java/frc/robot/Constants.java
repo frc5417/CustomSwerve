@@ -62,7 +62,7 @@ public final class Constants {
     public static final PIDConstants ROTATION_PID = new PIDConstants(0, 0, 0);
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(0, 0, 0);
     public static final Integer wheels = 4;
-    public static final boolean[] invertedMotors = {true, true, false, false};
+    public static final boolean[] invertedMotors = {true, true, false, true};
     //TODO: tune pid constants
   }
 
