@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 
+import frc.robot.commands.SetLightConfig;
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it u.nder the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -35,6 +37,12 @@ public class RobotContainer {
   public static TeleopDrive teleopDrive = new TeleopDrive(driveBase);
   private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
+  private static final LightsControl m_lightsControl = new LightsControl();
+  private static final SetLightConfig lightConfigRed = new SetLightConfig(m_lightsControl, 0);
+  private static final SetLightConfig lightConfigBlue = new SetLightConfig(m_lightsControl, 4);
+  private static final SetLightConfig lightConfigColor1 = new SetLightConfig(m_lightsControl, 1);
+  private static final SetLightConfig lightConfigColor2 = new SetLightConfig(m_lightsControl, 2);
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -57,6 +65,10 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+    m_driverController.povUp().onTrue(lightConfigRed);
+    m_driverController.povDown().onTrue(lightConfigBlue);
+    m_driverController.povLeft().onTrue(lightConfigColor1);
+    m_driverController.povRight().onTrue(lightConfigColor2);
   }
 
 
@@ -92,6 +104,13 @@ public class RobotContainer {
   }
   public void runTeleopCommand() {
     teleopDrive.schedule();
-    
+  }
+
+  public static void setLEDsOff() {
+    m_lightsControl.setLightConfig(3);
+  }
+
+  public static void setLEDsOn() {
+    m_lightsControl.setLightConfig(0);
   }
 }
