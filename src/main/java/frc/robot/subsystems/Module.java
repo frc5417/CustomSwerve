@@ -83,9 +83,9 @@ public class Module {
     double x = setAngle(targetState.getDir());
     double y = setDriveSpeed(targetState.getVel());
 
-    if (++cnt % 50 == 0) {
-      System.out.printf("Set module %d angle to %f, speed to %f\n", this.moduleNum, x, y);
-    }
+    // if (++cnt % 50 == 0) {
+    //   System.out.printf("Set module %d angle to %f, speed to %f\n", this.moduleNum, x, y);
+    // }
   }
 
   //angle to normalize between 0 and 2PI RAD

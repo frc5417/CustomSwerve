@@ -48,7 +48,7 @@ public class TeleopDrive extends CommandBase {
     //   temp[i] = new Module.ModuleState(0, Constants.MotorConstants.motorDegrees[i] * (Math.PI/180));
 
     // m_driveBase.setHardStates(temp);
-    
+    RobotContainer.setLEDsOn();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -70,10 +70,10 @@ public class TeleopDrive extends CommandBase {
     SmartDashboard.putNumber("Y-Vel Input", yVel);
     SmartDashboard.putNumber("Omega Vel Input", omega);
 
-    if (cnt++ % 50 == 0) 
-      System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
+    // if (cnt++ % 50 == 0) 
+      // System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
 
-    m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel, yVel, omega));
+    m_driveBase.setDriveSpeed(new ChassisSpeeds(0, -5, 0));
   }
 
   // Called once the command ends or is interrupted.

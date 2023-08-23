@@ -43,6 +43,8 @@ public class RobotContainer {
   private static final SetLightConfig lightConfigColor1 = new SetLightConfig(m_lightsControl, 1);
   private static final SetLightConfig lightConfigColor2 = new SetLightConfig(m_lightsControl, 2);
 
+  // public static final PhotonSubsystem m_photonsubsystem = new PhotonSubsystem();
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -81,7 +83,7 @@ public class RobotContainer {
       }
       public static double getLeftJoyY() {
         if (Math.abs(m_driverController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
-          return m_driverController.getLeftY();
+          return -m_driverController.getLeftY();
         } else {
           return 0;
         }

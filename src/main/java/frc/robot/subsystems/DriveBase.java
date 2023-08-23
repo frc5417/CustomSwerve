@@ -11,7 +11,10 @@ public class DriveBase extends SubsystemBase {
     private final Kinematics m_kinematics;
 
     public static Module[] moduleGroup;
-      
+
+    double mod1Prev = 0;
+    double mod1Curr = 0;
+    int counter = 0;
 
     public DriveBase(Kinematics kinematics) {
         m_kinematics = kinematics;
@@ -51,8 +54,16 @@ public class DriveBase extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // RobotContainer.m_photonsubsystem.updatePose();
         for (int i = 0; i < 4; i++)
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
+
+        mod1Curr = moduleGroup[0].getAngle();
+        if ((counter++ % 50) == 0) {
+            System.out.println((mod1Curr-mod1Prev)/0.02);
+        }
+        mod1Prev = mod1Curr;
+        
     }
 
 }
