@@ -26,7 +26,7 @@ public class Module {
   /** Creates a new Module. */
 
   public CANSparkMax angleMotor;
-  private CANSparkMax driveMotor;
+  public CANSparkMax driveMotor;
 
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;

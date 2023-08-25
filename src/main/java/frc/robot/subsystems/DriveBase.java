@@ -12,6 +12,10 @@ public class DriveBase extends SubsystemBase {
 
     public static Module[] moduleGroup;
 
+    public static double[] odomDeltas = {0, 0, 0, 0};
+    public static double[] odomPrevDeltas = {0, 0, 0, 0};
+    public static double[] odomAngles = {0, 0, 0, 0};
+
     double mod1Prev = 0;
     double mod1Curr = 0;
     int counter = 0;
@@ -55,15 +59,18 @@ public class DriveBase extends SubsystemBase {
     @Override
     public void periodic() {
         // RobotContainer.m_photonsubsystem.updatePose();
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++) {
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
-
-        mod1Curr = moduleGroup[0].getAngle();
-        if ((counter++ % 50) == 0) {
-            System.out.println((mod1Curr-mod1Prev)/0.02);
+            odomDeltas[i] = ((moduleGroup[i].driveMotor.getEncoder().getPosition()*4*Math.PI)-odomPrevDeltas[i])/0.02;
+            odomPrevDeltas[i] = odomDeltas[i];
+            odomAngles[i] = moduleGroup[i].getAngle();
         }
-        mod1Prev = mod1Curr;
+
+        // mod1Curr = moduleGroup[0].getAngle();
+        // if ((counter++ % 50) == 0) {
+        //     System.out.println((mod1Curr-mod1Prev)/0.02);
+        // }
+        // mod1Prev = mod1Curr;
         
     }
-
 }
