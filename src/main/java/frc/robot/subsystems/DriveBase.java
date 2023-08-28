@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class DriveBase extends SubsystemBase {
 
     private static Module.ModuleState targetModuleStates[];
@@ -66,10 +68,17 @@ public class DriveBase extends SubsystemBase {
             odomAngles[i] = moduleGroup[i].getAngle();
         }
 
+        SmartDashboard.putNumber("Mod1_dy/dx", odomDeltas[0]);
+        SmartDashboard.putNumber("Mod2_dy/dx", odomDeltas[1]);
+        SmartDashboard.putNumber("Mod3_dy/dx", odomDeltas[2]);
+        SmartDashboard.putNumber("Mod4_dy/dx", odomDeltas[3]);
+
+
         // mod1Curr = moduleGroup[0].getAngle();
         // if ((counter++ % 50) == 0) {
-        //     System.out.println((mod1Curr-mod1Prev)/0.02);
+        //     System.out.println(odomDeltas[0]);
         // }
+        
         // mod1Prev = mod1Curr;
         
     }
