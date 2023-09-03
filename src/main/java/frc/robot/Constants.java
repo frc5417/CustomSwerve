@@ -23,9 +23,10 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final boolean fieldCentric = true;
-    public static final double joystickDeadband = 0.2;
+    public static final int kDriverPort = 0;
+    public static final int kManipulatorPort = 1;
+    public static final boolean fieldCentric = true; //FRONT IS THE SIDE OPPOSITE TO BATTERY
+    public static final double joystickDeadband = 0.2; //HAS TO BE TUNED A BIT
   }
 
   public static class MotorConstants {
@@ -76,13 +77,14 @@ public final class Constants {
                    new Translation3d(0.5, 0.0, 0.5),
                     new Rotation3d(
                             0, 0,
-                            0)); // Cam mounted facing forward, half a meter forward of center, half a meter up
-    // from center.
+                            0)); 
+
+    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     public static final String cameraName = "OV5647";
     public static final double maxDistanceAway = 2.0;
     public static final double forwardKP = 0.1;
     public static final double forwardToAngleRatio = 0.5;
-
+    
     public static final double CAMERA_HEIGHT_METERS = 0.72;
     public static final double TARGET_HEIGHT_METERS = 0;
     public static final double CAMERA_PITCH_RADIANS = 0;

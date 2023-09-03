@@ -1,8 +1,15 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
+import java.util.function.Function;
 
-import frc.robot.commands.SetLightConfig;
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it u.nder the terms of
@@ -10,15 +17,10 @@ import frc.robot.commands.SetLightConfig;
 
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Robot;
 import frc.robot.commands.AutonLoader;
+import frc.robot.commands.SetLightConfig;
 import frc.robot.commands.TeleopDrive;
-
-import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,7 +37,8 @@ public class RobotContainer {
   public static DriveBase driveBase = new DriveBase(kinematics);
   public static AutonLoader autonLoader = new AutonLoader(driveBase);
   public static TeleopDrive teleopDrive = new TeleopDrive(driveBase);
-  private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverPort);
+  private final static CommandXboxController m_manipulatorController = new CommandXboxController(OperatorConstants.kManipulatorPort);
 
   private static final LightsControl m_lightsControl = new LightsControl();
   private static final SetLightConfig lightConfigRed = new SetLightConfig(m_lightsControl, 0);
@@ -62,6 +65,7 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
@@ -73,28 +77,93 @@ public class RobotContainer {
     m_driverController.povRight().onTrue(lightConfigColor2);
   }
 
+  public static void setDriverRumble(double rumbleVal) {
+    m_driverController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, rumbleVal);
+  }
 
-    public static double getLeftJoyX() {
-        if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
-          return m_driverController.getLeftX();
-        } else {
-          return 0;
-        }
-      }
-      public static double getLeftJoyY() {
-        if (Math.abs(m_driverController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
-          return -m_driverController.getLeftY();
-        } else {
-          return 0;
-        }
-      }
-      public static double getRightJoyX() {
-        if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
-          return m_driverController.getRightX();
-        } else {
-          return 0;
-        }
-      }
+  public static void setManipulatorRumble(double rumbleVal) {
+    m_manipulatorController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, rumbleVal);
+  }
+
+  public static double getDriverLeftJoyX() {
+    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_driverController.getLeftX();
+    } else {
+      return 0;
+    }
+  }
+
+  public static double getDriverLeftJoyY() {
+    if (Math.abs(m_driverController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
+      return -m_driverController.getLeftY();
+    } else {
+      return 0;
+    }
+  }
+
+  public static double getDriverRightJoyX() {
+    if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_driverController.getRightX();
+    } else {
+      return 0;
+    }
+  }
+
+  public static double getDriverRightJoyY() {
+    if (Math.abs(m_driverController.getRightY()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_driverController.getRightY();
+    } else {
+      return 0;
+    }
+  }
+
+  public static double getManipulatorLeftJoyY() {
+    if (Math.abs(m_manipulatorController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_manipulatorController.getLeftY();
+    } else {
+      return 0;
+    }
+  }
+
+  public static double getManipulatorLeftJoyX() {
+    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_manipulatorController.getLeftX();
+    } else {
+      return 0;
+    }
+  }
+
+  public static double getManipulatorRightJoyY() {
+    if (Math.abs(m_manipulatorController.getRightY()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_manipulatorController.getRightY();
+    } else {
+      return 0;
+    }
+  }
+
+  public static double getManipulatorRightJoyX() {
+    if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_manipulatorController.getRightX();
+    } else {
+      return 0;
+    }
+  }
+
+  public static Trigger getManipulatorX(Command command) {
+    return m_manipulatorController.x().onTrue(command);
+  }
+
+  public static Trigger getManipulatorA(Command command) {
+    return m_manipulatorController.a().onTrue(command);
+  }
+
+  public static Trigger getManipulatorY(Command command) {
+    return m_manipulatorController.y().onTrue(command);
+  }
+
+  public static Trigger getManipulatorB(Command command) {
+    return m_manipulatorController.b().onTrue(command);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
