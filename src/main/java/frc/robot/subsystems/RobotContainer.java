@@ -81,6 +81,27 @@ public class RobotContainer {
     m_driverController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, rumbleVal);
   }
 
+    public static double getLeftJoyX() {
+        if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+          return -1 * m_driverController.getLeftX();
+        } else {
+          return 0;
+        }
+      }
+      public static double getLeftJoyY() {
+        if (Math.abs(m_driverController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
+          return m_driverController.getLeftY();
+        } else {
+          return 0;
+        }
+      }
+      public static double getRightJoyX() {
+        if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
+          return m_driverController.getRightX();
+        } else {
+          return 0;
+        }
+      }
   public static void setManipulatorRumble(double rumbleVal) {
     m_manipulatorController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, rumbleVal);
   }

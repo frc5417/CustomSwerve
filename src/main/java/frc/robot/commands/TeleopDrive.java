@@ -74,7 +74,7 @@ public class TeleopDrive extends CommandBase {
       // System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
 
     // m_driveBase.setDriveSpeed(new ChassisSpeeds(0, 5, 0));
-    m_driveBase.setDriveSpeed(new ChassisSpeeds(-xVel, -yVel, omega));
+    m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel * Constants.Swerve.XPercentage, yVel * Constants.Swerve.YPercentage, omega * Constants.Swerve.angularPercentage));
   }
 
   // Called once the command ends or is interrupted.

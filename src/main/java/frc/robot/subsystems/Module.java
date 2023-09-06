@@ -152,7 +152,7 @@ public class Module {
     SmartDashboard.putNumber(name, this.getAngleInRadians());
 
     if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180))) {
-      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -0.8, 0.8));
+      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -1, 1));
     } else {
       this.angleMotor.set(0.0);
     }
