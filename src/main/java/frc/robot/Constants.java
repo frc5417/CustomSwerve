@@ -26,7 +26,7 @@ public final class Constants {
     public static final int kDriverPort = 0;
     public static final int kManipulatorPort = 1;
     public static final boolean fieldCentric = true; //FRONT IS THE SIDE OPPOSITE TO BATTERY
-    public static final double joystickDeadband = 0.2; //HAS TO BE TUNED A BIT
+    public static final double joystickDeadband = 0.1; //HAS TO BE TUNED A BIT
   }
 
   public static class MotorConstants {
@@ -34,7 +34,7 @@ public final class Constants {
     public static final Integer[] driveMotorIDS = {11, 21, 31, 40}; 
     public static final Integer[] angleMotorIDS = {10, 20, 30, 41};
     public static final Integer[] CANCoderID = {9, 12, 8, 19};
-    public static final Double[] motorDegrees = {94.417, 185.174, 349.792, 308.945};
+    public static final Double[] motorDegrees = {94.192, 183.843, 349.892, 308.245};
     public static final Double[] angleOffsets = {0.0, 0.0, 0.0, 0.0};
     public static final Double[][] angleMotorPID = {
       {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}};
@@ -43,8 +43,8 @@ public final class Constants {
   
   public static class Swerve {
     public static final Double angularPercentage = 0.5;
-    public static final Double XPercentage = 1.0;
-    public static final Double YPercentage = 1.0;
+    public static final Double XPercentage = -1.0;
+    public static final Double YPercentage = - 1.0;
 
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
     public static final IdleMode driveNeutralMode = IdleMode.kBrake;

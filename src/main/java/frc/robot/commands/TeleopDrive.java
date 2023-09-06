@@ -73,7 +73,7 @@ public class TeleopDrive extends CommandBase {
     // if (cnt++ % 50 == 0) 
       // System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
 
-    // m_driveBase.setDriveSpeed(new ChassisSpeeds(0, 5, 0));
+    // m_driveBase.setDriveSpeed(new ChassisSpeeds(0*Constants.Swerve.XPercentage, 0.25*Constants.Swerve.YPercentage, 0*Constants.Swerve.angularPercentage));
     m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel * Constants.Swerve.XPercentage, yVel * Constants.Swerve.YPercentage, omega * Constants.Swerve.angularPercentage));
   }
 

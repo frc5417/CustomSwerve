@@ -46,6 +46,7 @@ public class AutonLoader {
         // }
         chooser.addOption("forward", m_autoncommands.MOVE_FORWARD);
         chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
+        chooser.addOption("rotateinplace", m_autoncommands.ROTATE_IN_PLACE);
 
         SmartDashboard.putData(chooser);
     }
