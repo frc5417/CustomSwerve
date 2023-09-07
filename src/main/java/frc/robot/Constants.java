@@ -30,6 +30,17 @@ public final class Constants {
   }
 
   public static class MotorConstants {
+    public static final Integer[] elevatorMotorIDS = {-1, -1};
+    public static final Boolean[] elevatorMotorInversions = {false, true};
+
+    public static final int wristMotorID = -1;
+    public static final boolean wristMotorInversion = false;
+    public static final int intakeMotorID = -1;
+    public static final boolean intakeMotorInversion = false;
+
+    public static final int throughBoreEncPort = -1;
+
+
     // 0 indexing
     public static final Integer[] driveMotorIDS = {11, 21, 31, 40}; 
     public static final Integer[] angleMotorIDS = {10, 20, 30, 41};
