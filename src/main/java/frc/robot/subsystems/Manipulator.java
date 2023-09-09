@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
+// import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -17,10 +17,10 @@ import frc.robot.Constants;
 public class Manipulator extends SubsystemBase {
   /** Creates a new Manipulator. */
   public CANSparkMax Intake;
-  public CANSparkMax Wrist;
+  // public CANSparkMax Wrist;
 
-  private final RelativeEncoder integratedIntakeEncoder;
-  private final RelativeEncoder integratedWristEncoder;
+  // private final RelativeEncoder integratedIntakeEncoder;
+  // private final RelativeEncoder integratedWristEncoder;
 
   private static final double kP = 0.4;
   private static final double kI = 0.0;
@@ -31,19 +31,21 @@ public class Manipulator extends SubsystemBase {
   private final static DutyCycleEncoder enc = new DutyCycleEncoder(Constants.MotorConstants.throughBoreEncPort);
   public double runningAverage = 0.0;
 
+  int counter = 0;
+
   public Manipulator() {
     Intake = new CANSparkMax(Constants.MotorConstants.intakeMotorID, MotorType.kBrushless);
-    Wrist = new CANSparkMax(Constants.MotorConstants.wristMotorID, MotorType.kBrushless);
+    // Wrist = new CANSparkMax(Constants.MotorConstants.wristMotorID, MotorType.kBrushless);
 
     Intake.setIdleMode(IdleMode.kCoast);
-    Wrist.setIdleMode(IdleMode.kBrake);
+    // Wrist.setIdleMode(IdleMode.kBrake);
     Intake.setInverted(Constants.MotorConstants.intakeMotorInversion);
-    Wrist.setInverted(Constants.MotorConstants.wristMotorInversion);
+    // Wrist.setInverted(Constants.MotorConstants.wristMotorInversion);
 
-    integratedWristEncoder = Wrist.getEncoder();
-    Wrist.getPIDController();
-    integratedIntakeEncoder = Intake.getEncoder();
-    Intake.getPIDController();
+    // integratedWristEncoder = Wrist.getEncoder();
+    // Wrist.getPIDController();
+    // integratedIntakeEncoder = Intake.getEncoder();
+    // Intake.getPIDController();
 
     pid.setTolerance(Constants.ManipulatorConstants.wristTolerance);
   }
@@ -51,11 +53,16 @@ public class Manipulator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (pid.atSetpoint()) {
-      Wrist.set(0);
-    } else {
-      Wrist.set(pid.calculate(filteredAbsolutePosition())); //use setVoltage if no work :)
+    // if (pid.atSetpoint()) {
+    //   Wrist.set(0);
+    // } else {
+    //   Wrist.set(pid.calculate(filteredAbsolutePosition())); //use setVoltage if no work :)
+    // }
+    if (counter >= 20) {
+      System.out.println(filteredAbsolutePosition());
+      counter = 0;
     }
+    counter++;
   }
 
   public void setWrist(double pos) {
@@ -69,11 +76,15 @@ public class Manipulator extends SubsystemBase {
 
   public void setIntake(double speed) {
     Intake.set(speed);
+    if (counter >= 20) {
+      System.out.print("speed: ");
+      System.out.println(speed);
+    }
   }
 
-  public double positionMapper(double unitJoyRange) {
-    double slope = (Constants.ManipulatorConstants.wristMax - Constants.ManipulatorConstants.wristMin) / 2.0;
-    double intercept = Constants.ManipulatorConstants.wristMin;
-    return (slope * (unitJoyRange + 1.0)) + intercept;
-  }
+  // public double positionMapper(double unitJoyRange) {
+  //   double slope = (Constants.ManipulatorConstants.wristMax - Constants.ManipulatorConstants.wristMin) / 2.0;
+  //   double intercept = Constants.ManipulatorConstants.wristMin;
+  //   return (slope * (unitJoyRange + 1.0)) + intercept;
+  // }
 }

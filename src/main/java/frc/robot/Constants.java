@@ -30,7 +30,7 @@ public final class Constants {
   }
 
   public static class MotorConstants {
-    public static final Integer[] elevatorMotorIDS = {60, 61};
+    public static final Integer[] elevatorMotorIDS = {50, 51};
     public static final Boolean[] elevatorMotorInversions = {false, true};
 
     public static final int wristMotorID = 61;
