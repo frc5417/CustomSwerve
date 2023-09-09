@@ -30,15 +30,15 @@ public final class Constants {
   }
 
   public static class MotorConstants {
-    public static final Integer[] elevatorMotorIDS = {-1, -1};
+    public static final Integer[] elevatorMotorIDS = {60, 61};
     public static final Boolean[] elevatorMotorInversions = {false, true};
 
-    public static final int wristMotorID = -1;
+    public static final int wristMotorID = 61;
     public static final boolean wristMotorInversion = false;
-    public static final int intakeMotorID = -1;
+    public static final int intakeMotorID = 62;
     public static final boolean intakeMotorInversion = false;
 
-    public static final int throughBoreEncPort = -1;
+    public static final int throughBoreEncPort = 4;
 
 
     // 0 indexing
@@ -50,6 +50,12 @@ public final class Constants {
     public static final Double[][] angleMotorPID = {
       {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}};
     public static final Double degTolerance = 0.75;
+  }
+
+  public static class ManipulatorConstants {
+    public static final double wristTolerance = 0.05;
+    public static final double wristMax = 500.0;
+    public static final double wristMin = -500.0;
   }
   
   public static class Swerve {

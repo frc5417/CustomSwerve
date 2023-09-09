@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -26,6 +28,8 @@ public class TeleopDrive extends CommandBase {
   // Called when the command is initially scheduled.
 
   private final DriveBase m_driveBase;
+  private final Manipulator m_manipulator;
+  private final Elevator m_elevator;
 
   private int cnt = 0;
 
@@ -35,8 +39,10 @@ public class TeleopDrive extends CommandBase {
  
   int counter = 0;
 
-  public TeleopDrive(DriveBase driveBase) {
+  public TeleopDrive(DriveBase driveBase, Manipulator manipulator, Elevator elevator) {
     m_driveBase = driveBase;
+    m_manipulator = manipulator;
+    m_elevator = elevator;
   }
 
   @Override
@@ -75,6 +81,15 @@ public class TeleopDrive extends CommandBase {
 
     // m_driveBase.setDriveSpeed(new ChassisSpeeds(0*Constants.Swerve.XPercentage, 0.25*Constants.Swerve.YPercentage, 0*Constants.Swerve.angularPercentage));
     m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel * Constants.Swerve.XPercentage, yVel * Constants.Swerve.YPercentage, omega * Constants.Swerve.angularPercentage));
+    m_elevator.UpAndAway(RobotContainer.getManipulatorLeftJoyY());
+    if (RobotContainer.getManipulatorLeftTrigger() > 0 && RobotContainer.getManipulatorRightTrigger() <= 0) {
+      m_manipulator.setIntake(RobotContainer.getManipulatorLeftTrigger());
+    } else if (RobotContainer.getManipulatorLeftTrigger() <= 0 && RobotContainer.getManipulatorRightTrigger() > 0) {
+      m_manipulator.setIntake(RobotContainer.getManipulatorRightTrigger() * -1);
+    } else {
+      m_manipulator.setIntake(0.0);
+    }
+    
   }
 
   // Called once the command ends or is interrupted.

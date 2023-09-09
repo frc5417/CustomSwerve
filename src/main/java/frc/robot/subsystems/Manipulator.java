@@ -44,6 +44,8 @@ public class Manipulator extends SubsystemBase {
     Wrist.getPIDController();
     integratedIntakeEncoder = Intake.getEncoder();
     Intake.getPIDController();
+
+    pid.setTolerance(Constants.ManipulatorConstants.wristTolerance);
   }
 
   @Override
@@ -67,5 +69,11 @@ public class Manipulator extends SubsystemBase {
 
   public void setIntake(double speed) {
     Intake.set(speed);
+  }
+
+  public double positionMapper(double unitJoyRange) {
+    double slope = (Constants.ManipulatorConstants.wristMax - Constants.ManipulatorConstants.wristMin) / 2.0;
+    double intercept = Constants.ManipulatorConstants.wristMin;
+    return (slope * (unitJoyRange + 1.0)) + intercept;
   }
 }

@@ -35,8 +35,10 @@ public class RobotContainer {
   public static AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
   public static Kinematics kinematics = new Kinematics(ahrs);
   public static DriveBase driveBase = new DriveBase(kinematics);
+  public static Manipulator manipulator = new Manipulator();
+  public static Elevator elevator = new Elevator();
   public static AutonLoader autonLoader = new AutonLoader(driveBase);
-  public static TeleopDrive teleopDrive = new TeleopDrive(driveBase);
+  public static TeleopDrive teleopDrive = new TeleopDrive(driveBase, manipulator, elevator);
   private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverPort);
   private final static CommandXboxController m_manipulatorController = new CommandXboxController(OperatorConstants.kManipulatorPort);
 
@@ -137,7 +139,7 @@ public class RobotContainer {
       return 0;
     }
   }
-
+  // =========================================================
   public static double getManipulatorLeftJoyY() {
     if (Math.abs(m_manipulatorController.getLeftY()) > Constants.OperatorConstants.joystickDeadband) {
       return m_manipulatorController.getLeftY();
@@ -147,7 +149,7 @@ public class RobotContainer {
   }
 
   public static double getManipulatorLeftJoyX() {
-    if (Math.abs(m_driverController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
+    if (Math.abs(m_manipulatorController.getLeftX()) > Constants.OperatorConstants.joystickDeadband) {
       return m_manipulatorController.getLeftX();
     } else {
       return 0;
@@ -163,8 +165,24 @@ public class RobotContainer {
   }
 
   public static double getManipulatorRightJoyX() {
-    if (Math.abs(m_driverController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
+    if (Math.abs(m_manipulatorController.getRightX()) > Constants.OperatorConstants.joystickDeadband) {
       return m_manipulatorController.getRightX();
+    } else {
+      return 0;
+    }
+  }
+
+  public static double getManipulatorRightTrigger() {
+    if (Math.abs(m_manipulatorController.getRightTriggerAxis()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_manipulatorController.getRightTriggerAxis();
+    } else {
+      return 0;
+    }
+  }
+
+  public static double getManipulatorLeftTrigger() {
+    if (Math.abs(m_manipulatorController.getLeftTriggerAxis()) > Constants.OperatorConstants.joystickDeadband) {
+      return m_manipulatorController.getLeftTriggerAxis();
     } else {
       return 0;
     }
