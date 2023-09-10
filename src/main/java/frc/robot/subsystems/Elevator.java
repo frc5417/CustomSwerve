@@ -15,21 +15,21 @@ import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
-  // public CANSparkMax Motor1;
-  // public CANSparkMax Motor2;
+  public CANSparkMax Motor1;
+  public CANSparkMax Motor2;
 
   // private final RelativeEncoder integratedMotor1Encoder;
   // private final RelativeEncoder integratedMotor2Encoder;
 
 
   public Elevator() {
-    // Motor1 = new CANSparkMax(Constants.MotorConstants.elevatorMotorIDS[0], MotorType.kBrushless);
-    // Motor2 = new CANSparkMax(Constants.MotorConstants.elevatorMotorIDS[1], MotorType.kBrushless);
+    Motor1 = new CANSparkMax(Constants.MotorConstants.elevatorMotorIDS[0], MotorType.kBrushless);
+    Motor2 = new CANSparkMax(Constants.MotorConstants.elevatorMotorIDS[1], MotorType.kBrushless);
 
-    // Motor1.setIdleMode(IdleMode.kBrake);
-    // Motor2.setIdleMode(IdleMode.kBrake);
-    // Motor1.setInverted(Constants.MotorConstants.elevatorMotorInversions[0]);
-    // Motor2.setInverted(Constants.MotorConstants.elevatorMotorInversions[1]);
+    Motor1.setIdleMode(IdleMode.kBrake);
+    Motor2.setIdleMode(IdleMode.kBrake);
+    Motor1.setInverted(Constants.MotorConstants.elevatorMotorInversions[0]);
+    Motor2.setInverted(Constants.MotorConstants.elevatorMotorInversions[1]);
 
     // integratedMotor1Encoder = Motor1.getEncoder();
     // Motor1.getPIDController();
@@ -42,8 +42,8 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  // public void UpAndAway(double speed) {
-  //   Motor1.set(speed);
-  //   Motor2.set(speed);
-  // }
+  public void UpAndAway(double speed) {
+    Motor1.set(speed);
+    Motor2.set(speed);
+  }
 }

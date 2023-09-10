@@ -81,17 +81,17 @@ public class TeleopDrive extends CommandBase {
 
     // m_driveBase.setDriveSpeed(new ChassisSpeeds(0*Constants.Swerve.XPercentage, 0.25*Constants.Swerve.YPercentage, 0*Constants.Swerve.angularPercentage));
     m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel * Constants.Swerve.XPercentage, yVel * Constants.Swerve.YPercentage, omega * Constants.Swerve.angularPercentage));
-    // m_elevator.UpAndAway(RobotContainer.getManipulatorLeftJoyY());
-    // if (RobotContainer.getManipulatorLeftTrigger() > 0 && RobotContainer.getManipulatorRightTrigger() <= 0) {
-    //   m_manipulator.setIntake(RobotContainer.getManipulatorLeftTrigger());
+    m_elevator.UpAndAway(RobotContainer.getManipulatorLeftJoyY());
+    if (RobotContainer.getManipulatorLeftTrigger() > 0 && RobotContainer.getManipulatorRightTrigger() <= 0) {
+      m_manipulator.setIntake(RobotContainer.getManipulatorLeftTrigger());
 
-    // } else if (RobotContainer.getManipulatorLeftTrigger() <= 0 && RobotContainer.getManipulatorRightTrigger() > 0) {
-    //   m_manipulator.setIntake(RobotContainer.getManipulatorRightTrigger() * -1);
-    // } else {
-    //   m_manipulator.setIntake(0.0);
-    // }
-    m_manipulator.setIntake(1);
+    } else if (RobotContainer.getManipulatorLeftTrigger() <= 0 && RobotContainer.getManipulatorRightTrigger() > 0) {
+      m_manipulator.setIntake(RobotContainer.getManipulatorRightTrigger() * -1);
+    } else {
+      m_manipulator.setIntake(0.0);
+    }
     
+    // m_manipulator.setWristSpeed(RobotContainer.getManipulatorRightJoyY());
   }
 
   // Called once the command ends or is interrupted.

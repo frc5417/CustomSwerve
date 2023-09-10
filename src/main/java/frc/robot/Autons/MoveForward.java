@@ -8,6 +8,8 @@ import frc.robot.Constants;
 public class MoveForward extends CommandBase {
     private final DriveBase m_driveBase;
 
+    int counter = 0;
+
     public MoveForward(DriveBase drive) {
         m_driveBase = drive;
     }
@@ -21,6 +23,10 @@ public class MoveForward extends CommandBase {
     @Override
     public void execute() {
         m_driveBase.setDriveSpeed(new ChassisSpeeds(0.0*Constants.Swerve.XPercentage, 0.5*Constants.Swerve.YPercentage, 0.0*Constants.Swerve.angularPercentage));
+        while (counter <= (1.0/0.02)) {
+            counter++;
+        }
+        m_driveBase.setDriveSpeed(new ChassisSpeeds(0, 0, 0));
     }
 
     // Called once the command ends or is interrupted.

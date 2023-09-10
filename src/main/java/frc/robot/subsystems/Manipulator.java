@@ -9,7 +9,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -17,13 +18,13 @@ import frc.robot.Constants;
 public class Manipulator extends SubsystemBase {
   /** Creates a new Manipulator. */
   public CANSparkMax Intake;
-  // public CANSparkMax Wrist;
+  public CANSparkMax Wrist;
 
   // private final RelativeEncoder integratedIntakeEncoder;
   // private final RelativeEncoder integratedWristEncoder;
 
-  private static final double kP = 0.4;
-  private static final double kI = 0.0;
+  private static final double kP = 1.0;
+  private static final double kI = 0.05;
   private static final double kD = 0.0;
 
   public final PIDController pid = new PIDController(kP, kI, kD);
@@ -35,51 +36,57 @@ public class Manipulator extends SubsystemBase {
 
   public Manipulator() {
     Intake = new CANSparkMax(Constants.MotorConstants.intakeMotorID, MotorType.kBrushless);
-    // Wrist = new CANSparkMax(Constants.MotorConstants.wristMotorID, MotorType.kBrushless);
+    Wrist = new CANSparkMax(Constants.MotorConstants.wristMotorID, MotorType.kBrushless);
 
     Intake.setIdleMode(IdleMode.kCoast);
-    // Wrist.setIdleMode(IdleMode.kBrake);
+    Wrist.setIdleMode(IdleMode.kBrake);
     Intake.setInverted(Constants.MotorConstants.intakeMotorInversion);
-    // Wrist.setInverted(Constants.MotorConstants.wristMotorInversion);
+    Wrist.setInverted(Constants.MotorConstants.wristMotorInversion);
+
+    enc.reset();
+    
+    
 
     // integratedWristEncoder = Wrist.getEncoder();
     // Wrist.getPIDController();
     // integratedIntakeEncoder = Intake.getEncoder();
     // Intake.getPIDController();
 
+
     pid.setTolerance(Constants.ManipulatorConstants.wristTolerance);
+    // pid.enableContinuousInput(0, 1);
+    
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // if (pid.atSetpoint()) {
-    //   Wrist.set(0);
-    // } else {
-    //   Wrist.set(pid.calculate(filteredAbsolutePosition())); //use setVoltage if no work :)
-    // }
-    if (counter >= 20) {
-      System.out.println(filteredAbsolutePosition());
-      counter = 0;
+    pid.setSetpoint(0.578);
+    if (pid.atSetpoint()) {
+      Wrist.set(0);
+      SmartDashboard.putNumber("At Setpoint", 1);
+    } else {
+      Wrist.set(MathUtil.clamp(-1 * pid.calculate(filteredAbsolutePosition()), -0.6, 0.6)); //use setVoltage if no work :)
+      SmartDashboard.putNumber("At Setpoint", 0);
     }
-    counter++;
+    SmartDashboard.putNumber("ThroughBoreEncoder", filteredAbsolutePosition());
   }
 
   public void setWrist(double pos) {
     pid.setSetpoint(pos);
   }
 
+  public void setWristSpeed(double speed) {
+    Wrist.set(0.25 * speed);
+  }
+
   public double filteredAbsolutePosition() {
-    runningAverage = enc.getAbsolutePosition() * 0.1 + runningAverage * 0.9;
+    runningAverage = enc.getDistance() * 0.9 + runningAverage * 0.1;
     return runningAverage;
   }
 
   public void setIntake(double speed) {
-    Intake.set(speed);
-    if (counter >= 20) {
-      System.out.print("speed: ");
-      System.out.println(speed);
-    }
+    Intake.set(speed * 1.0);
   }
 
   // public double positionMapper(double unitJoyRange) {
