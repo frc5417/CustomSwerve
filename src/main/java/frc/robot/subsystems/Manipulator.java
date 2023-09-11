@@ -23,9 +23,9 @@ public class Manipulator extends SubsystemBase {
   // private final RelativeEncoder integratedIntakeEncoder;
   // private final RelativeEncoder integratedWristEncoder;
 
-  private static final double kP = 1.0;
-  private static final double kI = 0.05;
-  private static final double kD = 0.0;
+  private static final double kP = 1.4;
+  private static final double kI = 0.12;
+  private static final double kD = 0.25;
 
   public final PIDController pid = new PIDController(kP, kI, kD);
   
@@ -33,6 +33,8 @@ public class Manipulator extends SubsystemBase {
   public double runningAverage = 0.0;
 
   int counter = 0;
+
+  private static double offsetPos = -3.141592653589;
 
   public Manipulator() {
     Intake = new CANSparkMax(Constants.MotorConstants.intakeMotorID, MotorType.kBrushless);
@@ -44,6 +46,7 @@ public class Manipulator extends SubsystemBase {
     Wrist.setInverted(Constants.MotorConstants.wristMotorInversion);
 
     enc.reset();
+    enc.setDistancePerRotation(0.25);
     
     
 
@@ -53,7 +56,7 @@ public class Manipulator extends SubsystemBase {
     // Intake.getPIDController();
 
 
-    pid.setTolerance(Constants.ManipulatorConstants.wristTolerance);
+    // pid.setTolerance(Constants.ManipulatorConstants.wristTolerance);
     // pid.enableContinuousInput(0, 1);
     
   }
@@ -61,12 +64,15 @@ public class Manipulator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    pid.setSetpoint(0.578);
-    if (pid.atSetpoint()) {
+    if (offsetPos == -3.141592653589) {
+      offsetPos = enc.getDistance();
+    }
+    pid.setSetpoint(0.16);
+    if (Math.abs(pid.getSetpoint() - filteredAbsolutePosition()) == 0) {
       Wrist.set(0);
       SmartDashboard.putNumber("At Setpoint", 1);
     } else {
-      Wrist.set(MathUtil.clamp(-1 * pid.calculate(filteredAbsolutePosition()), -0.6, 0.6)); //use setVoltage if no work :)
+      Wrist.set(MathUtil.clamp(pid.calculate(filteredAbsolutePosition()), -0.6, 0.6)); //use setVoltage if no work :)
       SmartDashboard.putNumber("At Setpoint", 0);
     }
     SmartDashboard.putNumber("ThroughBoreEncoder", filteredAbsolutePosition());
@@ -81,7 +87,7 @@ public class Manipulator extends SubsystemBase {
   }
 
   public double filteredAbsolutePosition() {
-    runningAverage = enc.getDistance() * 0.9 + runningAverage * 0.1;
+    runningAverage = (Math.abs(enc.getDistance() - offsetPos)) * 0.9 + runningAverage * 0.1;
     return runningAverage;
   }
 

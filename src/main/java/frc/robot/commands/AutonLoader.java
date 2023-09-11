@@ -55,7 +55,7 @@ public class AutonLoader {
         return new PrintCommand(path);
     }
 
-    // public Command getAuton() {
-    //     return chooser.get();
-    // }    
+    public Command getAuton() {
+        return chooser.getSelected();
+    }    
 }
