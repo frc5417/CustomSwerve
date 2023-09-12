@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.RobotContainer;
 
 public class Manipulator extends SubsystemBase {
   /** Creates a new Manipulator. */
@@ -23,9 +24,9 @@ public class Manipulator extends SubsystemBase {
   // private final RelativeEncoder integratedIntakeEncoder;
   // private final RelativeEncoder integratedWristEncoder;
 
-  private static final double kP = 1.4;
-  private static final double kI = 0.12;
-  private static final double kD = 0.25;
+  private static final double kP = 0.90;
+  private static final double kI = 0.03;
+  private static final double kD = 0.38;
 
   public final PIDController pid = new PIDController(kP, kI, kD);
   
@@ -67,7 +68,8 @@ public class Manipulator extends SubsystemBase {
     if (offsetPos == -3.141592653589) {
       offsetPos = enc.getDistance();
     }
-    pid.setSetpoint(0.16);
+
+    pid.setSetpoint(0.10);
     if (Math.abs(pid.getSetpoint() - filteredAbsolutePosition()) == 0) {
       Wrist.set(0);
       SmartDashboard.putNumber("At Setpoint", 1);
