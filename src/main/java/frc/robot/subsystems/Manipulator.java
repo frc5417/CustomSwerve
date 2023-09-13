@@ -24,9 +24,9 @@ public class Manipulator extends SubsystemBase {
   // private final RelativeEncoder integratedIntakeEncoder;
   // private final RelativeEncoder integratedWristEncoder;
 
-  private static final double kP = 0.90;
+  private static final double kP = 0.20;
   private static final double kI = 0.03;
-  private static final double kD = 0.38;
+  private static final double kD = 0.25;
 
   public final PIDController pid = new PIDController(kP, kI, kD);
   
@@ -71,7 +71,7 @@ public class Manipulator extends SubsystemBase {
 
     pid.setSetpoint(0.10);
     if (Math.abs(pid.getSetpoint() - filteredAbsolutePosition()) == 0) {
-      Wrist.set(0);
+      Wrist.set(0.23);
       SmartDashboard.putNumber("At Setpoint", 1);
     } else {
       Wrist.set(MathUtil.clamp(pid.calculate(filteredAbsolutePosition()), -0.6, 0.6)); //use setVoltage if no work :)
