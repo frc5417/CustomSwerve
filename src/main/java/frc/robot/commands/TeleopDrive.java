@@ -10,7 +10,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Module;
@@ -38,6 +38,8 @@ public class TeleopDrive extends CommandBase {
   double prev_yVel = 0;
  
   int counter = 0;
+
+  double manipulatorPosition = 0;
 
   public TeleopDrive(DriveBase driveBase, Manipulator manipulator, Elevator elevator) {
     m_driveBase = driveBase;
@@ -91,6 +93,14 @@ public class TeleopDrive extends CommandBase {
     }
     
     // m_manipulator.setWristSpeed(RobotContainer.getManipulatorRightJoyY());
+
+    if (RobotContainer.getManipulatorABool()) {
+      manipulatorPosition = 0.16;
+    }
+    
+    manipulatorPosition += RobotContainer.getManipulatorRightJoyY() * 0.005;
+    manipulatorPosition = MathUtil.clamp(manipulatorPosition, 0, 1);
+    m_manipulator.setWrist(manipulatorPosition);
   }
 
   // Called once the command ends or is interrupted.

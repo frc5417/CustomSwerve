@@ -204,6 +204,14 @@ public class RobotContainer {
     return m_manipulatorController.b().onTrue(command);
   }
 
+  public static Boolean getManipulatorBBool() {
+    return m_manipulatorController.b().getAsBoolean();
+  }
+
+  public static Boolean getManipulatorABool() {
+    return m_manipulatorController.a().getAsBoolean();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
