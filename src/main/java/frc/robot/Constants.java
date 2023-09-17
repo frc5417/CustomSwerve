@@ -56,6 +56,12 @@ public final class Constants {
     public static final double wristTolerance = 0.05;
     public static final double wristMax = 500.0;
     public static final double wristMin = -500.0;
+    // TUNE ALL OF THESE VALUES BASED ON PID, ONE PLAYER SUBSTATION ONLY
+    public static final double wristIn = 0.0;
+    public static final double wristConeIntake = 0.0;
+    public static final double wristConeOuttake = 0.0; 
+    public static final double wristCubeIntake = 0.0; //SAME AS wristIN
+    public static final double wristCubeOuttake = 0.0; 
   }
   
   public static class Swerve {
@@ -92,24 +98,24 @@ public final class Constants {
     public static final String[] paths = {"rotateInPlace, moveForward, PathPlannerTest"};
   }
 
-  public static class VisionConstants {
-    public static final Transform3d robotToCam =
-            new Transform3d(
-                   new Translation3d(0.5, 0.0, 0.5),
-                    new Rotation3d(
-                            0, 0,
-                            0)); 
+  // public static class VisionConstants {
+  //   public static final Transform3d robotToCam =
+  //           new Transform3d(
+  //                  new Translation3d(0.5, 0.0, 0.5),
+  //                   new Rotation3d(
+  //                           0, 0,
+  //                           0)); 
 
-    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-    public static final String cameraName = "OV5647";
-    public static final double maxDistanceAway = 2.0;
-    public static final double forwardKP = 0.1;
-    public static final double forwardToAngleRatio = 0.5;
+  //   // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+  //   public static final String cameraName = "OV5647";
+  //   public static final double maxDistanceAway = 2.0;
+  //   public static final double forwardKP = 0.1;
+  //   public static final double forwardToAngleRatio = 0.5;
     
-    public static final double CAMERA_HEIGHT_METERS = 0.72;
-    public static final double TARGET_HEIGHT_METERS = 0;
-    public static final double CAMERA_PITCH_RADIANS = 0;
-  }
+  //   public static final double CAMERA_HEIGHT_METERS = 0.72;
+  //   public static final double TARGET_HEIGHT_METERS = 0;
+  //   public static final double CAMERA_PITCH_RADIANS = 0;
+  // }
 
   public static class FieldConstants {
     public static final double length = Units.feetToMeters(54);
