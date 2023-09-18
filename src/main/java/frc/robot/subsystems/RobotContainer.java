@@ -188,28 +188,28 @@ public class RobotContainer {
     }
   }
 
-  public static Trigger getManipulatorX(Command command) {
-    return m_manipulatorController.x().onTrue(command);
-  }
-
-  public static Trigger getManipulatorA(Command command) {
-    return m_manipulatorController.a().onTrue(command);
-  }
-
-  public static Trigger getManipulatorY(Command command) {
-    return m_manipulatorController.y().onTrue(command);
-  }
-
-  public static Trigger getManipulatorB(Command command) {
-    return m_manipulatorController.b().onTrue(command);
-  }
-
   public static Boolean getManipulatorBBool() {
     return m_manipulatorController.b().getAsBoolean();
   }
 
   public static Boolean getManipulatorABool() {
     return m_manipulatorController.a().getAsBoolean();
+  }
+
+  public static Boolean getManipulatorXBool() {
+    return m_manipulatorController.x().getAsBoolean();
+  }
+
+  public static Boolean getManipulatorYBool() {
+    return m_manipulatorController.y().getAsBoolean();
+  }
+
+  public static Boolean getManipulatorLeftBumperBool() {
+    return m_manipulatorController.leftBumper().getAsBoolean();
+  }
+
+  public static Boolean getManipulatorRightBumperBool() {
+    return m_manipulatorController.rightBumper().getAsBoolean();
   }
 
   /**
@@ -220,6 +220,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autonLoader.getAuton();
   }
+
   public void runTeleopCommand() {
     teleopDrive.schedule();
   }
