@@ -24,7 +24,7 @@ public class Manipulator extends SubsystemBase {
   // private final RelativeEncoder integratedIntakeEncoder;
   // private final RelativeEncoder integratedWristEncoder;
 
-  private static final double kP = 1.75;
+  private static final double kP = 2.00;
   private static final double kI = 0.3;
   private static final double kD = 0.05;
 
@@ -73,8 +73,9 @@ public class Manipulator extends SubsystemBase {
       Wrist.set(0.0);
       SmartDashboard.putNumber("At Setpoint", 1);
     } else {
-      Wrist.set(MathUtil.clamp(pid.calculate(filteredAbsolutePosition()), -1, 1)); //use setVoltage if no work :)
+      Wrist.set(MathUtil.clamp(-1 * pid.calculate(filteredAbsolutePosition()), -1, 1)); //use setVoltage if no work :)
       SmartDashboard.putNumber("At Setpoint", 0);
+      SmartDashboard.putNumber("PID OUT: ", MathUtil.clamp(-1 * pid.calculate(filteredAbsolutePosition()), -1, 1));
     }
     SmartDashboard.putNumber("ThroughBoreEncoder", filteredAbsolutePosition());
     SmartDashboard.putNumber("WristSetpoint", pid.getSetpoint());
