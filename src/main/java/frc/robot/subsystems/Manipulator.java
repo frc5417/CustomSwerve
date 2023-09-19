@@ -24,9 +24,9 @@ public class Manipulator extends SubsystemBase {
   // private final RelativeEncoder integratedIntakeEncoder;
   // private final RelativeEncoder integratedWristEncoder;
 
-  private static final double kP = 2.00;
-  private static final double kI = 0.3;
-  private static final double kD = 0.05;
+  private static final double kP = 5.0;
+  private static final double kI = 0.1;
+  private static final double kD = 0.5;
 
   public final PIDController pid = new PIDController(kP, kI, kD);
   
@@ -41,7 +41,7 @@ public class Manipulator extends SubsystemBase {
     Intake = new CANSparkMax(Constants.MotorConstants.intakeMotorID, MotorType.kBrushless);
     Wrist = new CANSparkMax(Constants.MotorConstants.wristMotorID, MotorType.kBrushless);
 
-    Intake.setIdleMode(IdleMode.kCoast);
+    Intake.setIdleMode(IdleMode.kBrake);
     Wrist.setIdleMode(IdleMode.kBrake);
     Intake.setInverted(Constants.MotorConstants.intakeMotorInversion);
     Wrist.setInverted(Constants.MotorConstants.wristMotorInversion);
