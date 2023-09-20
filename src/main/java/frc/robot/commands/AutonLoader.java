@@ -56,6 +56,7 @@ public class AutonLoader {
     }
 
     public Command getAuton() {
-        return chooser.getSelected();
+        // return chooser.getSelected();
+        return m_autoncommands.MOVE_FORWARD;
     }    
 }

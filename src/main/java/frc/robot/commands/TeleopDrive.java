@@ -106,7 +106,7 @@ public class TeleopDrive extends CommandBase {
       manipulatorPosition = 0.25;
     }
     
-    manipulatorPosition += RobotContainer.getManipulatorRightJoyY() * 0.01;
+    manipulatorPosition += RobotContainer.getManipulatorRightJoyY() * 0.025;
     manipulatorPosition = MathUtil.clamp(manipulatorPosition, 0, 1);
     m_manipulator.setWrist(manipulatorPosition);
   }
