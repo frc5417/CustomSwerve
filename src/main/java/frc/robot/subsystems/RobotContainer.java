@@ -238,4 +238,8 @@ public class RobotContainer {
     double clocktime = (seconds/0.02);
     return clocktime;
   }
+
+  public static ChassisSpeeds getSaturatedSpeeds(double xVel, double yVel, double omega) {
+    return new ChassisSpeeds(xVel*Constants.Swerve.XPercentage, yVel*Constants.Swerve.YPercentage, omega*Constants.Swerve.angularPercentage);
+  }
 }

@@ -5,6 +5,7 @@ import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Manipulator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
+import frc.robot.subsystems.RobotContainer;
 
 public class Scoring extends CommandBase {
     private final DriveBase m_driveBase;
@@ -23,7 +24,7 @@ public class Scoring extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_driveBase.setDriveSpeed(new ChassisSpeeds(0.0*Constants.Swerve.XPercentage, 0.0*Constants.Swerve.YPercentage, 0.5*Constants.Swerve.angularPercentage));
+        m_driveBase.setDriveSpeed(RobotContainer.getSaturatedSpeeds(0.0, 0.0, 0.5));
     }
 
     // Called once the command ends or is interrupted.

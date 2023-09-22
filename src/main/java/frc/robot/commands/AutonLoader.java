@@ -48,8 +48,8 @@ public class AutonLoader {
             // chooser.addOption(path, getAutonFromPath(path));
         // }
         // chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
-        chooser.addOption("Double Score Mobility", m_autoncommands.MOBILITY);
-        chooser.addOption("Triple Score", m_autoncommands.SCORING);
+        chooser.addOption("Single Score Mobility", m_autoncommands.MOBILITY);
+        chooser.addOption("Double Score", m_autoncommands.SCORING);
 
         SmartDashboard.putData(chooser);
     }

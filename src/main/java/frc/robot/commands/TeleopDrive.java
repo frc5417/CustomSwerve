@@ -78,7 +78,8 @@ public class TeleopDrive extends CommandBase {
     SmartDashboard.putNumber("Y-Vel Input", yVel);
     SmartDashboard.putNumber("Omega Vel Input", omega);
     
-    m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel * Constants.Swerve.XPercentage, yVel * Constants.Swerve.YPercentage, omega * Constants.Swerve.angularPercentage));
+    // m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel * Constants.Swerve.XPercentage, yVel * Constants.Swerve.YPercentage, omega * Constants.Swerve.angularPercentage));
+    m_driveBase.setDriveSpeed(RobotContainer.getSaturatedSpeeds(xVel, yVel, omega));
     m_elevator.UpAndAway(RobotContainer.getManipulatorLeftJoyY()*0.25);
     if (RobotContainer.getManipulatorLeftTrigger() > 0 && RobotContainer.getManipulatorRightTrigger() <= 0) {
       m_manipulator.setIntake(RobotContainer.getManipulatorLeftTrigger());
