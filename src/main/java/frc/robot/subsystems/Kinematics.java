@@ -93,9 +93,9 @@ public class Kinematics {
     double targetYVelRatio = targetChassisSpeed.vyMetersPerSecond; /// Constants.Swerve.maxVelocity;
     double targetAngVelRatio = targetChassisSpeed.omegaRadiansPerSecond; /// Constants.Swerve.maxAngularVelocity;
 
-    if (cnt++ % 50 == 0) {
-      System.out.printf("vel: %f, xVel: %f, yVel: %f", targetAngVelRatio, targetXVelRatio, targetYVelRatio);
-    }
+    // if (cnt++ % 50 == 0) {
+      // System.out.printf("vel: %f, xVel: %f, yVel: %f", targetAngVelRatio, targetXVelRatio, targetYVelRatio);
+    // }
 
     if (fieldCentric) {
       this.gyro = this.m_ahrs.getYaw();

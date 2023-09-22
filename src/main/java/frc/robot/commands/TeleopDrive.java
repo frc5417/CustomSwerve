@@ -6,9 +6,11 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Module;
@@ -26,6 +28,8 @@ public class TeleopDrive extends CommandBase {
   // Called when the command is initially scheduled.
 
   private final DriveBase m_driveBase;
+  // private final Manipulator m_manipulator;
+  private final Elevator m_elevator;
 
   private int cnt = 0;
 
@@ -35,8 +39,12 @@ public class TeleopDrive extends CommandBase {
  
   int counter = 0;
 
-  public TeleopDrive(DriveBase driveBase) {
+  double manipulatorPosition = 0;
+
+  public TeleopDrive(DriveBase driveBase, Manipulator manipulator, Elevator elevator) {
     m_driveBase = driveBase;
+    // m_manipulator = manipulator;
+    m_elevator = elevator;
   }
 
   @Override
@@ -48,7 +56,7 @@ public class TeleopDrive extends CommandBase {
     //   temp[i] = new Module.ModuleState(0, Constants.MotorConstants.motorDegrees[i] * (Math.PI/180));
 
     // m_driveBase.setHardStates(temp);
-    
+    RobotContainer.setLEDsOn();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,9 +65,9 @@ public class TeleopDrive extends CommandBase {
     // if (counter++ <= 60)
     //   return;
     
-    double xVel = (RobotContainer.getLeftJoyX() * 0.45) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double yVel = (RobotContainer.getLeftJoyY() * 0.45) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double omega = (RobotContainer.getRightJoyX() * 0.45) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
+    double xVel = (RobotContainer.getDriverLeftJoyX() * 0.45) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double yVel = (RobotContainer.getDriverLeftJoyY() * 0.45) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
+    double omega = (RobotContainer.getDriverRightJoyX() * 0.45) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
 
     prev_xVel = xVel;
     prev_yVel = yVel;
@@ -70,10 +78,37 @@ public class TeleopDrive extends CommandBase {
     SmartDashboard.putNumber("Y-Vel Input", yVel);
     SmartDashboard.putNumber("Omega Vel Input", omega);
 
-    if (cnt++ % 50 == 0) 
-      System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
+    // if (cnt++ % 50 == 0) 
+      // System.out.printf("xVelocity: %f, yVelocity: %f, AngularVel: %f", xVel, yVel, omega);
 
-    m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel, yVel, omega));
+    m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel * Constants.Swerve.XPercentage, yVel * Constants.Swerve.YPercentage, omega * Constants.Swerve.angularPercentage));
+    m_elevator.UpAndAway(RobotContainer.getManipulatorLeftJoyY()*0.25);
+    // if (RobotContainer.getManipulatorLeftTrigger() > 0 && RobotContainer.getManipulatorRightTrigger() <= 0) {
+    //   m_manipulator.setIntake(RobotContainer.getManipulatorLeftTrigger());
+
+    // } else if (RobotContainer.getManipulatorLeftTrigger() <= 0 && RobotContainer.getManipulatorRightTrigger() > 0) {
+    //   m_manipulator.setIntake(RobotContainer.getManipulatorRightTrigger() * -1);
+    // } else {
+    //   m_manipulator.setIntake(0.0);
+    // }
+    
+    // m_manipulator.setWristSpeed(RobotContainer.getManipulatorRightJoyY());
+
+    if (RobotContainer.getManipulatorABool()) {
+      manipulatorPosition = 0.00;
+    }
+
+    if (RobotContainer.getManipulatorBBool()) {
+      manipulatorPosition = 0.14;
+    }
+
+    if (RobotContainer.getManipulatorXBool()) {
+      manipulatorPosition = 0.25;
+    }
+    
+    manipulatorPosition += RobotContainer.getManipulatorRightJoyY() * 0.025;
+    manipulatorPosition = MathUtil.clamp(manipulatorPosition, 0, 1);
+    // m_manipulator.setWrist(manipulatorPosition);
   }
 
   // Called once the command ends or is interrupted.

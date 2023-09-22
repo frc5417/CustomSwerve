@@ -25,7 +25,7 @@ public class LightsControl extends SubsystemBase {
   public LightsControl() {
     led = new AddressableLED(9);
 
-    ledBuffer = new AddressableLEDBuffer(1*2);
+    ledBuffer = new AddressableLEDBuffer(1*130);
     led.setLength(ledBuffer.getLength());
     for (var i = 0; i < ledBuffer.getLength(); i++) {
         // Sets the specified LED to the RGB values for red

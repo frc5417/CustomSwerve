@@ -26,7 +26,7 @@ public class Module {
   /** Creates a new Module. */
 
   public CANSparkMax angleMotor;
-  private CANSparkMax driveMotor;
+  public CANSparkMax driveMotor;
 
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
@@ -83,9 +83,9 @@ public class Module {
     double x = setAngle(targetState.getDir());
     double y = setDriveSpeed(targetState.getVel());
 
-    if (++cnt % 50 == 0) {
-      System.out.printf("Set module %d angle to %f, speed to %f\n", this.moduleNum, x, y);
-    }
+    // if (++cnt % 50 == 0) {
+    //   System.out.printf("Set module %d angle to %f, speed to %f\n", this.moduleNum, x, y);
+    // }
   }
 
   //angle to normalize between 0 and 2PI RAD
@@ -152,7 +152,7 @@ public class Module {
     SmartDashboard.putNumber(name, this.getAngleInRadians());
 
     if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180))) {
-      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -0.8, 0.8));
+      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -1, 1));
     } else {
       this.angleMotor.set(0.0);
     }
