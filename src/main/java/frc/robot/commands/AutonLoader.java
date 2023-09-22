@@ -45,18 +45,18 @@ public class AutonLoader {
             // chooser.addOption(path, getAutonFromPath(path));
         // }
         chooser.addOption("forward", m_autoncommands.MOVE_FORWARD);
-        chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
+        // chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
         chooser.addOption("rotateinplace", m_autoncommands.ROTATE_IN_PLACE);
 
         SmartDashboard.putData(chooser);
     }
 
-    private Command getAutonFromPath(String path) {
-        return new PrintCommand(path);
-    }
+    // private Command getAutonFromPath(String path) {
+    //     return new PrintCommand(path);
+    // }
 
     public Command getAuton() {
-        // return chooser.getSelected();
-        return m_autoncommands.MOVE_FORWARD;
+        return chooser.getSelected();
+        // return m_autoncommands.MOVE_FORWARD;
     }    
 }

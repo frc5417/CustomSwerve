@@ -232,4 +232,9 @@ public class RobotContainer {
   public static void setLEDsOn() {
     m_lightsControl.setLightConfig(0);
   }
+
+  public static double findClockTime(double seconds) {
+    double clocktime = (seconds/0.02);
+    return clocktime;
+  }
 }

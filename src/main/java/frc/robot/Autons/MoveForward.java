@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveBase;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
+import frc.robot.subsystems.RobotContainer;
 
 public class MoveForward extends CommandBase {
     private final DriveBase m_driveBase;
@@ -23,7 +24,7 @@ public class MoveForward extends CommandBase {
     @Override
     public void execute() {
         m_driveBase.setDriveSpeed(new ChassisSpeeds(0.0*Constants.Swerve.XPercentage, 0.5*Constants.Swerve.YPercentage, 0.0*Constants.Swerve.angularPercentage));
-        while (counter <= (1.0/0.02)) {
+        while (counter <= RobotContainer.findClockTime(1.0)) {
             counter++;
         }
         m_driveBase.setDriveSpeed(new ChassisSpeeds(0, 0, 0));
