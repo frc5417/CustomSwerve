@@ -1,8 +1,8 @@
+package frc.robot.subsystems;
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
-package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 
@@ -19,18 +19,19 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Module {
   /** Creates a new Module. */
 
   public CANSparkMax angleMotor;
-  private CANSparkMax driveMotor;
+  public CANSparkMax driveMotor;
 
   private final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
 
-  private final int module_num; // ZERO INDEXED
+  private final int moduleNum; // ZERO INDEXED
 
   private static final double kP = 0.4;
   private static final double kI = 0.0;
@@ -42,24 +43,27 @@ public class Module {
   
   private WPI_CANCoder _CANCoder;
 
+  int cnt = 0;
+
   public Module(int module, boolean inverted) {
-    this.module_num = module;
+    
+    this.moduleNum = module;
 
      /* Angle Motor Config */
-     angleMotor = new CANSparkMax(Constants.MotorConstants.angleMotorIDS[this.module_num], MotorType.kBrushless);
+     angleMotor = new CANSparkMax(Constants.MotorConstants.angleMotorIDS[this.moduleNum], MotorType.kBrushless);
      configAngleMotor();
 
      integratedAngleEncoder = angleMotor.getEncoder();
      angleMotor.getPIDController();
 
-     _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.module_num], "canivore");
+     _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.moduleNum], "canivore");
 
     //  _CANCoder.setPositionToAbsolute(0);
-     _CANCoder.configAllSettings(returnCANConfig());
+    //  _CANCoder.configAllSettings(returnCANConfig());
      _CANCoder.setPosition(0);
     
      /* Drive Motor Config */
-     driveMotor = new CANSparkMax(Constants.MotorConstants.driveMotorIDS[this.module_num], MotorType.kBrushless);
+     driveMotor = new CANSparkMax(Constants.MotorConstants.driveMotorIDS[this.moduleNum], MotorType.kBrushless);
      configDriveMotor();
 
      integratedDriveEncoder = driveMotor.getEncoder();
@@ -67,16 +71,21 @@ public class Module {
      
 
     pid.enableContinuousInput(0, Math.PI * 2);
+    pid.setTolerance(0.0);
 
     this.invertDriveSpeed = inverted;
     // if(_CANCoder.getMagnetFieldStrength() != MagnetFieldStrength.Good_GreenLED) {
-      // throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.module_num).toString() + " is not green!");
+      // throw new RuntimeException("CANCoder on Module #" + Integer.valueOf(this.moduleNum).toString() + " is not green!");
     // }
   }
 
   public void setSpeedAndAngle(ModuleState targetState) {
-    setAngle(targetState.getDir());
-    setDriveSpeed(targetState.getVel());
+    double x = setAngle(targetState.getDir());
+    double y = setDriveSpeed(targetState.getVel());
+
+    // if (++cnt % 50 == 0) {
+    //   System.out.printf("Set module %d angle to %f, speed to %f\n", this.moduleNum, x, y);
+    // }
   }
 
   //angle to normalize between 0 and 2PI RAD
@@ -91,16 +100,20 @@ public class Module {
     return fixedAngle;
   }
 
-  public void setDriveSpeed(double speed) {
+  public double setDriveSpeed(double speed) {
     int invertMultiplier = 1;
     if (invertDriveSpeed) { 
       invertMultiplier = -1; 
     }
-    driveMotor.set(speed * invertMultiplier);
+
+    double x = speed * invertMultiplier;
+    
+    driveMotor.set(x);
+    return x;
   }
 
-  public double getAngleInRadians() {
-    return _CANCoder.getPosition() * (Math.PI/180.0);
+  public double getAngleInRadians() { 
+    return (_CANCoder.getAbsolutePosition() - Constants.MotorConstants.motorDegrees[this.moduleNum]) * (Math.PI/180.0);
   }
 
   public double getAngle() {
@@ -115,10 +128,10 @@ public class Module {
     return integratedAngleEncoder.getVelocity();
   }
 
-  public void setAngle(double angle_in_rad) {
+  public double setAngle(double angle_in_rad) {
     // //code to make the angle motor turn the least amount possible and drive direction if necessary
-    // double targetAngle = angle_in_rad + Constants.MotorConstants.angleOffsets[this.module_num - 1];
-    // double currentAngle = getAngle();
+    // double targetAngle = angle_in_rad + Constants.MotorConstants.angleOffsets[this.moduleNum - 1];
+    // double cudoublerrentAngle = getAngle();
     // double normalDifference = currentAngle - targetAngle;
     // double difference180 = currentAngle - normalizeAngle(targetAngle+180.0);
 
@@ -130,13 +143,21 @@ public class Module {
     //   pid.setSetpoint(targetAngle+180.0); // angles are in TRUE BEARING ( angles are negated )
     //   invertSpeed();
     // }
+
+    double x = (angle_in_rad);
+
     pid.setSetpoint(angle_in_rad);
 
+    String name = "Mod" + String.valueOf(this.moduleNum);
+    SmartDashboard.putNumber(name, this.getAngleInRadians());
+
     if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180))) {
-      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -0.8, 0.8));
+      this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -1, 1));
     } else {
       this.angleMotor.set(0.0);
     }
+
+    return x;
   }
 
   public void resetDriveAngleEncoder() {
@@ -179,5 +200,23 @@ public class Module {
     // driveController.setFF(Constants.Swerve.angleKFF);
     // driveMotor.enableVoltageCompensation(Constants.Swerve.voltageComp);
     driveMotor.burnFlash();
+  }
+
+  public static class ModuleState {
+    private final double m_vel;
+    private final double m_dir;
+
+    public ModuleState(double vel, double dir) {
+        m_vel = vel;
+        m_dir = dir;
+    }
+
+    public double getVel() {
+        return m_vel;
+    }
+
+    public double getDir() {
+        return m_dir;
+    }
   }
 }

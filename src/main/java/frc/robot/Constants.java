@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib contributors. test
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -7,6 +7,11 @@ package frc.robot;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.revrobotics.CANSparkMax.IdleMode;
+
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -18,27 +23,56 @@ import com.revrobotics.CANSparkMax.IdleMode;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final boolean fieldCentric = true;
-    public static final double joystickDeadband = 0.2;
+    public static final int kDriverPort = 0;
+    public static final int kManipulatorPort = 1;
+    public static final boolean fieldCentric = true; //FRONT IS THE SIDE OPPOSITE TO BATTERY
+    public static final double joystickDeadband = 0.1; //HAS TO BE TUNED A BIT
   }
 
   public static class MotorConstants {
+    public static final Integer[] elevatorMotorIDS = {50, 51};
+    public static final Boolean[] elevatorMotorInversions = {false, true};
+
+    public static final int wristMotorID = 61;
+    public static final boolean wristMotorInversion = false;
+    public static final int intakeMotorID = 62;
+    public static final boolean intakeMotorInversion = false;
+
+    public static final int throughBoreEncPort = 3;
+
+
     // 0 indexing
     public static final Integer[] driveMotorIDS = {11, 21, 31, 40}; 
     public static final Integer[] angleMotorIDS = {10, 20, 30, 41};
-    public static final Integer[] CANCoderID = {9, 12, 8, 13};
+    public static final Integer[] CANCoderID = {9, 12, 8, 19};
+    public static final Double[] motorDegrees = {94.192, 183.843, 349.892, 308.245};
     public static final Double[] angleOffsets = {0.0, 0.0, 0.0, 0.0};
     public static final Double[][] angleMotorPID = {
       {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}};
-    public static final Double degTolerance = 2.5;
+    public static final Double degTolerance = 0.75;
+  }
+
+  public static class ManipulatorConstants {
+    public static final double wristTolerance = 0.05;
+    public static final double wristMax = 500.0;
+    public static final double wristMin = -500.0;
+    // TUNE ALL OF THESE VALUES BASED ON PID, ONE PLAYER SUBSTATION ONLY
+    public static final double wristIn = 0.0;
+    public static final double wristConeIntake = 0.0;
+    public static final double wristConeOuttake = 0.0; 
+    public static final double wristCubeIntake = 0.0; //SAME AS wristIN
+    public static final double wristCubeOuttake = 0.0; 
   }
   
   public static class Swerve {
+    public static final Double angularPercentage = 0.5;
+    public static final Double XPercentage = -1.0;
+    public static final Double YPercentage = - 1.0;
+
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
     public static final IdleMode driveNeutralMode = IdleMode.kBrake;
-    public static final double maxVelocity = 3.8; // m/s
-    public static final double maxAngularVelocity = 56.0; // rad/s
+    public static final double maxVelocity = 1; //3.8; // m/s
+    public static final double maxAngularVelocity = 1; //56.0; // rad/s
     //velocity PID tuning for overall swerve
     public static final double velocitykP = 1.0; // 0.0001
     public static final double velocitykI = 0.0;
@@ -56,7 +90,7 @@ public final class Constants {
     public static final PIDConstants ROTATION_PID = new PIDConstants(0, 0, 0);
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(0, 0, 0);
     public static final Integer wheels = 4;
-    public static final boolean[] invertedMotors = {true, true, false, false};
+    public static final boolean[] invertedMotors = {true, true, false, true};
     //TODO: tune pid constants
   }
 
@@ -64,7 +98,27 @@ public final class Constants {
     public static final String[] paths = {"rotateInPlace, moveForward, PathPlannerTest"};
   }
 
+  // public static class VisionConstants {
+  //   public static final Transform3d robotToCam =
+  //           new Transform3d(
+  //                  new Translation3d(0.5, 0.0, 0.5),
+  //                   new Rotation3d(
+  //                           0, 0,
+  //                           0)); 
 
-  // Josh was here
-  // Hi Josh!
+  //   // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+  //   public static final String cameraName = "OV5647";
+  //   public static final double maxDistanceAway = 2.0;
+  //   public static final double forwardKP = 0.1;
+  //   public static final double forwardToAngleRatio = 0.5;
+    
+  //   public static final double CAMERA_HEIGHT_METERS = 0.72;
+  //   public static final double TARGET_HEIGHT_METERS = 0;
+  //   public static final double CAMERA_PITCH_RADIANS = 0;
+  // }
+
+  public static class FieldConstants {
+    public static final double length = Units.feetToMeters(54);
+    public static final double width = Units.feetToMeters(27);
+  } 
 }

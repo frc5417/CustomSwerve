@@ -5,8 +5,10 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Kinematics {
   /** Creates a new Compute. */
@@ -16,11 +18,12 @@ public class Kinematics {
   private double gyro = 0.0;
   private final AHRS m_ahrs;
 
+  private int  cnt = 0;
 
-  public Kinematics(Systems systems) {
+
+  public Kinematics(AHRS ahrs) {
     this.fieldCentric = Constants.OperatorConstants.fieldCentric;
-    m_ahrs = systems.ahrs;
-
+    m_ahrs = ahrs;
   }
 
   private double[][] computeStrafe(double joy_x, double joy_y) {
@@ -84,11 +87,15 @@ public class Kinematics {
     }
   }
 
-  public ModuleState[] getModuleStates(ChassisSpeeds targetChassisSpeed) {
+  public Module.ModuleState[] getComputedModuleStates(ChassisSpeeds targetChassisSpeed) {
 
-    double targetXVelRatio = targetChassisSpeed.vxMetersPerSecond / Constants.Swerve.maxVelocity;
-    double targetYVelRatio = targetChassisSpeed.vyMetersPerSecond / Constants.Swerve.maxVelocity;
-    double targetAngVelRatio = targetChassisSpeed.omegaRadiansPerSecond / Constants.Swerve.maxAngularVelocity;
+    double targetXVelRatio = targetChassisSpeed.vxMetersPerSecond; /// Constants.Swerve.maxVelocity;
+    double targetYVelRatio = targetChassisSpeed.vyMetersPerSecond; /// Constants.Swerve.maxVelocity;
+    double targetAngVelRatio = targetChassisSpeed.omegaRadiansPerSecond; /// Constants.Swerve.maxAngularVelocity;
+
+    // if (cnt++ % 50 == 0) {
+      // System.out.printf("vel: %f, xVel: %f, yVel: %f", targetAngVelRatio, targetXVelRatio, targetYVelRatio);
+    // }
 
     if (fieldCentric) {
       this.gyro = this.m_ahrs.getYaw();
@@ -99,33 +106,38 @@ public class Kinematics {
 
     conv(computeUnicorn(computeStrafe(targetXVelRatio, targetYVelRatio), computeRotation(targetAngVelRatio)));
 
-    ModuleState[] targetModuleStates = new ModuleState[4];
+    Module.ModuleState[] targetModuleStates = new Module.ModuleState[4];
 
-    for (int i = 0; i < 4; i++)
-      targetModuleStates[i] = new ModuleState(vel[i], theta[i]);
+    for (int i = 0; i < 4; i++) {
+      targetModuleStates[i] = new Module.ModuleState(vel[i], theta[i]);
+      String name = "Swerve (" + String.valueOf(i) + ") Angle";
+      SmartDashboard.putNumber(name, theta[i]);
+      name = "Swerve (" + String.valueOf(i) + ") Speed";
+      SmartDashboard.putNumber(name, vel[i]);
+    }
     
     return targetModuleStates;
   }
 
-  public static ModuleState[] normalizeVelocity(ModuleState[] moduleStates) { // keeps the ratio of wheel velocities while ensuring that each never goes above 1
-    assert(moduleStates.length == 4);
+  // public static ModuleState[] normalizeVelocity(ModuleState[] moduleStates) { // keeps the ratio of wheel velocities while ensuring that each never goes above 1
+  //   assert(moduleStates.length == 4);
 
-    ModuleState[] newModuleStates = new ModuleState[4];
+  //   ModuleState[] newModuleStates = new ModuleState[4];
 
-    double maxVel = 0;
-    for (int i = 0; i < 4; i++)
-        Math.max(maxVel, Math.abs(moduleStates[i].getVel()));
+  //   double maxVel = 0;
+  //   for (int i = 0; i < 4; i++)
+  //       Math.max(maxVel, Math.abs(moduleStates[i].getVel()));
 
-    if (maxVel > 1) {
-      for (int i = 0; i < 4; i++) {
-        newModuleStates[i] = new ModuleState(moduleStates[i].getVel() / maxVel, moduleStates[i].getDir());
-      }
-    } else {
-      newModuleStates = moduleStates;
-    }
+  //   if (maxVel > 1) {
+  //     for (int i = 0; i < 4; i++) {
+  //       newModuleStates[i] = new ModuleState(moduleStates[i].getVel() / maxVel, moduleStates[i].getDir());
+  //     }
+  //   } else {
+  //     newModuleStates = moduleStates;
+  //   }
 
-    return newModuleStates;
-  } 
+  //   return newModuleStates;
+  // } 
 
   public double[] getVel() {
   	return vel;
@@ -134,7 +146,5 @@ public class Kinematics {
   public double[] getTheta() {
   	return theta;
   }
-
-
 }
 
