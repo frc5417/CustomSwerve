@@ -2,14 +2,17 @@ package frc.robot.Autons;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.Manipulator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 
-public class RotateInPlace extends CommandBase {
+public class Scoring extends CommandBase {
     private final DriveBase m_driveBase;
+    private final Manipulator m_manipulator;
 
-    public RotateInPlace(DriveBase drive) {
+    public Scoring(DriveBase drive, Manipulator manip) {
         m_driveBase = drive;
+        m_manipulator = manip;
     }
 
     // Called when the command is initially scheduled.

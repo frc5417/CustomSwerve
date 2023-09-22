@@ -57,11 +57,9 @@ public final class Constants {
     public static final double wristMax = 500.0;
     public static final double wristMin = -500.0;
     // TUNE ALL OF THESE VALUES BASED ON PID, ONE PLAYER SUBSTATION ONLY
-    public static final double wristIn = 0.0;
-    public static final double wristConeIntake = 0.0;
-    public static final double wristConeOuttake = 0.0; 
-    public static final double wristCubeIntake = 0.0; //SAME AS wristIN
-    public static final double wristCubeOuttake = 0.0; 
+    public static final double wristICubeI = 0.0;
+    public static final double wristConeICubeO = 0.14;
+    public static final double wristConeOCubeI = 0.25;
   }
   
   public static class Swerve {
