@@ -83,14 +83,13 @@ public class TeleopDrive extends CommandBase {
     m_elevator.UpAndAway(RobotContainer.getManipulatorLeftJoyY()*0.25);
     if (RobotContainer.getManipulatorLeftTrigger() > 0 && RobotContainer.getManipulatorRightTrigger() <= 0) {
       m_manipulator.setIntake(RobotContainer.getManipulatorLeftTrigger());
-
     } else if (RobotContainer.getManipulatorLeftTrigger() <= 0 && RobotContainer.getManipulatorRightTrigger() > 0) {
       m_manipulator.setIntake(RobotContainer.getManipulatorRightTrigger() * -1);
     } else {
       m_manipulator.setIntake(0.0);
     }
     
-    m_manipulator.setWristSpeed(RobotContainer.getManipulatorRightJoyY());
+    // m_manipulator.setWristSpeed(RobotContainer.getManipulatorRightJoyY());
 
     if (RobotContainer.getManipulatorABool()) {
       manipulatorPosition = Constants.ManipulatorConstants.wristICubeI;
