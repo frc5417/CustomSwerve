@@ -13,19 +13,22 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.Manipulator;
 
 public class AutonLoader {
     private static HashMap<String, Command> eventMap;
     private SwerveAutoBuilder autoBuilder;
     private final DriveBase m_driveBase;
+    private final Manipulator m_manipulator;
     private final AutonCommands m_autoncommands;
     private static SendableChooser<Command> chooser;
     private static List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
 
-    public AutonLoader(DriveBase driveBase) {
+    public AutonLoader(DriveBase driveBase, Manipulator manipulator) {
 
         m_driveBase = driveBase;
-        m_autoncommands = new AutonCommands(driveBase);
+        m_manipulator = manipulator;
+        m_autoncommands = new AutonCommands(driveBase, manipulator);
         chooser = new SendableChooser<>();
 
         eventMap = new HashMap<>();
@@ -44,9 +47,9 @@ public class AutonLoader {
         // for (String path : Constants.Auton.paths) {
             // chooser.addOption(path, getAutonFromPath(path));
         // }
-        chooser.addOption("forward", m_autoncommands.MOVE_FORWARD);
         // chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
-        chooser.addOption("rotateinplace", m_autoncommands.ROTATE_IN_PLACE);
+        chooser.addOption("Single Score Mobility", m_autoncommands.MOBILITY);
+        chooser.addOption("Double Score", m_autoncommands.SCORING);
 
         SmartDashboard.putData(chooser);
     }

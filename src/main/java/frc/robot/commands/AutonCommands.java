@@ -1,19 +1,22 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.DriveBase;
-import frc.robot.Autons.MoveForward;
-import frc.robot.Autons.RotateInPlace;
+import frc.robot.subsystems.Manipulator;
+import frc.robot.Autons.Mobility;
+import frc.robot.Autons.Scoring;
 
 // This file will be used to store auton commands (activating intake, etc.)
 public class AutonCommands {
 
     public final DriveBase m_drivebase;
-    public final MoveForward MOVE_FORWARD;
-    public final RotateInPlace ROTATE_IN_PLACE;
+    public final Manipulator m_manipulator;
+    public final Mobility MOBILITY;
+    public final Scoring SCORING;
 
-    public AutonCommands(DriveBase dBase) {
+    public AutonCommands(DriveBase dBase, Manipulator manip) {
         m_drivebase = dBase;
-        MOVE_FORWARD = new MoveForward(m_drivebase);
-        ROTATE_IN_PLACE = new RotateInPlace(m_drivebase);
+        m_manipulator = manip;
+        MOBILITY = new Mobility(m_drivebase, m_manipulator);
+        SCORING = new Scoring(m_drivebase, m_manipulator);
     }
 }
