@@ -43,7 +43,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void UpAndAway(double speed) {
-    Motor1.set(speed);
-    Motor2.set(speed);
+    Motor1.set(speed*0.25);
+    Motor2.set(speed*0.25);
   }
 }

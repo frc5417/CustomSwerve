@@ -80,7 +80,7 @@ public class TeleopDrive extends CommandBase {
     
     // m_driveBase.setDriveSpeed(new ChassisSpeeds(xVel * Constants.Swerve.XPercentage, yVel * Constants.Swerve.YPercentage, omega * Constants.Swerve.angularPercentage));
     m_driveBase.setDriveSpeed(RobotContainer.getSaturatedSpeeds(xVel, yVel, omega));
-    m_elevator.UpAndAway(RobotContainer.getManipulatorLeftJoyY()*0.25);
+    m_elevator.UpAndAway(RobotContainer.getManipulatorLeftJoyY());
     if (RobotContainer.getManipulatorLeftTrigger() > 0 && RobotContainer.getManipulatorRightTrigger() <= 0) {
       m_manipulator.setIntake(RobotContainer.getManipulatorLeftTrigger());
     } else if (RobotContainer.getManipulatorLeftTrigger() <= 0 && RobotContainer.getManipulatorRightTrigger() > 0) {
@@ -92,20 +92,21 @@ public class TeleopDrive extends CommandBase {
     // m_manipulator.setWristSpeed(RobotContainer.getManipulatorRightJoyY());
 
     if (RobotContainer.getManipulatorABool()) {
-      manipulatorPosition = Constants.ManipulatorConstants.wristICubeI;
+      manipulatorPosition = 0.137;
     }
 
     if (RobotContainer.getManipulatorBBool()) {
-      manipulatorPosition = Constants.ManipulatorConstants.wristConeICubeO;
+      manipulatorPosition = 0.0108;
     }
 
-    if (RobotContainer.getManipulatorXBool()) {
-      manipulatorPosition = Constants.ManipulatorConstants.wristConeOCubeI;
-    }
+    // if (RobotContainer.getManipulatorXBool()) {
+    //   manipulatorPosition = Constants.ManipulatorConstants.wristConeOCubeI;
+    // }
     
     // m_manipulator.setWrist(manipulatorPosition);
-    manipulatorPosition += RobotContainer.getManipulatorRightJoyY() * 0.025;
+    manipulatorPosition += RobotContainer.getManipulatorRightJoyY() * 0.01;
     manipulatorPosition = MathUtil.clamp(manipulatorPosition, 0, 1);
+    m_manipulator.setWrist(manipulatorPosition);
   }
 
   // Called once the command ends or is interrupted.
