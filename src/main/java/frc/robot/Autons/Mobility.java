@@ -21,17 +21,21 @@ public class Mobility extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        m_driveBase.setDriveSpeed(RobotContainer.getSaturatedSpeeds(0.0, 0.5, 0.0));
+        if (counter < 10000) {
+            counter++;
+            // m_driveBase.setDriveSpeed(RobotContainer.getSaturatedSpeeds(0.0, 0.5, 0.0));
+        } else {
+            m_driveBase.setDriveSpeed(RobotContainer.getSaturatedSpeeds(0.0, 0.0, 0.0));
+        }
+        m_driveBase.setDriveSpeed(RobotContainer.getSaturatedSpeeds(0.0, 0.0, 0.0));
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        m_driveBase.setDriveSpeed(RobotContainer.getSaturatedSpeeds(0.0, 0.5, 0.0));
-        while (counter <= RobotContainer.findClockTime(1.0)) {
-            counter++;
-        }
-        counter = 0;
         m_driveBase.setDriveSpeed(RobotContainer.getSaturatedSpeeds(0.0, 0.0, 0.0));
+        
     }
 
     // Called once the command ends or is interrupted.
