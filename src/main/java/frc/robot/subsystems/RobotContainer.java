@@ -21,6 +21,7 @@ import frc.robot.Robot;
 import frc.robot.commands.AutonLoader;
 import frc.robot.commands.SetLightConfig;
 import frc.robot.commands.TeleopDrive;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,8 +38,8 @@ public class RobotContainer {
   public static DriveBase driveBase = new DriveBase(kinematics);
   public static Manipulator manipulator = new Manipulator();
   public static Elevator elevator = new Elevator();
-  public static AutonLoader autonLoader = new AutonLoader(driveBase);
-  public static TeleopDrive teleopDrive = new TeleopDrive(driveBase, manipulator, elevator);
+  public static AutonLoader autonLoader = new AutonLoader(driveBase, manipulator); //NEEDED SUBSYSTEMS FOR AUTON, ELEVATOR NOT USED
+  public static TeleopDrive teleopDrive = new TeleopDrive(driveBase, manipulator, elevator); //ALL SUBSYSTEMS
   private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverPort);
   private final static CommandXboxController m_manipulatorController = new CommandXboxController(OperatorConstants.kManipulatorPort);
 
@@ -236,5 +237,9 @@ public class RobotContainer {
   public static double findClockTime(double seconds) {
     double clocktime = (seconds/0.02);
     return clocktime;
+  }
+
+  public static ChassisSpeeds getSaturatedSpeeds(double xVel, double yVel, double omega) {
+    return new ChassisSpeeds(xVel*Constants.Swerve.XPercentage, yVel*Constants.Swerve.YPercentage, omega*Constants.Swerve.angularPercentage);
   }
 }
