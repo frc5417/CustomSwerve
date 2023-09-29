@@ -35,7 +35,7 @@ public class RobotContainer {
 
   public static AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
   public static Kinematics kinematics = new Kinematics(ahrs);
-  public static DriveBase driveBase = new DriveBase(kinematics);
+  public static DriveBase driveBase = new DriveBase(kinematics, ahrs);
   public static Manipulator manipulator = new Manipulator();
   public static Elevator elevator = new Elevator();
   public static AutonLoader autonLoader = new AutonLoader(driveBase, manipulator); //NEEDED SUBSYSTEMS FOR AUTON, ELEVATOR NOT USED

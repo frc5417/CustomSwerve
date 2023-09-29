@@ -18,7 +18,7 @@ public class Kinematics {
   private double gyro = 0.0;
   private final AHRS m_ahrs;
 
-  private int  cnt = 0;
+  private int cnt = 0;
 
 
   public Kinematics(AHRS ahrs) {

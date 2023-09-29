@@ -28,7 +28,7 @@ public class Module {
   public CANSparkMax angleMotor;
   public CANSparkMax driveMotor;
 
-  private final RelativeEncoder integratedDriveEncoder;
+  public final RelativeEncoder integratedDriveEncoder;
   private final RelativeEncoder integratedAngleEncoder;
 
   private final int moduleNum; // ZERO INDEXED
@@ -68,6 +68,7 @@ public class Module {
 
      integratedDriveEncoder = driveMotor.getEncoder();
      driveMotor.getPIDController();
+     integratedDriveEncoder.setPosition(0);
      
 
     pid.enableContinuousInput(0, Math.PI * 2);

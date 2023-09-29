@@ -23,7 +23,7 @@ public class LightsControl extends SubsystemBase {
   
   /** Creates a new LightsControl. */
   public LightsControl() {
-    led = new AddressableLED(9);
+    led = new AddressableLED(5);
 
     ledBuffer = new AddressableLEDBuffer(1*130);
     led.setLength(ledBuffer.getLength());

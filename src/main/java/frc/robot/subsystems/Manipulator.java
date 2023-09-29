@@ -24,7 +24,7 @@ public class Manipulator extends SubsystemBase {
   // private final RelativeEncoder integratedIntakeEncoder;
   // private final RelativeEncoder integratedWristEncoder;
 
-  private static final double kP = 3.1; //8.3
+  private static final double kP = 8.0; //8.3
   private static final double kI = 0.05;
   private static final double kD = 0.15;
 
