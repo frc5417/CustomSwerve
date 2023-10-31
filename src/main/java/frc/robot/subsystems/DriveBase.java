@@ -31,6 +31,8 @@ public class DriveBase extends SubsystemBase {
     double mod1Curr = 0;
     int counter = 0;
 
+    double tic, toc = 0;
+
     Translation2d m_frontLeftLocation = new Translation2d(-0.323, 0.323);
     Translation2d m_frontRightLocation = new Translation2d(0.323, 0.323);
     Translation2d m_backLeftLocation = new Translation2d(-0.323, -0.323);
@@ -41,6 +43,8 @@ public class DriveBase extends SubsystemBase {
     SwerveDriveOdometry m_sdkOdom;
 
     Pose2d globalPose = new Pose2d(0.0, 0.0, new Rotation2d());
+    double X = 0.0;
+    double Y = 0.0;
 
     public DriveBase(Kinematics kinematics, AHRS ahrs) {
         m_kinematics = kinematics;
@@ -49,7 +53,7 @@ public class DriveBase extends SubsystemBase {
         moduleGroup = new Module[4];
         for (int i = 0; i < 4; i++) {
             moduleGroup[i] = new Module(i, Constants.DriveTrainConstants.invertedMotors[i]);
-            encoderOffset[i] = moduleGroup[i].integratedDriveEncoder.getPosition();
+            encoderOffset[i] = moduleGroup[i].getAngleInRadians();//integratedDriveEncoder.getPosition();
         }
 
         targetModuleStates = new Module.ModuleState[4];
@@ -90,37 +94,45 @@ public class DriveBase extends SubsystemBase {
         }
     }
 
+    public double smallestAngle(double largeAngle) {
+        if(largeAngle > 0) {
+            return largeAngle - Math.floor(Math.abs(largeAngle)/(2*Math.PI)) * (2*Math.PI);
+        } else {
+            return (largeAngle + Math.floor(Math.abs(largeAngle)/(2*Math.PI)) * (2*Math.PI)) + (2*Math.PI);
+        }
+    }
+
     @Override
     public void periodic() {
         // RobotContainer.m_photonsubsystem.updatePose();
         for (int i = 0; i < 4; i++) {
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
-            odomDeltas[i] = (((moduleGroup[i].integratedDriveEncoder.getPosition() - encoderOffset[i])/6.0) * (0.102*2.0*Math.PI)) - 0;
-            odomPrevDeltas[i] = odomDeltas[i];
-            odomAngles[i] = moduleGroup[i].getAngle();
+            odomDeltas[i] = (((moduleGroup[i].integratedDriveEncoder.getPosition() - encoderOffset[i])/6.0) * (0.102*Math.PI));// - odomPrevDeltas[i];
+            odomAngles[i] = smallestAngle(moduleGroup[i].getAngleInRadians());//smallestAngle(moduleGroup[i].getAngleInRadians()*(180.0/Math.PI)) * (Math.PI/180.0);
         }
+        
 
         globalPose = m_sdkOdom.update(new Rotation2d(m_ahrs.getAngle()), new SwerveModulePosition[] {
-            new SwerveModulePosition(odomDeltas[3], new Rotation2d(odomAngles[3])),
-            new SwerveModulePosition(odomDeltas[2], new Rotation2d(odomAngles[2])),
-            new SwerveModulePosition(odomDeltas[1], new Rotation2d(odomAngles[1])),
-            new SwerveModulePosition(odomDeltas[0], new Rotation2d(odomAngles[0]))
+            new SwerveModulePosition(Math.abs(odomDeltas[3]), new Rotation2d(odomAngles[3])),
+            new SwerveModulePosition(Math.abs(odomDeltas[2]), new Rotation2d(odomAngles[2])),
+            new SwerveModulePosition(Math.abs(odomDeltas[1]), new Rotation2d(odomAngles[1])),
+            new SwerveModulePosition(Math.abs(odomDeltas[0]), new Rotation2d(odomAngles[0]))
         });
 
-        SmartDashboard.putNumber("Mod1_dy/dx", (((moduleGroup[0].integratedDriveEncoder.getPosition() - encoderOffset[0])/6.0) * (0.102*2.0*Math.PI)));
-        SmartDashboard.putNumber("Mod2_dy/dx", (((moduleGroup[1].integratedDriveEncoder.getPosition() - encoderOffset[1])/6.0) * (0.102*2.0*Math.PI)));
-        SmartDashboard.putNumber("Mod3_dy/dx", (((moduleGroup[2].integratedDriveEncoder.getPosition() - encoderOffset[2])/6.0) * (0.102*2.0*Math.PI)));
-        SmartDashboard.putNumber("Mod4_dy/dx", (((moduleGroup[3].integratedDriveEncoder.getPosition() - encoderOffset[3])/6.0) * (0.102*2.0*Math.PI)));
+        // X += globalPose.getX();
+        // Y += globalPose.getY();
 
+        SmartDashboard.putNumber("Mod1_delta", Math.abs(odomDeltas[0]));
+        SmartDashboard.putNumber("Mod2_delta", Math.abs(odomDeltas[1]));
+        SmartDashboard.putNumber("Mod3_delta", Math.abs(odomDeltas[2]));
+        SmartDashboard.putNumber("Mod4_delta", Math.abs(odomDeltas[3]));
+
+        SmartDashboard.putNumber("Mod1_theta", odomAngles[0]);
+        SmartDashboard.putNumber("Mod2_theta", odomAngles[1]);
+        SmartDashboard.putNumber("Mod3_theta", odomAngles[2]);
+        SmartDashboard.putNumber("Mod4_theta", odomAngles[3]);
+        
         SmartDashboard.putNumber("GLOBAL POSE X: ", globalPose.getX());
         SmartDashboard.putNumber("GLOBAL POSE Y: ", globalPose.getY());
-
-        // mod1Curr = moduleGroup[0].getAngle();
-        // if ((counter++ % 50) == 0) {
-        //     System.out.println(odomDeltas[0]);
-        // }
-        
-        // mod1Prev = mod1Curr;
-        
     }
 }
