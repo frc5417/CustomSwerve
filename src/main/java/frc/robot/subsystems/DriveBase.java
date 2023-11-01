@@ -118,7 +118,8 @@ public class DriveBase extends SubsystemBase {
             new SwerveModulePosition(Math.abs(odomDeltas[1]), new Rotation2d(odomAngles[1])),
             new SwerveModulePosition(Math.abs(odomDeltas[0]), new Rotation2d(odomAngles[0]))
         });
-        SmartDashboard.putNumber("Gyro", m_ahrs.getRotation2d().getDegrees());
+        // SmartDashboard.putNumber("Gyro", m_ahrs.getRotation2d().getDegrees());
+        SmartDashboard.putData("Gyro", m_ahrs);
 
         // X += globalPose.getX();
         // Y += globalPose.getY();
