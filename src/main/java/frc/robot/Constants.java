@@ -79,6 +79,8 @@ public final class Constants {
     public static final double aVelocitykI = 0.0;
     public static final double aVelocitykD = 0.0;
 
+    public static final double odomProportionality = -0.93409848871;
+
     public static final PathConstraints AUTON_CONSTRAINTS = new PathConstraints(maxVelocity, 2); // max velocity and acceleration during auton
   }
 

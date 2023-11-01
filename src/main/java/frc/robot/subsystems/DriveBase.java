@@ -62,7 +62,7 @@ public class DriveBase extends SubsystemBase {
             targetModuleStates[i] = new Module.ModuleState(0, Constants.MotorConstants.motorDegrees[i] * (Math.PI/180));
 
         m_sdkOdom = new SwerveDriveOdometry(
-            m_skdKine, new Rotation2d(m_ahrs.getAngle()), new SwerveModulePosition[] {
+            m_skdKine, m_ahrs.getRotation2d(), new SwerveModulePosition[] {
                 new SwerveModulePosition(odomDeltas[3], new Rotation2d(odomAngles[3])),
                 new SwerveModulePosition(odomDeltas[2], new Rotation2d(odomAngles[2])),
                 new SwerveModulePosition(odomDeltas[1], new Rotation2d(odomAngles[1])),
@@ -112,12 +112,13 @@ public class DriveBase extends SubsystemBase {
         }
         
 
-        globalPose = m_sdkOdom.update(new Rotation2d(m_ahrs.getAngle()), new SwerveModulePosition[] {
+        globalPose = m_sdkOdom.update(m_ahrs.getRotation2d(), new SwerveModulePosition[] {
             new SwerveModulePosition(Math.abs(odomDeltas[3]), new Rotation2d(odomAngles[3])),
             new SwerveModulePosition(Math.abs(odomDeltas[2]), new Rotation2d(odomAngles[2])),
             new SwerveModulePosition(Math.abs(odomDeltas[1]), new Rotation2d(odomAngles[1])),
             new SwerveModulePosition(Math.abs(odomDeltas[0]), new Rotation2d(odomAngles[0]))
         });
+        SmartDashboard.putNumber("Gyro", m_ahrs.getRotation2d().getDegrees());
 
         // X += globalPose.getX();
         // Y += globalPose.getY();
@@ -132,7 +133,7 @@ public class DriveBase extends SubsystemBase {
         SmartDashboard.putNumber("Mod3_theta", odomAngles[2]);
         SmartDashboard.putNumber("Mod4_theta", odomAngles[3]);
         
-        SmartDashboard.putNumber("GLOBAL POSE X: ", globalPose.getX());
-        SmartDashboard.putNumber("GLOBAL POSE Y: ", globalPose.getY());
+        SmartDashboard.putNumber("GLOBAL POSE X: ", Constants.Swerve.odomProportionality * globalPose.getX());
+        SmartDashboard.putNumber("GLOBAL POSE Y: ", Constants.Swerve.odomProportionality * globalPose.getY());
     }
 }
