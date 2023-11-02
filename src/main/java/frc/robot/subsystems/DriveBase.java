@@ -7,6 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.Constants;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -118,21 +119,28 @@ public class DriveBase extends SubsystemBase {
             new SwerveModulePosition(Math.abs(odomDeltas[1]), new Rotation2d(odomAngles[1])),
             new SwerveModulePosition(Math.abs(odomDeltas[0]), new Rotation2d(odomAngles[0]))
         });
-        // SmartDashboard.putNumber("Gyro", m_ahrs.getRotation2d().getDegrees());
-        SmartDashboard.putData("Gyro", m_ahrs);
+
+        // PowerDistribution m_pdp = new PowerDistribution(6, PowerDistribution.ModuleType.kRev);
+
+        SmartDashboard.putNumber("Yaw", m_ahrs.getYaw());
+        SmartDashboard.putNumber("Pitch", m_ahrs.getPitch());
+        SmartDashboard.putNumber("Roll", m_ahrs.getRoll());
+
+        // double voltage = m_pdp.getVoltage();
+        // SmartDashboard.putNumber("Voltage", voltage);
 
         // X += globalPose.getX();
         // Y += globalPose.getY();
 
-        SmartDashboard.putNumber("Mod1_delta", Math.abs(odomDeltas[0]));
-        SmartDashboard.putNumber("Mod2_delta", Math.abs(odomDeltas[1]));
-        SmartDashboard.putNumber("Mod3_delta", Math.abs(odomDeltas[2]));
-        SmartDashboard.putNumber("Mod4_delta", Math.abs(odomDeltas[3]));
+        // SmartDashboard.putNumber("Mod1_delta", Math.abs(odomDeltas[0]));
+        // SmartDashboard.putNumber("Mod2_delta", Math.abs(odomDeltas[1]));
+        // SmartDashboard.putNumber("Mod3_delta", Math.abs(odomDeltas[2]));
+        // SmartDashboard.putNumber("Mod4_delta", Math.abs(odomDeltas[3]));
 
-        SmartDashboard.putNumber("Mod1_theta", odomAngles[0]);
-        SmartDashboard.putNumber("Mod2_theta", odomAngles[1]);
-        SmartDashboard.putNumber("Mod3_theta", odomAngles[2]);
-        SmartDashboard.putNumber("Mod4_theta", odomAngles[3]);
+        SmartDashboard.putNumber("Mod1_theta", -Math.abs(Math.toDegrees(odomAngles[0]))-90);
+        SmartDashboard.putNumber("Mod2_theta", -Math.abs(Math.toDegrees(odomAngles[1]))-90);
+        SmartDashboard.putNumber("Mod3_theta", -Math.abs(Math.toDegrees(odomAngles[2]))-90);
+        SmartDashboard.putNumber("Mod4_theta", -Math.abs(Math.toDegrees(odomAngles[3]))-90);
         
         SmartDashboard.putNumber("GLOBAL POSE X: ", Constants.Swerve.odomProportionality * globalPose.getX());
         SmartDashboard.putNumber("GLOBAL POSE Y: ", Constants.Swerve.odomProportionality * globalPose.getY());

@@ -149,8 +149,8 @@ public class Module {
 
     pid.setSetpoint(angle_in_rad);
 
-    String name = "Mod" + String.valueOf(this.moduleNum);
-    SmartDashboard.putNumber(name, this.getAngleInRadians());
+    // String name = "Mod" + String.valueOf(this.moduleNum);
+    // SmartDashboard.putNumber(name, this.getAngleInRadians());
 
     if (Math.abs(this.pid.getSetpoint() - this.getAngleInRadians()) > (Constants.MotorConstants.degTolerance*(Math.PI/180))) {
       this.angleMotor.set(MathUtil.clamp(this.pid.calculate(this.getAngleInRadians()), -1, 1));

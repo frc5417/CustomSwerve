@@ -110,9 +110,9 @@ public class Kinematics {
 
     for (int i = 0; i < 4; i++) {
       targetModuleStates[i] = new Module.ModuleState(vel[i], theta[i]);
-      String name = "Swerve (" + String.valueOf(i) + ") Angle";
-      SmartDashboard.putNumber(name, theta[i]);
-      name = "Swerve (" + String.valueOf(i) + ") Speed";
+      // String name = "Swerve (" + String.valueOf(i) + ") Angle";
+      // SmartDashboard.putNumber(name, theta[i]);
+      String name = "Swerve (" + String.valueOf(i) + ") Speed";
       SmartDashboard.putNumber(name, vel[i]);
     }
     

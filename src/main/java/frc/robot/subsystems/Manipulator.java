@@ -71,14 +71,14 @@ public class Manipulator extends SubsystemBase {
 
     if (Math.abs(pid.getSetpoint() - filteredAbsolutePosition()) == 0) {
       Wrist.set(0.0);
-      SmartDashboard.putNumber("At Setpoint", 1);
+      // SmartDashboard.putNumber("At Setpoint", 1);
     } else {
       Wrist.set(MathUtil.clamp(-1 * pid.calculate(filteredAbsolutePosition()), -1, 1)); //use setVoltage if no work :)
-      SmartDashboard.putNumber("At Setpoint", 0);
+      // SmartDashboard.putNumber("At Setpoint", 0);
       SmartDashboard.putNumber("PID OUT: ", MathUtil.clamp(-1 * pid.calculate(filteredAbsolutePosition()), -0.7, 0.7));
     }
-    SmartDashboard.putNumber("ThroughBoreEncoder", filteredAbsolutePosition());
-    SmartDashboard.putNumber("WristSetpoint", pid.getSetpoint());
+    SmartDashboard.putNumber("Encoder", filteredAbsolutePosition());
+    // SmartDashboard.putNumber("WristSetpoint", pid.getSetpoint());
   }
 
   public void setWrist(double pos) {
