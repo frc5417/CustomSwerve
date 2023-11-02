@@ -33,10 +33,10 @@ public class DriveBase extends SubsystemBase {
 
     double tic, toc = 0;
 
-    Translation2d m_frontLeftLocation = new Translation2d(-0.323, 0.323);
-    Translation2d m_frontRightLocation = new Translation2d(0.323, 0.323);
-    Translation2d m_backLeftLocation = new Translation2d(-0.323, -0.323);
-    Translation2d m_backRightLocation = new Translation2d(0.323, -0.323);
+    Translation2d m_frontLeftLocation = new Translation2d(-0.23495, 0.23495);
+    Translation2d m_frontRightLocation = new Translation2d(0.23495, 0.23495);
+    Translation2d m_backLeftLocation = new Translation2d(-0.23495, -0.23495);
+    Translation2d m_backRightLocation = new Translation2d(0.23495, -0.23495);
 
     SwerveDriveKinematics m_skdKine = new SwerveDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
