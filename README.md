@@ -35,14 +35,20 @@ This is a list of hardware that we tested with. However, keep in mind that this 
 
 ## Contributors
 
-* Rupak Bhattacharya
+### Programming
 * Matthew Caldarola
+* Mukesh Kalikaya
+* Nikson Thapa
+* Krishna Shah
+* Jayadeep Velagapudi
+* Joshua Vigel
+* Jeevan Adhya Vinoth Babu
+
+### Fabrication
+* Rupak Bhattacharya
 * Brennan Coil
 * Jordan Escobedo
 * Pranav Gattineni
 * Lucas Hatcher
-* Krishna Shah
 * Boden Smith
-* Joshua Vigel
-* Jeevan Adhya Vinoth Babu
 * Ethan Wallraven
