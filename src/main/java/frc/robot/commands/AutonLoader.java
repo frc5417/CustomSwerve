@@ -10,10 +10,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.Constants;
+import frc.robot.Autons.Elevation;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Elevator;
 
 public class AutonLoader {
     private static HashMap<String, Command> eventMap;
@@ -21,19 +24,20 @@ public class AutonLoader {
     private final DriveBase m_driveBase;
     private final Manipulator m_manipulator;
     private final AutonCommands m_autoncommands;
+    private final Elevator m_elevator;
     private static SendableChooser<Command> chooser;
     private static List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
 
-    public AutonLoader(DriveBase driveBase, Manipulator manipulator) {
+    public AutonLoader(DriveBase driveBase, Manipulator manipulator, Elevator elevator) {
 
         m_driveBase = driveBase;
         m_manipulator = manipulator;
-        m_autoncommands = new AutonCommands(driveBase, manipulator);
+        m_elevator = elevator;
+        m_autoncommands = new AutonCommands(driveBase, manipulator, elevator);
         chooser = new SendableChooser<>();
 
         eventMap = new HashMap<>();
-        eventMap.put("event1", new PrintCommand("event 1 passed"));    
-        eventMap.put("event2", new PrintCommand("event 2 passed"));    
+        eventMap.put("event1", m_autoncommands.ELEVATION);    
 
         autoBuilder = new SwerveAutoBuilder(
                 m_driveBase::getCurrentPose,

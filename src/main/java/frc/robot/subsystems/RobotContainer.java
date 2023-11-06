@@ -38,7 +38,7 @@ public class RobotContainer {
   public static DriveBase driveBase = new DriveBase(kinematics, ahrs);
   public static Manipulator manipulator = new Manipulator();
   public static Elevator elevator = new Elevator();
-  public static AutonLoader autonLoader = new AutonLoader(driveBase, manipulator); //NEEDED SUBSYSTEMS FOR AUTON, ELEVATOR NOT USED
+  public static AutonLoader autonLoader = new AutonLoader(driveBase, manipulator, elevator); //NEEDED SUBSYSTEMS FOR AUTON, ELEVATOR NOT USED
   public static TeleopDrive teleopDrive = new TeleopDrive(driveBase, manipulator, elevator); //ALL SUBSYSTEMS
   private final static CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverPort);
   private final static CommandXboxController m_manipulatorController = new CommandXboxController(OperatorConstants.kManipulatorPort);
