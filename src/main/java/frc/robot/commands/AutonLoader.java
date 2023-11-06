@@ -59,7 +59,7 @@ public class AutonLoader {
     // }
 
     public Command getAuton() {
-        // return chooser.getSelected();
-        return autoBuilder.fullAuto(pathGroup);
+        return chooser.getSelected();
+        // return autoBuilder.fullAuto(pathGroup);
     }    
 }

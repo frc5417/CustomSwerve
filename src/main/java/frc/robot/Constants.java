@@ -45,7 +45,7 @@ public final class Constants {
     public static final Integer[] driveMotorIDS = {11, 21, 31, 40}; 
     public static final Integer[] angleMotorIDS = {10, 20, 30, 41};
     public static final Integer[] CANCoderID = {9, 12, 8, 19};
-    public static final Double[] motorDegrees = {94.192, 183.843, 349.892, 308.245};
+    public static final Double[] motorDegrees = {90.000, 182.021, 345.146, 339.521};
     public static final Double[] angleOffsets = {0.0, 0.0, 0.0, 0.0};
     public static final Double[][] angleMotorPID = {
       {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}, {0.01, 0.0, 0.005}};

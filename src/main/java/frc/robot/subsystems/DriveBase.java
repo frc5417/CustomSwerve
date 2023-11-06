@@ -72,9 +72,12 @@ public class DriveBase extends SubsystemBase {
         );
     } 
 
+    // public Pose2d getCurrentPose() {
+    //     return globalPose;
+    // }
+
     public Pose2d getCurrentPose() {
-        return globalPose;
-        //TODO: FIX THIS
+        return new Pose2d(globalPose.getX(), globalPose.getY(), new Rotation2d(globalPose.getRotation().getRadians()+Math.PI/2));
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -142,8 +145,8 @@ public class DriveBase extends SubsystemBase {
         SmartDashboard.putNumber("Mod3_theta", -Math.abs(Math.toDegrees(odomAngles[2]))-90);
         SmartDashboard.putNumber("Mod4_theta", -Math.abs(Math.toDegrees(odomAngles[3]))-90);
         
-        SmartDashboard.putNumber("GLOBAL POSE X: ", globalPose.getX());
-        SmartDashboard.putNumber("GLOBAL POSE Y: ", globalPose.getY());
+        SmartDashboard.putNumber("GLOBAL POSE X: ", -globalPose.getX());
+        SmartDashboard.putNumber("GLOBAL POSE Y: ", -globalPose.getY());
 
         // SmartDashboard.putNumber("GLOBAL POSE X: ", Constants.Swerve.odomProportionality * globalPose.getX());
         // SmartDashboard.putNumber("GLOBAL POSE Y: ", Constants.Swerve.odomProportionality * globalPose.getY());
