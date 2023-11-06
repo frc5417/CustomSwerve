@@ -73,12 +73,12 @@ public class DriveBase extends SubsystemBase {
     } 
 
     public Pose2d getCurrentPose() {
-        return new Pose2d();
+        return globalPose;
         //TODO: FIX THIS
     }
 
     public void resetOdometry(Pose2d pose) {
-        //TODO: FIX THIS
+        globalPose = pose;
     }
 
     public void setHardStates(Module.ModuleState[] targetState) {

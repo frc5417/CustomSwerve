@@ -47,7 +47,7 @@ public class AutonLoader {
         // for (String path : Constants.Auton.paths) {
             // chooser.addOption(path, getAutonFromPath(path));
         // }
-        // chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
+        chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
         chooser.addOption("Single Score Mobility", m_autoncommands.MOBILITY);
         chooser.addOption("Double Score", m_autoncommands.SCORING);
 
@@ -59,7 +59,7 @@ public class AutonLoader {
     // }
 
     public Command getAuton() {
-        return chooser.getSelected();
-        // return m_autoncommands.MOBILITY;
+        // return chooser.getSelected();
+        return autoBuilder.fullAuto(pathGroup);
     }    
 }
