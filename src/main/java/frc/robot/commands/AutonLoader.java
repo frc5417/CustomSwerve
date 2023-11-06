@@ -44,7 +44,7 @@ public class AutonLoader {
                 m_driveBase::resetOdometry,
                 Constants.DriveTrainConstants.TRANSLATION_PID,
                 Constants.DriveTrainConstants.ROTATION_PID,
-                m_driveBase::setDriveSpeed,
+                m_driveBase::setAutoSpeed,
                 eventMap,
                 m_driveBase);
         

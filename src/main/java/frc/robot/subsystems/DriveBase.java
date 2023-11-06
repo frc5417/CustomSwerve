@@ -92,6 +92,11 @@ public class DriveBase extends SubsystemBase {
         targetModuleStates = m_kinematics.getComputedModuleStates(chassisSpeeds);
     }
 
+    public void setAutoSpeed(ChassisSpeeds chassisSpeeds) {
+        ChassisSpeeds computed = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond/4, chassisSpeeds.vyMetersPerSecond/4, chassisSpeeds.omegaRadiansPerSecond/30);
+        targetModuleStates = m_kinematics.getComputedModuleStates(computed);
+    }
+
     public void resetDrive() {
         for (int i = 0; i < 4; i++) {
             moduleGroup[i].resetDriveAngleEncoder();
