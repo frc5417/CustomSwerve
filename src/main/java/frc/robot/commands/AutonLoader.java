@@ -29,7 +29,7 @@ public class AutonLoader {
 
     //PathPlanner auton groups
     private static List<PathPlannerTrajectory> trajectory = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
-    private static List<PathPlannerTrajectory> sp8 = PathPlanner.loadPathGroup("sf8", Constants.Swerve.AUTON_CONSTRAINTS);
+    private static List<PathPlannerTrajectory> sf8 = PathPlanner.loadPathGroup("sf8", Constants.Swerve.AUTON_CONSTRAINTS);
 
     public AutonLoader(DriveBase driveBase, Manipulator manipulator, Elevator elevator) {
 
@@ -59,7 +59,7 @@ public class AutonLoader {
         // chooser.addOption("Double Score", m_autoncommands.SCORING);
 
         chooser.addOption("trajectory", autoBuilder.fullAuto(trajectory));
-        chooser.addOption("sf8", autoBuilder.fullAuto(sp8));
+        chooser.addOption("sf8", autoBuilder.fullAuto(sf8));
 
         SmartDashboard.putData(chooser);
     }
