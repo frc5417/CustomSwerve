@@ -6,6 +6,9 @@ package frc.robot.commands;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Manipulator;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import javax.swing.text.Utilities;
+import frc.robot.subsystems.RobotContainer;
+import frc.robot.Constants;
 
 public class AutonManipulation extends CommandBase {
   public AutonManipulation() {}
@@ -36,7 +39,10 @@ class ElevationUp extends CommandBase {
 
   @Override
   public void execute() {
+    final long initTime = RobotContainer.getFPGATime();
+    while (RobotContainer.getFPGATime() - initTime <= Constants.Swerve.CommandDuration) {     
       m_elevator.UpAndAway(-0.375);
+    }
   }
 
   @Override
@@ -61,7 +67,10 @@ class ElevationDown extends CommandBase {
 
   @Override
   public void execute() {
+    final long initTime = RobotContainer.getFPGATime();
+    while (RobotContainer.getFPGATime() - initTime <= Constants.Swerve.CommandDuration) {     
       m_elevator.UpAndAway(0.375);
+    }
   }
 
   @Override
@@ -86,7 +95,10 @@ class Intake extends CommandBase {
 
   @Override
   public void execute() {
+    final long initTime = RobotContainer.getFPGATime();
+    while (RobotContainer.getFPGATime() - initTime <= Constants.Swerve.CommandDuration) {     
       m_manipulator.setIntake(0.375);
+    }
   }
 
   @Override
@@ -111,7 +123,10 @@ class Outtake extends CommandBase {
 
   @Override
   public void execute() {
+    final long initTime = RobotContainer.getFPGATime();
+    while (RobotContainer.getFPGATime() - initTime <= Constants.Swerve.CommandDuration) {     
       m_manipulator.setIntake(-0.375);
+    }
   }
 
   @Override

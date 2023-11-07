@@ -21,6 +21,7 @@ import frc.robot.Robot;
 import frc.robot.commands.AutonLoader;
 import frc.robot.commands.SetLightConfig;
 import frc.robot.commands.TeleopDrive;
+import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 /**
@@ -211,6 +212,10 @@ public class RobotContainer {
 
   public static Boolean getManipulatorRightBumperBool() {
     return m_manipulatorController.rightBumper().getAsBoolean();
+  }
+
+  public static long getFPGATime() {
+    return HALUtil.getFPGATime();
   }
 
   /**
