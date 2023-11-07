@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import java.nio.file.Path;
 import java.util.*;
 
 import com.pathplanner.lib.PathPlanner;
@@ -13,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.Constants;
-import frc.robot.Autons.Elevation;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Elevator;
@@ -26,7 +26,10 @@ public class AutonLoader {
     private final AutonCommands m_autoncommands;
     private final Elevator m_elevator;
     private static SendableChooser<Command> chooser;
-    private static List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
+
+    //PathPlanner auton groups
+    private static List<PathPlannerTrajectory> trajectory = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
+    private static List<PathPlannerTrajectory> sp8 = PathPlanner.loadPathGroup("sp8", Constants.Swerve.AUTON_CONSTRAINTS);
 
     public AutonLoader(DriveBase driveBase, Manipulator manipulator, Elevator elevator) {
 
@@ -37,7 +40,7 @@ public class AutonLoader {
         chooser = new SendableChooser<>();
 
         eventMap = new HashMap<>();
-        eventMap.put("event1", m_autoncommands.ELEVATION);    
+        eventMap.put("event1", m_autoncommands.ELEVATIONUP);    
 
         autoBuilder = new SwerveAutoBuilder(
                 m_driveBase::getCurrentPose,
@@ -51,9 +54,12 @@ public class AutonLoader {
         // for (String path : Constants.Auton.paths) {
             // chooser.addOption(path, getAutonFromPath(path));
         // }
-        chooser.addOption("trajectory", autoBuilder.fullAuto(pathGroup));
-        chooser.addOption("Single Score Mobility", m_autoncommands.MOBILITY);
-        chooser.addOption("Double Score", m_autoncommands.SCORING);
+
+        // chooser.addOption("Single Score Mobility", m_autoncommands.MOBILITY);
+        // chooser.addOption("Double Score", m_autoncommands.SCORING);
+
+        chooser.addOption("trajectory", autoBuilder.fullAuto(trajectory));
+        chooser.addOption("sp8", autoBuilder.fullAuto(sp8));
 
         SmartDashboard.putData(chooser);
     }
