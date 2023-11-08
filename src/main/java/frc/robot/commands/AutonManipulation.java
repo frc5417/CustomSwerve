@@ -33,22 +33,23 @@ class ElevationUp extends CommandBase {
   public ElevationUp(Elevator elevator) {
       m_elevator = elevator;
   }
+  int counter = 0;
 
   @Override
   public void initialize() {}
 
   @Override
   public void execute() {
-    final long initTime = RobotContainer.getFPGATime();
-    while (RobotContainer.getFPGATime() - initTime <= Constants.Swerve.CommandDuration) {     
-      m_elevator.UpAndAway(-0.375);
+    if(counter < 3500/20){  
+      counter += 1;  
+      m_elevator.UpAndAway(-0.375);  
+    } else {
+      m_elevator.UpAndAway(0);
     }
   }
 
   @Override
-  public void end(boolean interrupted) {
-    m_elevator.UpAndAway(0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
@@ -61,22 +62,23 @@ class ElevationDown extends CommandBase {
   public ElevationDown(Elevator elevator) {
       m_elevator = elevator;
   }
+  int counter = 0;
 
   @Override
   public void initialize() {}
 
   @Override
   public void execute() {
-    final long initTime = RobotContainer.getFPGATime();
-    while (RobotContainer.getFPGATime() - initTime <= Constants.Swerve.CommandDuration) {     
-      m_elevator.UpAndAway(0.375);
+    if(counter < 3000/20){  
+      counter += 1;  
+      m_elevator.UpAndAway(0.375);  
+    } else {
+      m_elevator.UpAndAway(0);
     }
   }
 
   @Override
-  public void end(boolean interrupted) {
-    m_elevator.UpAndAway(0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
@@ -89,22 +91,23 @@ class Intake extends CommandBase {
   public Intake(Manipulator manipulator) {
       m_manipulator = manipulator;
   }
+  int counter = 0;
 
   @Override
   public void initialize() {}
 
   @Override
   public void execute() {
-    final long initTime = RobotContainer.getFPGATime();
-    while (RobotContainer.getFPGATime() - initTime <= Constants.Swerve.CommandDuration) {     
-      m_manipulator.setIntake(0.375);
+    if(counter < 1000/20){  
+      counter += 1;  
+      m_manipulator.setIntake(0.5);  
+    } else {
+      m_manipulator.setIntake(0);
     }
   }
 
   @Override
-  public void end(boolean interrupted) {
-    m_manipulator.setIntake(0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
@@ -117,22 +120,23 @@ class Outtake extends CommandBase {
   public Outtake(Manipulator manipulator) {
       m_manipulator = manipulator;
   }
+  int counter = 0;
 
   @Override
   public void initialize() {}
 
   @Override
-  public void execute() {
-    final long initTime = RobotContainer.getFPGATime();
-    while (RobotContainer.getFPGATime() - initTime <= Constants.Swerve.CommandDuration) {     
-      m_manipulator.setIntake(-0.375);
+  public void execute() {  
+    if(counter < 1000/20){  
+      counter += 1;  
+      m_manipulator.setIntake(-0.5);  
+    } else {
+      m_manipulator.setIntake(0);
     }
   }
 
   @Override
-  public void end(boolean interrupted) {
-    m_manipulator.setIntake(0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {

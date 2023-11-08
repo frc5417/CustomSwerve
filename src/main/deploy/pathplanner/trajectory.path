@@ -3,12 +3,12 @@
     {
       "anchorPoint": {
         "x": 2.0,
-        "y": 1.0
+        "y": 5.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0,
-        "y": 2.0
+        "x": 2.999999999999999,
+        "y": 5.0
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -24,16 +24,19 @@
     },
     {
       "anchorPoint": {
-        "x": 3.5247181781172454,
-        "y": 3.689636668346081
+        "x": 4.0,
+        "y": 5.0
       },
       "prevControl": {
-        "x": 3.5247181781172454,
-        "y": 2.050958939430847
+        "x": 4.0,
+        "y": 4.0
       },
-      "nextControl": null,
-      "holonomicAngle": 180.0,
-      "isReversal": false,
+      "nextControl": {
+        "x": 4.0,
+        "y": 4.0
+      },
+      "holonomicAngle": -90.0,
+      "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
@@ -43,10 +46,80 @@
         "waitBehavior": "none",
         "waitTime": 0
       }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.0,
+        "y": 3.25
+      },
+      "prevControl": {
+        "x": 2.0,
+        "y": 4.308663702375392
+      },
+      "nextControl": {
+        "x": 2.0,
+        "y": 2.0167298411519896
+      },
+      "holonomicAngle": -180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "event2"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.9,
+        "y": 2.75
+      },
+      "prevControl": {
+        "x": 3.9,
+        "y": 4.820879299981615
+      },
+      "nextControl": null,
+      "holonomicAngle": 0.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "event4"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
     }
   ],
-  "maxVelocity": 0.3,
-  "maxAcceleration": 0.05,
+  "maxVelocity": 2.0,
+  "maxAcceleration": 0.5,
   "isReversed": null,
-  "markers": []
+  "markers": [
+    {
+      "position": 1.0,
+      "names": [
+        "event1"
+      ]
+    },
+    {
+      "position": 2.0,
+      "names": [
+        "event2"
+      ]
+    },
+    {
+      "position": 2.35,
+      "names": [
+        "event3"
+      ]
+    }
+  ]
 }
