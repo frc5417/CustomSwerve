@@ -12,7 +12,6 @@ import frc.robot.Constants;
 
 import com.kauailabs.navx.frc.AHRS;
 
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveBase extends SubsystemBase {
@@ -93,7 +92,7 @@ public class DriveBase extends SubsystemBase {
     }
 
     public void setAutoSpeed(ChassisSpeeds chassisSpeeds) {
-        ChassisSpeeds computed = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond/4, chassisSpeeds.vyMetersPerSecond/4, chassisSpeeds.omegaRadiansPerSecond/30);
+        ChassisSpeeds computed = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond/4, chassisSpeeds.vyMetersPerSecond/4, chassisSpeeds.omegaRadiansPerSecond/10);
         targetModuleStates = m_kinematics.getComputedModuleStates(computed);
     }
 
@@ -152,6 +151,8 @@ public class DriveBase extends SubsystemBase {
         
         SmartDashboard.putNumber("GLOBAL POSE X: ", -globalPose.getX());
         SmartDashboard.putNumber("GLOBAL POSE Y: ", -globalPose.getY());
+
+        SmartDashboard.putNumber("Distance Travelled", Math.sqrt((globalPose.getX()*globalPose.getX())+(globalPose.getY()*globalPose.getY())));
 
         // SmartDashboard.putNumber("GLOBAL POSE X: ", Constants.Swerve.odomProportionality * globalPose.getX());
         // SmartDashboard.putNumber("GLOBAL POSE Y: ", Constants.Swerve.odomProportionality * globalPose.getY());

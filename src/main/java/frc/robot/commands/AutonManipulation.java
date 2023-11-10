@@ -8,6 +8,7 @@ import frc.robot.subsystems.Manipulator;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import javax.swing.text.Utilities;
 import frc.robot.subsystems.RobotContainer;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants;
 
 public class AutonManipulation extends CommandBase {
@@ -29,11 +30,12 @@ public class AutonManipulation extends CommandBase {
 }
 
 class ElevationUp extends CommandBase {
-  private final Elevator m_elevator;
+  private Elevator m_elevator;
   public ElevationUp(Elevator elevator) {
       m_elevator = elevator;
   }
   int counter = 0;
+  boolean ended = false;
 
   @Override
   public void initialize() {}
@@ -45,6 +47,7 @@ class ElevationUp extends CommandBase {
       m_elevator.UpAndAway(-0.375);  
     } else {
       m_elevator.UpAndAway(0);
+      ended = true; 
     }
   }
 
@@ -53,7 +56,11 @@ class ElevationUp extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    if (ended == true){
+      return true;
+    } else {
       return false;
+    }
   }
 }
 
@@ -63,6 +70,7 @@ class ElevationDown extends CommandBase {
       m_elevator = elevator;
   }
   int counter = 0;
+  boolean ended = false;
 
   @Override
   public void initialize() {}
@@ -74,6 +82,7 @@ class ElevationDown extends CommandBase {
       m_elevator.UpAndAway(0.375);  
     } else {
       m_elevator.UpAndAway(0);
+      ended = true;
     }
   }
 
@@ -82,7 +91,11 @@ class ElevationDown extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    if (ended == true){
+      return true;
+    } else {
       return false;
+    }
   }
 }
 
@@ -92,6 +105,7 @@ class Intake extends CommandBase {
       m_manipulator = manipulator;
   }
   int counter = 0;
+  boolean ended = false;
 
   @Override
   public void initialize() {}
@@ -111,7 +125,11 @@ class Intake extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    if (ended == true){
+      return true;
+    } else {
       return false;
+    }
   }
 }
 
@@ -121,6 +139,7 @@ class Outtake extends CommandBase {
       m_manipulator = manipulator;
   }
   int counter = 0;
+  boolean ended = false;
 
   @Override
   public void initialize() {}
@@ -132,6 +151,7 @@ class Outtake extends CommandBase {
       m_manipulator.setIntake(-0.5);  
     } else {
       m_manipulator.setIntake(0);
+      ended = true;
     }
   }
 
@@ -140,6 +160,10 @@ class Outtake extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    if (ended == true){
+      return true;
+    } else {
       return false;
+    }
   }
 }

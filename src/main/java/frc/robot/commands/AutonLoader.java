@@ -40,6 +40,7 @@ public class AutonLoader {
         chooser = new SendableChooser<>();
 
         eventMap = new HashMap<>();
+        eventMap.put("intakebruh", m_autoncommands.INTAKE);
         eventMap.put("event1", m_autoncommands.ELEVATIONUP);
         eventMap.put("event2", m_autoncommands.OUTTAKE);
         eventMap.put("event3", m_autoncommands.ELEVATIONDOWN);
