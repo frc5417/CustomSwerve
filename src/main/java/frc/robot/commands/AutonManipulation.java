@@ -117,6 +117,7 @@ class Intake extends CommandBase {
       m_manipulator.setIntake(0.5);  
     } else {
       m_manipulator.setIntake(0);
+      ended = true;
     }
   }
 
