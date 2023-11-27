@@ -63,14 +63,14 @@ public final class Constants {
   }
   
   public static class Swerve {
-    public static final Double angularPercentage = 0.5;
+    public static final Double angularPercentage = 1.0;
     public static final Double XPercentage = -1.0;
     public static final Double YPercentage = - 1.0;
 
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
     public static final IdleMode driveNeutralMode = IdleMode.kBrake;
-    public static final double maxVelocity = 1; //3.8; // m/s
-    public static final double maxAngularVelocity = 1; //56.0; // rad/s
+    public static final double maxVelocity = 3.89; //3.8; // m/s
+    public static final double maxAngularVelocity = 12.56637; //56.0; // rad/s
     //velocity PID tuning for overall swerve
     public static final double velocitykP = 1.0; // 0.0001
     public static final double velocitykI = 0.0;
@@ -79,7 +79,7 @@ public final class Constants {
     public static final double aVelocitykI = 0.0;
     public static final double aVelocitykD = 0.0;
 
-    public static final double odomProportionality = -0.93409848871;
+    // public static final double odomProportionality = -0.93409848871;
 
     public static final PathConstraints AUTON_CONSTRAINTS = new PathConstraints(maxVelocity, 2); // max velocity and acceleration during auton
     public static final long CommandDuration = 1000;

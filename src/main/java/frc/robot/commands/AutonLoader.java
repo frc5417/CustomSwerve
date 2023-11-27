@@ -30,6 +30,7 @@ public class AutonLoader {
     //PathPlanner auton groups
     private static List<PathPlannerTrajectory> trajectory = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
     private static List<PathPlannerTrajectory> sf8 = PathPlanner.loadPathGroup("sf8", Constants.Swerve.AUTON_CONSTRAINTS);
+    private static List<PathPlannerTrajectory> bozo = PathPlanner.loadPathGroup("newsf", Constants.Swerve.AUTON_CONSTRAINTS);
     private static List<PathPlannerTrajectory> straightline = PathPlanner.loadPathGroup("straightline", Constants.Swerve.AUTON_CONSTRAINTS);
 
     public AutonLoader(DriveBase driveBase, Manipulator manipulator, Elevator elevator) {
@@ -65,6 +66,7 @@ public class AutonLoader {
         chooser.addOption("trajectory", autoBuilder.fullAuto(trajectory));
         chooser.addOption("sf8", autoBuilder.fullAuto(sf8));
         chooser.addOption("straightline", autoBuilder.fullAuto(straightline));
+        chooser.addOption("newsf", autoBuilder.fullAuto(bozo));
 
         SmartDashboard.putData(chooser);
     }

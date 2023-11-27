@@ -92,7 +92,7 @@ public class DriveBase extends SubsystemBase {
     }
 
     public void setAutoSpeed(ChassisSpeeds chassisSpeeds) {
-        ChassisSpeeds computed = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond/4, chassisSpeeds.vyMetersPerSecond/4, chassisSpeeds.omegaRadiansPerSecond/10);
+        ChassisSpeeds computed = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond/Constants.Swerve.maxVelocity, chassisSpeeds.vyMetersPerSecond/Constants.Swerve.maxVelocity, chassisSpeeds.omegaRadiansPerSecond/Constants.Swerve.maxAngularVelocity);
         targetModuleStates = m_kinematics.getComputedModuleStates(computed);
     }
 
@@ -127,11 +127,11 @@ public class DriveBase extends SubsystemBase {
             new SwerveModulePosition(Math.abs(odomDeltas[0]), new Rotation2d(odomAngles[0]))
         });
 
-        // PowerDistribution m_pdp = new PowerDistribution(6, PowerDistribution.ModuleType.kRev);
 
         SmartDashboard.putNumber("Yaw", m_ahrs.getYaw());
         SmartDashboard.putNumber("Pitch", m_ahrs.getPitch());
         SmartDashboard.putNumber("Roll", m_ahrs.getRoll());
+        SmartDashboard.putNumber("Rotations", m_ahrs.getAngle()/360);
 
         // double voltage = m_pdp.getVoltage();
         // SmartDashboard.putNumber("Voltage", voltage);
@@ -154,7 +154,6 @@ public class DriveBase extends SubsystemBase {
 
         SmartDashboard.putNumber("Distance Travelled", Math.sqrt((globalPose.getX()*globalPose.getX())+(globalPose.getY()*globalPose.getY())));
 
-        // SmartDashboard.putNumber("GLOBAL POSE X: ", Constants.Swerve.odomProportionality * globalPose.getX());
-        // SmartDashboard.putNumber("GLOBAL POSE Y: ", Constants.Swerve.odomProportionality * globalPose.getY());
+        
     }
 }

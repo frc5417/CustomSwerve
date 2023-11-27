@@ -65,9 +65,9 @@ public class TeleopDrive extends CommandBase {
     // if (counter++ <= 60)
     //   return;
     
-    double xVel = (RobotContainer.getDriverLeftJoyX() * 0.45) + (prev_xVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double yVel = (RobotContainer.getDriverLeftJoyY() * 0.45) + (prev_yVel * 0.55); //* Constants.Swerve.maxVelocity;
-    double omega = (RobotContainer.getDriverRightJoyX() * 0.45) + (prev_omega * 0.55); //* Constants.Swerve.maxAngularVelocity;
+    double xVel = (RobotContainer.getDriverLeftJoyX() * 0.45) + (prev_xVel * 0.55); 
+    double yVel = (RobotContainer.getDriverLeftJoyY() * 0.45) + (prev_yVel * 0.55); 
+    double omega = (RobotContainer.getDriverRightJoyX() * 0.45) + (prev_omega * 0.55);
 
     prev_xVel = xVel;
     prev_yVel = yVel;
