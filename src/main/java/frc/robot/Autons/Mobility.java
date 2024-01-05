@@ -1,13 +1,13 @@
 package frc.robot.Autons;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Manipulator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.subsystems.RobotContainer;
 
-public class Mobility extends CommandBase {
+public class Mobility extends Command {
     private final DriveBase m_driveBase;
     private final Manipulator m_manipulator;
 

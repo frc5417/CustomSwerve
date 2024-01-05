@@ -4,10 +4,10 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LightsControl;
 
-public class SetLightConfig extends CommandBase {
+public class SetLightConfig extends Command {
   private final LightsControl lightsControl;
   private int configNum;
 

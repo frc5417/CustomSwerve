@@ -79,6 +79,10 @@ public class DriveBase extends SubsystemBase {
         return new Pose2d(globalPose.getX(), globalPose.getY(), new Rotation2d(globalPose.getRotation().getRadians()+Math.PI/2));
     }
 
+    public ChassisSpeeds getRelativChassisSpeeds() {
+        return new ChassisSpeeds(); //TODO
+    }
+
     public void resetOdometry(Pose2d pose) {
         globalPose = pose;
     }

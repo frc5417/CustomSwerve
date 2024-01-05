@@ -4,9 +4,9 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.PIDConstants;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -69,8 +69,13 @@ public final class Constants {
 
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
     public static final IdleMode driveNeutralMode = IdleMode.kBrake;
-    public static final double maxVelocity = 3.89; //3.8; // m/s
-    public static final double maxAngularVelocity = 12.56637; //56.0; // rad/s
+    public static final double maxVelocity = 3.89; // m/s
+    public static final double maxAcceleration = (Double) null; //m/s^2
+    public static final double maxAngularVelocity = 12.56637; //rad/sec
+    public static final double maxAngularAcceleration = (Double) null; //rad/sec^2
+    public static final double maxModuleSpeed = (Double) null;
+    public static final double driveBaseRadius = (Double) null; 
+
     //velocity PID tuning for overall swerve
     public static final double velocitykP = 1.0; // 0.0001
     public static final double velocitykI = 0.0;
@@ -81,7 +86,7 @@ public final class Constants {
 
     // public static final double odomProportionality = -0.93409848871;
 
-    public static final PathConstraints AUTON_CONSTRAINTS = new PathConstraints(maxVelocity, 2); // max velocity and acceleration during auton
+    public static final PathConstraints AUTON_CONSTRAINTS = new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration); // max velocity and acceleration during auton
     public static final long CommandDuration = 1000;
   }
 

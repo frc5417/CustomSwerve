@@ -2,17 +2,20 @@ package frc.robot.commands;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Supplier;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Manipulator;
@@ -20,18 +23,20 @@ import frc.robot.subsystems.Elevator;
 
 public class AutonLoader {
     private static HashMap<String, Command> eventMap;
-    private SwerveAutoBuilder autoBuilder;
+    private AutoBuilder autoBuilder = new AutoBuilder();
     private final DriveBase m_driveBase;
     private final Manipulator m_manipulator;
     private final AutonCommands m_autoncommands;
     private final Elevator m_elevator;
     private static SendableChooser<Command> chooser;
+    private final ReplanningConfig replanningConfig = new ReplanningConfig();
+    private final HolonomicPathFollowerConfig holonomic_config = new HolonomicPathFollowerConfig(Constants.Swerve.maxModuleSpeed, Constants.Swerve.driveBaseRadius, replanningConfig);
 
     //PathPlanner auton groups
-    private static List<PathPlannerTrajectory> trajectory = PathPlanner.loadPathGroup("trajectory", Constants.Swerve.AUTON_CONSTRAINTS);
-    private static List<PathPlannerTrajectory> sf8 = PathPlanner.loadPathGroup("sf8", Constants.Swerve.AUTON_CONSTRAINTS);
-    private static List<PathPlannerTrajectory> bozo = PathPlanner.loadPathGroup("newsf", Constants.Swerve.AUTON_CONSTRAINTS);
-    private static List<PathPlannerTrajectory> straightline = PathPlanner.loadPathGroup("straightline", Constants.Swerve.AUTON_CONSTRAINTS);
+    private static List<PathPlannerPath> trajectory = PathPlannerAuto.getPathGroupFromAutoFile("trajectory");
+    private static List<PathPlannerPath> sf8 = PathPlannerAuto.getPathGroupFromAutoFile("sf8");
+    private static List<PathPlannerPath> bozo = PathPlannerAuto.getPathGroupFromAutoFile("newsf");
+    private static List<PathPlannerPath> straightline = PathPlannerAuto.getPathGroupFromAutoFile("straightline");
 
     public AutonLoader(DriveBase driveBase, Manipulator manipulator, Elevator elevator) {
 
@@ -47,26 +52,24 @@ public class AutonLoader {
         eventMap.put("event2", m_autoncommands.OUTTAKE);
         eventMap.put("event3", m_autoncommands.ELEVATIONDOWN);
 
-        autoBuilder = new SwerveAutoBuilder(
-                m_driveBase::getCurrentPose,
-                m_driveBase::resetOdometry,
-                Constants.DriveTrainConstants.TRANSLATION_PID,
-                Constants.DriveTrainConstants.ROTATION_PID,
-                m_driveBase::setAutoSpeed,
-                eventMap,
-                m_driveBase);
-        
+
+
+
+        AutoBuilder.configureHolonomic(m_driveBase::getCurrentPose, m_driveBase::resetOdometry, m_driveBase::getRelativChassisSpeeds, m_driveBase::setAutoSpeed, holonomic_config, m_driveBase);
+
+
         // for (String path : Constants.Auton.paths) {
             // chooser.addOption(path, getAutonFromPath(path));
         // }
 
         // chooser.addOption("Single Score Mobility", m_autoncommands.MOBILITY);
         // chooser.addOption("Double Score", m_autoncommands.SCORING);
+        ;
 
-        chooser.addOption("trajectory", autoBuilder.fullAuto(trajectory));
-        chooser.addOption("sf8", autoBuilder.fullAuto(sf8));
-        chooser.addOption("straightline", autoBuilder.fullAuto(straightline));
-        chooser.addOption("newsf", autoBuilder.fullAuto(bozo));
+        chooser.addOption("trajectory", AutoBuilder.followPathWithEvents((PathPlannerPath) trajectory));
+        chooser.addOption("sf8", AutoBuilder.followPathWithEvents((PathPlannerPath) sf8));
+        chooser.addOption("straightline", AutoBuilder.followPathWithEvents((PathPlannerPath) straightline));
+        // chooser.addOption("newsf", AutoBuilder.followPathWithEvents((PathPlannerPath) newsf));
 
         SmartDashboard.putData(chooser);
     }

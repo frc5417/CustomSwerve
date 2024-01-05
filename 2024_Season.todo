@@ -1,0 +1,20 @@
+=================
+2024 Season Conversion
+=================
+
+[BUG HIGH U] Broke CANCoder
+
+  THE THREE LINES BELOW ARE DEPRECATED!!! Module.java line: 166
+
+[BUG HIGH U] Need to define Constants
+
+  Accelerations not defined and are null!!! Constants.java line: 70
+
+[BUG HIGH U] Implement getRelative ChassisSpeed
+
+  New chassisspeed function needed for AutoBuilder DriveBase.java line: 82
+
+[BUG MEDIUM U] Ensure cast from List<PathPlannerPath> --> PathPlannerPath
+
+  Ensure cast from List<PathPlannerPath> --> PathPlannerPath AutoLoader.java line: 69
+

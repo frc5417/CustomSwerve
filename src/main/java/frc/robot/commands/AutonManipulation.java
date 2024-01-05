@@ -5,13 +5,13 @@
 package frc.robot.commands;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Manipulator;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import javax.swing.text.Utilities;
 import frc.robot.subsystems.RobotContainer;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants;
 
-public class AutonManipulation extends CommandBase {
+public class AutonManipulation extends Command {
   public AutonManipulation() {}
 
   @Override
@@ -29,7 +29,7 @@ public class AutonManipulation extends CommandBase {
   }
 }
 
-class ElevationUp extends CommandBase {
+class ElevationUp extends Command {
   private Elevator m_elevator;
   public ElevationUp(Elevator elevator) {
       m_elevator = elevator;
@@ -64,7 +64,7 @@ class ElevationUp extends CommandBase {
   }
 }
 
-class ElevationDown extends CommandBase {
+class ElevationDown extends Command {
   private final Elevator m_elevator;
   public ElevationDown(Elevator elevator) {
       m_elevator = elevator;
@@ -99,7 +99,7 @@ class ElevationDown extends CommandBase {
   }
 }
 
-class Intake extends CommandBase {
+class Intake extends Command {
   private final Manipulator m_manipulator;
   public Intake(Manipulator manipulator) {
       m_manipulator = manipulator;
@@ -134,7 +134,7 @@ class Intake extends CommandBase {
   }
 }
 
-class Outtake extends CommandBase {
+class Outtake extends Command {
   private final Manipulator m_manipulator;
   public Outtake(Manipulator manipulator) {
       m_manipulator = manipulator;

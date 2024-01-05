@@ -7,19 +7,15 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 
 import frc.robot.Constants;
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-
-import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 
 
 public class Module {
@@ -41,7 +37,7 @@ public class Module {
 
   private Boolean invertDriveSpeed = false;
   
-  private WPI_CANCoder _CANCoder;
+  private CANcoder _CANCoder;
 
   int cnt = 0;
 
@@ -56,7 +52,7 @@ public class Module {
      integratedAngleEncoder = angleMotor.getEncoder();
      angleMotor.getPIDController();
 
-     _CANCoder = new WPI_CANCoder(Constants.MotorConstants.CANCoderID[this.moduleNum], "canivore");
+     _CANCoder = new CANcoder(Constants.MotorConstants.CANCoderID[this.moduleNum], "canivore");
 
     //  _CANCoder.setPositionToAbsolute(0);
     //  _CANCoder.configAllSettings(returnCANConfig());
@@ -114,11 +110,11 @@ public class Module {
   }
 
   public double getAngleInRadians() { 
-    return (_CANCoder.getAbsolutePosition() - Constants.MotorConstants.motorDegrees[this.moduleNum]) * (Math.PI/180.0);
+    return (_CANCoder.getAbsolutePosition().getValueAsDouble() - Constants.MotorConstants.motorDegrees[this.moduleNum]) * (Math.PI/180.0);
   }
 
   public double getAngle() {
-    return _CANCoder.getPosition();
+    return _CANCoder.getPosition().getValueAsDouble();
   }
 
   public double getDriveVelocity() {
@@ -165,11 +161,12 @@ public class Module {
     _CANCoder.close();
   }
 
-  public CANCoderConfiguration returnCANConfig() {
-    CANCoderConfiguration canConfig = new CANCoderConfiguration();
-    canConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-    canConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
-    canConfig.sensorTimeBase = SensorTimeBase.PerSecond;
+  public CANcoderConfiguration returnCANConfig() {
+    CANcoderConfiguration canConfig = new CANcoderConfiguration();
+    // TODO: THE THREE LINES BELOW ARE DEPRECATED!!!
+    // canConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+    // canConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
+    // canConfig.sensorTimeBase = SensorTimeBase.PerSecond;
     return canConfig;
   }
 
