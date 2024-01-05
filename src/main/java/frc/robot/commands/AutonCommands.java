@@ -5,10 +5,7 @@ import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Elevator;
 // import frc.robot.Autons.Mobility;
 // import frc.robot.Autons.Scoring;
-import frc.robot.commands.ElevationUp;
-import frc.robot.commands.ElevationDown;
-import frc.robot.commands.Intake;
-import frc.robot.commands.Outtake;
+
 
 // This file will be used to store auton commands (activating intake, etc.)
 public class AutonCommands {

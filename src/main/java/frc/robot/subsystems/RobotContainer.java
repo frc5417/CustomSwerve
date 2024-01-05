@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.Function;
 
 import com.kauailabs.navx.frc.AHRS;
 

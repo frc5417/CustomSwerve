@@ -6,10 +6,7 @@ package frc.robot.commands;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Manipulator;
 import edu.wpi.first.wpilibj2.command.Command;
-import javax.swing.text.Utilities;
-import frc.robot.subsystems.RobotContainer;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import frc.robot.Constants;
+
 
 public class AutonManipulation extends Command {
   public AutonManipulation() {}
