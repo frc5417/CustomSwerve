@@ -73,6 +73,7 @@ public final class Constants {
     public static final double maxAngularAcceleration = (Double) null; //rad/sec^2
     public static final double maxModuleSpeed = (Double) null;
     public static final double driveBaseRadius = (Double) null; 
+    public static final boolean shouldFlipAuto = false;
 
     //velocity PID tuning for overall swerve
     public static final double velocitykP = 1.0; // 0.0001

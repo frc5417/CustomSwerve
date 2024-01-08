@@ -17,3 +17,7 @@
 [BUG MEDIUM U] Ensure cast from List<PathPlannerPath> --> PathPlannerPath
 
   Ensure cast from List<PathPlannerPath> --> PathPlannerPath AutoLoader.java line: 69
+
+  [BUG MEDIUM U] Vendor deps still Beta
+
+  CTRE Vendor dep is beta 7 and Photonlib is beta 3

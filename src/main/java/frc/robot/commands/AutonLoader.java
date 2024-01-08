@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import java.applet.AudioClip;
 import java.util.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -18,7 +19,6 @@ import frc.robot.subsystems.Elevator;
 
 public class AutonLoader {
     private static HashMap<String, Command> eventMap;
-    private AutoBuilder autoBuilder = new AutoBuilder();
     private final DriveBase m_driveBase;
     private final Manipulator m_manipulator;
     private final AutonCommands m_autoncommands;
@@ -50,8 +50,7 @@ public class AutonLoader {
 
 
 
-        AutoBuilder.configureHolonomic(m_driveBase::getCurrentPose, m_driveBase::resetOdometry, m_driveBase::getRelativChassisSpeeds, m_driveBase::setAutoSpeed, holonomic_config, m_driveBase);
-
+        AutoBuilder.configureHolonomic(m_driveBase::getCurrentPose, m_driveBase::resetOdometry, m_driveBase::getRelativeChassisSpeeds, m_driveBase::setAutoSpeed, holonomic_config, m_driveBase::shouldFlipPath, m_driveBase);
 
         // for (String path : Constants.Auton.paths) {
             // chooser.addOption(path, getAutonFromPath(path));
@@ -59,11 +58,10 @@ public class AutonLoader {
 
         // chooser.addOption("Single Score Mobility", m_autoncommands.MOBILITY);
         // chooser.addOption("Double Score", m_autoncommands.SCORING);
-        ;
 
-        chooser.addOption("trajectory", AutoBuilder.followPathWithEvents((PathPlannerPath) trajectory));
-        chooser.addOption("sf8", AutoBuilder.followPathWithEvents((PathPlannerPath) sf8));
-        chooser.addOption("straightline", AutoBuilder.followPathWithEvents((PathPlannerPath) straightline));
+        chooser.addOption("trajectory", AutoBuilder.followPath((PathPlannerPath) trajectory));
+        chooser.addOption("sf8", AutoBuilder.followPath((PathPlannerPath) sf8));
+        chooser.addOption("straightline", AutoBuilder.followPath((PathPlannerPath) straightline));
         // chooser.addOption("newsf", AutoBuilder.followPathWithEvents((PathPlannerPath) newsf));
 
         SmartDashboard.putData(chooser);
