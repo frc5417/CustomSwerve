@@ -13,9 +13,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
+// import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
-
 
 public class Module {
   /** Creates a new Module. */
@@ -160,14 +159,14 @@ public class Module {
     _CANCoder.close();
   }
 
-  public CANcoderConfiguration returnCANConfig() {
-    CANcoderConfiguration canConfig = new CANcoderConfiguration();
+  // public CANcoderConfiguration returnCANConfig() {
+  //   CANcoderConfiguration canConfig = new CANcoderConfiguration();
     // TODO: THE THREE LINES BELOW ARE DEPRECATED!!!
     // canConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
     // canConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
     // canConfig.sensorTimeBase = SensorTimeBase.PerSecond;
-    return canConfig;
-  }
+  //   return canConfig;
+  // }
 
   private void configAngleMotor() {
     angleMotor.restoreFactoryDefaults();

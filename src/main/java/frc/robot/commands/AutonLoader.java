@@ -1,11 +1,8 @@
 package frc.robot.commands;
 
-import java.applet.AudioClip;
 import java.util.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.ReplanningConfig;
 
@@ -28,10 +25,10 @@ public class AutonLoader {
     private final HolonomicPathFollowerConfig holonomic_config = new HolonomicPathFollowerConfig(Constants.Swerve.maxModuleSpeed, Constants.Swerve.driveBaseRadius, replanningConfig);
 
     //PathPlanner auton groups
-    private static List<PathPlannerPath> trajectory = PathPlannerAuto.getPathGroupFromAutoFile("trajectory");
-    private static List<PathPlannerPath> sf8 = PathPlannerAuto.getPathGroupFromAutoFile("sf8");
-    private static List<PathPlannerPath> bozo = PathPlannerAuto.getPathGroupFromAutoFile("newsf");
-    private static List<PathPlannerPath> straightline = PathPlannerAuto.getPathGroupFromAutoFile("straightline");
+    // private static List<PathPlannerPath> trajectory = PathPlannerAuto.getPathGroupFromAutoFile("trajectory");
+    // private static List<PathPlannerPath> sf8 = PathPlannerAuto.getPathGroupFromAutoFile("sf8");
+    // private static List<PathPlannerPath> bozo = PathPlannerAuto.getPathGroupFromAutoFile("newsf");
+    // private static List<PathPlannerPath> straightline = PathPlannerAuto.getPathGroupFromAutoFile("straightline");
 
     public AutonLoader(DriveBase driveBase, Manipulator manipulator, Elevator elevator) {
 
@@ -59,9 +56,9 @@ public class AutonLoader {
         // chooser.addOption("Single Score Mobility", m_autoncommands.MOBILITY);
         // chooser.addOption("Double Score", m_autoncommands.SCORING);
 
-        chooser.addOption("trajectory", AutoBuilder.followPath((PathPlannerPath) trajectory));
-        chooser.addOption("sf8", AutoBuilder.followPath((PathPlannerPath) sf8));
-        chooser.addOption("straightline", AutoBuilder.followPath((PathPlannerPath) straightline));
+        // chooser.addOption("trajectory", AutoBuilder.followPath((PathPlannerPath) trajectory));
+        // chooser.addOption("sf8", AutoBuilder.followPath((PathPlannerPath) sf8));
+        // chooser.addOption("straightline", AutoBuilder.followPath((PathPlannerPath) straightline));
         // chooser.addOption("newsf", AutoBuilder.followPathWithEvents((PathPlannerPath) newsf));
 
         SmartDashboard.putData(chooser);
