@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.Constants;
 
+import org.opencv.core.Mat;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,6 +28,7 @@ public class DriveBase extends SubsystemBase {
     public static double[] odomPrevDeltas = {0, 0, 0, 0};
     public static double[] odomAngles = {0, 0, 0, 0};
     public static double[] encoderOffset = {0, 0, 0, 0};
+    public static double[] encoderDriveOffset = {0, 0, 0, 0};
 
     double mod1Prev = 0;
     double mod1Curr = 0;
@@ -45,6 +48,7 @@ public class DriveBase extends SubsystemBase {
     Pose2d globalPose = new Pose2d(0.0, 0.0, new Rotation2d());
     double X = 0.0;
     double Y = 0.0;
+    
 
     public DriveBase(Kinematics kinematics, AHRS ahrs) {
         m_kinematics = kinematics;
@@ -53,7 +57,8 @@ public class DriveBase extends SubsystemBase {
         moduleGroup = new Module[4];
         for (int i = 0; i < 4; i++) {
             moduleGroup[i] = new Module(i, Constants.DriveTrainConstants.invertedMotors[i]);
-            encoderOffset[i] = moduleGroup[i].getAngleInRadians();//integratedDriveEncoder.getPosition();
+            encoderOffset[i] = moduleGroup[i].getAngleInRadians();
+            encoderDriveOffset[i] = moduleGroup[i].integratedDriveEncoder.getPosition();
         }
 
         targetModuleStates = new Module.ModuleState[4];
@@ -80,7 +85,7 @@ public class DriveBase extends SubsystemBase {
     }
 
     public ChassisSpeeds getRelativeChassisSpeeds() {
-        return new ChassisSpeeds(); //TODO
+        return new ChassisSpeeds(m_ahrs.getVelocityX(), m_ahrs.getVelocityY(), m_ahrs.getRate() * (Math.PI/180.0)); //TODO
     }
 
     public boolean shouldFlipPath() {
@@ -123,7 +128,7 @@ public class DriveBase extends SubsystemBase {
         // RobotContainer.m_photonsubsystem.updatePose();
         for (int i = 0; i < 4; i++) {
             moduleGroup[i].setSpeedAndAngle(targetModuleStates[i]);
-            odomDeltas[i] = (((moduleGroup[i].integratedDriveEncoder.getPosition() - encoderOffset[i])/6.0) * (0.102*Math.PI));// - odomPrevDeltas[i];
+            odomDeltas[i] = (((moduleGroup[i].integratedDriveEncoder.getPosition() - encoderDriveOffset[i])/6.12) * (0.102*Math.PI));// - odomPrevDeltas[i];
             odomAngles[i] = smallestAngle(moduleGroup[i].getAngleInRadians());//smallestAngle(moduleGroup[i].getAngleInRadians()*(180.0/Math.PI)) * (Math.PI/180.0);
         }
         

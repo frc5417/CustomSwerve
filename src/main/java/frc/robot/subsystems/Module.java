@@ -1,20 +1,22 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANcoderConfigurator;
+// import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 import com.revrobotics.CANSparkMax;
-
-import frc.robot.Constants;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-
-// import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
+import frc.robot.Constants;
 
 public class Module {
   /** Creates a new Module. */
@@ -36,6 +38,7 @@ public class Module {
   private Boolean invertDriveSpeed = false;
   
   private CANcoder _CANCoder;
+  private CANcoderConfigurator configurator;
 
   int cnt = 0;
 
@@ -51,10 +54,11 @@ public class Module {
      angleMotor.getPIDController();
 
      _CANCoder = new CANcoder(Constants.MotorConstants.CANCoderID[this.moduleNum], "canivore");
+     configurator = _CANCoder.getConfigurator();
 
     //  _CANCoder.setPositionToAbsolute(0);
-    //  _CANCoder.configAllSettings(returnCANConfig());
-     _CANCoder.setPosition(0);
+     configurator.apply(returnCANConfig());
+    //  _CANCoder.setPosition(0);
     
      /* Drive Motor Config */
      driveMotor = new CANSparkMax(Constants.MotorConstants.driveMotorIDS[this.moduleNum], MotorType.kBrushless);
@@ -108,11 +112,11 @@ public class Module {
   }
 
   public double getAngleInRadians() { 
-    return (_CANCoder.getAbsolutePosition().getValueAsDouble() - Constants.MotorConstants.motorDegrees[this.moduleNum]) * (Math.PI/180.0);
+    return (_CANCoder.getAbsolutePosition().getValueAsDouble() * 360.0 - Constants.MotorConstants.motorDegrees[this.moduleNum]) * (Math.PI/180.0);
   }
 
   public double getAngle() {
-    return _CANCoder.getPosition().getValueAsDouble();
+    return _CANCoder.getAbsolutePosition().getValueAsDouble() * 360.0;
   }
 
   public double getDriveVelocity() {
@@ -159,14 +163,11 @@ public class Module {
     _CANCoder.close();
   }
 
-  // public CANcoderConfiguration returnCANConfig() {
-  //   CANcoderConfiguration canConfig = new CANcoderConfiguration();
-    // TODO: THE THREE LINES BELOW ARE DEPRECATED!!!
-    // canConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-    // canConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
-    // canConfig.sensorTimeBase = SensorTimeBase.PerSecond;
-  //   return canConfig;
-  // }
+  public CANcoderConfiguration returnCANConfig() {
+    CANcoderConfiguration canConfig = new CANcoderConfiguration();
+    canConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    return canConfig;
+  }
 
   private void configAngleMotor() {
     angleMotor.restoreFactoryDefaults();

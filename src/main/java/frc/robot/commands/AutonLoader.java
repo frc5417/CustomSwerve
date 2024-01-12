@@ -3,6 +3,8 @@ package frc.robot.commands;
 import java.util.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.ReplanningConfig;
 
@@ -25,7 +27,7 @@ public class AutonLoader {
     private final HolonomicPathFollowerConfig holonomic_config = new HolonomicPathFollowerConfig(Constants.Swerve.maxModuleSpeed, Constants.Swerve.driveBaseRadius, replanningConfig);
 
     //PathPlanner auton groups
-    // private static List<PathPlannerPath> trajectory = PathPlannerAuto.getPathGroupFromAutoFile("trajectory");
+    private static List<PathPlannerPath> trajectory = PathPlannerAuto.getPathGroupFromAutoFile("test");
     // private static List<PathPlannerPath> sf8 = PathPlannerAuto.getPathGroupFromAutoFile("sf8");
     // private static List<PathPlannerPath> bozo = PathPlannerAuto.getPathGroupFromAutoFile("newsf");
     // private static List<PathPlannerPath> straightline = PathPlannerAuto.getPathGroupFromAutoFile("straightline");
@@ -49,6 +51,7 @@ public class AutonLoader {
 
         AutoBuilder.configureHolonomic(m_driveBase::getCurrentPose, m_driveBase::resetOdometry, m_driveBase::getRelativeChassisSpeeds, m_driveBase::setAutoSpeed, holonomic_config, m_driveBase::shouldFlipPath, m_driveBase);
 
+        
         // for (String path : Constants.Auton.paths) {
             // chooser.addOption(path, getAutonFromPath(path));
         // }
@@ -69,7 +72,8 @@ public class AutonLoader {
     // }
 
     public Command getAuton() {
-        return chooser.getSelected();
+        // return chooser.getSelected();
         // return autoBuilder.fullAuto(pathGroup);
+        return AutoBuilder.buildAuto("test");
     }    
 }
