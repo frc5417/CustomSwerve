@@ -66,13 +66,13 @@ public final class Constants {
 
     public static final IdleMode angleNeutralMode = IdleMode.kBrake;
     public static final IdleMode driveNeutralMode = IdleMode.kBrake;
-    public static final double maxVelocity = 3.89; // m/s
-    public static final double maxAcceleration = (Double) 10.0; //m/s^2
-    public static final double maxAngularVelocity = 12.56637; //rad/sec
-    public static final double maxAngularAcceleration = (Double) 10.0; //rad/sec^2
-    public static final double maxModuleSpeed = (Double) 3.89;
+    public static final double maxVelocity = 0.5; // m/s
+    public static final double maxAcceleration = (Double) 0.025; //m/s^2
+    public static final double maxAngularVelocity = 1; //rad/sec
+    public static final double maxAngularAcceleration = (Double) 0.1; //rad/sec^2
+    public static final double maxModuleSpeed = (Double) 0.5;
     public static final double driveBaseRadius = (Double) 0.51 * Math.sqrt(2); 
-    public static final boolean shouldFlipAuto = false;
+    public static final boolean shouldFlipAuto = true;
 
     //velocity PID tuning for overall swerve
     public static final double velocitykP = 1.0; // 0.0001

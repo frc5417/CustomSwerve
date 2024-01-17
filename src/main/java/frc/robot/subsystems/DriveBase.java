@@ -6,6 +6,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.Constants;
@@ -47,10 +48,13 @@ public class DriveBase extends SubsystemBase {
 
     SwerveDriveOdometry m_sdkOdom;
 
+
     Pose2d globalPose = new Pose2d(0.0, 0.0, new Rotation2d());
     double X = 0.0;
     double Y = 0.0;
     
+
+    ChassisSpeeds autoSetSpeed = new ChassisSpeeds();
 
     public DriveBase(Kinematics kinematics, AHRS ahrs) {
         m_kinematics = kinematics;
@@ -76,6 +80,9 @@ public class DriveBase extends SubsystemBase {
                 new SwerveModulePosition(odomDeltas[0], new Rotation2d(odomAngles[0]))
             }, new Pose2d (0.0, 0.0, new Rotation2d())
         );
+
+
+    
     } 
 
     // public Pose2d getCurrentPose() {
@@ -87,19 +94,21 @@ public class DriveBase extends SubsystemBase {
     }
 
     public ChassisSpeeds getRelativeChassisSpeeds() {
-        return new ChassisSpeeds(m_ahrs.getVelocityX(), m_ahrs.getVelocityY(), m_ahrs.getRate() * (Math.PI/180.0)); //TODO
+        return autoSetSpeed;
+        // return new ChassisSpeeds(m_ahrs.getVelocityX(), m_ahrs.getVelocityY(), m_ahrs.getRate() * (Math.PI/180.0)); //TODO
     }
 
     public boolean shouldFlipPath() {
-        if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-            return Constants.Swerve.shouldFlipAuto;
-        } else if ((DriverStation.getAlliance().equals(Alliance.Red))) {
-            return !Constants.Swerve.shouldFlipAuto;
-        } else {
-            System.out.println("IDK THE ROBOT ALLIANCE BRO"); 
-            return false;
-        }
+        // if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+        //     return Constants.Swerve.shouldFlipAuto;
+        // } else if ((DriverStation.getAlliance().equals(Alliance.Red))) {
+        //     return !Constants.Swerve.shouldFlipAuto;
+        // } else {
+        //     System.out.println("IDK THE ROBOT ALLIANCE BRO"); 
+        //     return false;
+        // }
         
+        return Constants.Swerve.shouldFlipAuto;
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -115,7 +124,8 @@ public class DriveBase extends SubsystemBase {
     }
 
     public void setAutoSpeed(ChassisSpeeds chassisSpeeds) {
-        ChassisSpeeds computed = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond/Constants.Swerve.maxVelocity, chassisSpeeds.vyMetersPerSecond/Constants.Swerve.maxVelocity, chassisSpeeds.omegaRadiansPerSecond/Constants.Swerve.maxAngularVelocity);
+        autoSetSpeed = chassisSpeeds;
+        ChassisSpeeds computed = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond/Constants.Swerve.maxVelocity, chassisSpeeds.vyMetersPerSecond/Constants.Swerve.maxVelocity, 0.0); //chassisSpeeds.omegaRadiansPerSecond/Constants.Swerve.maxAngularVelocity
         targetModuleStates = m_kinematics.getComputedModuleStates(computed);
     }
 
