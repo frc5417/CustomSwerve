@@ -6,17 +6,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.Constants;
 
-import org.opencv.core.Mat;
-
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveBase extends SubsystemBase {
@@ -56,6 +51,8 @@ public class DriveBase extends SubsystemBase {
 
     ChassisSpeeds autoSetSpeed = new ChassisSpeeds();
 
+
+
     public DriveBase(Kinematics kinematics, AHRS ahrs) {
         m_kinematics = kinematics;
         m_ahrs = ahrs;
@@ -94,8 +91,8 @@ public class DriveBase extends SubsystemBase {
     }
 
     public ChassisSpeeds getRelativeChassisSpeeds() {
-        return autoSetSpeed;
-        // return new ChassisSpeeds(m_ahrs.getVelocityX(), m_ahrs.getVelocityY(), m_ahrs.getRate() * (Math.PI/180.0)); //TODO
+        // return new ChassisSpeeds(m_ahrs.getVelocityY(), -1 * m_ahrs.getVelocityX(), m_ahrs.getRate() * (Math.PI/180.0));
+        return ChassisSpeeds.fromRobotRelativeSpeeds(m_ahrs.getVelocityY(), -1 * m_ahrs.getVelocityX(), m_ahrs.getRate() * (Math.PI/180.0), m_ahrs.getRotation2d());
     }
 
     public boolean shouldFlipPath() {
@@ -164,7 +161,8 @@ public class DriveBase extends SubsystemBase {
         SmartDashboard.putNumber("Yaw", m_ahrs.getYaw());
         SmartDashboard.putNumber("Pitch", m_ahrs.getPitch());
         SmartDashboard.putNumber("Roll", m_ahrs.getRoll());
-        SmartDashboard.putNumber("Rotations", m_ahrs.getAngle()/360);
+        SmartDashboard.putNumber("Rotations", m_ahrs.getAngle());
+
 
         // double voltage = m_pdp.getVoltage();
         // SmartDashboard.putNumber("Voltage", voltage);
@@ -186,7 +184,7 @@ public class DriveBase extends SubsystemBase {
         SmartDashboard.putNumber("GLOBAL POSE Y: ", -globalPose.getY());
 
         SmartDashboard.putNumber("Distance Travelled", Math.sqrt((globalPose.getX()*globalPose.getX())+(globalPose.getY()*globalPose.getY())));
-
+        SmartDashboard.updateValues();
         
     }
 }

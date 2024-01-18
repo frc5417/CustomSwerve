@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot;
 
 
 import com.kauailabs.navx.frc.AHRS;
@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
 
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it u.nder the terms of
@@ -16,10 +15,14 @@ import frc.robot.Constants;
 
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Robot;
 import frc.robot.commands.AutonLoader;
 import frc.robot.commands.SetLightConfig;
 import frc.robot.commands.TeleopDrive;
+import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Kinematics;
+import frc.robot.subsystems.LightsControl;
+import frc.robot.subsystems.Manipulator;
 import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 

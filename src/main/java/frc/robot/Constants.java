@@ -84,7 +84,7 @@ public final class Constants {
 
     // public static final double odomProportionality = -0.93409848871;
 
-    public static final PathConstraints AUTON_CONSTRAINTS = new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration); // max velocity and acceleration during auton
+    // public static final PathConstraints AUTON_CONSTRAINTS = new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration); // max velocity and acceleration during auton
     public static final long CommandDuration = 1000;
   }
 

@@ -8,13 +8,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "test"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1000.0
+            "pathName": "moose"
           }
         }
       ]
