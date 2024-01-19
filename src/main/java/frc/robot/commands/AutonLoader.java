@@ -3,8 +3,6 @@ package frc.robot.commands;
 import java.util.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathHolonomic;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -80,7 +78,7 @@ public class AutonLoader {
         // return chooser.getSelected();
         // return autoBuilder.fullAuto(pathGroup);
         // return AutoBuilder.buildAuto("test");
-        // m_driveBase.resetOdometry(new Pose2d(trajectory.getPoint(0).position, new Rotation2d()));
+        m_driveBase.resetOdometry(new Pose2d(trajectory.getPoint(0).position, new Rotation2d()));
         // return AutoBuilder.followPath(trajectory);
         return AutoBuilder.buildAuto("test");
     }    

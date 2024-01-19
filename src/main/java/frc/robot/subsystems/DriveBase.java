@@ -12,6 +12,8 @@ import frc.robot.Constants;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveBase extends SubsystemBase {
@@ -96,16 +98,15 @@ public class DriveBase extends SubsystemBase {
     }
 
     public boolean shouldFlipPath() {
-        // if (DriverStation.getAlliance().equals(Alliance.Blue)) {
-        //     return Constants.Swerve.shouldFlipAuto;
-        // } else if ((DriverStation.getAlliance().equals(Alliance.Red))) {
-        //     return !Constants.Swerve.shouldFlipAuto;
-        // } else {
-        //     System.out.println("IDK THE ROBOT ALLIANCE BRO"); 
-        //     return false;
-        // }
-        
-        return Constants.Swerve.shouldFlipAuto;
+        if (DriverStation.getAlliance().equals(Alliance.Blue)) {
+            return Constants.Swerve.shouldFlipAuto;
+        } else if ((DriverStation.getAlliance().equals(Alliance.Red))) {
+            return !Constants.Swerve.shouldFlipAuto;
+        } else {
+            System.out.println("IDK THE ROBOT ALLIANCE BRO"); 
+            return false;
+        }
+
     }
 
     public void resetOdometry(Pose2d pose) {

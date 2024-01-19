@@ -72,7 +72,7 @@ public final class Constants {
     public static final double maxAngularAcceleration = (Double) 0.1; //rad/sec^2
     public static final double maxModuleSpeed = (Double) 0.5;
     public static final double driveBaseRadius = (Double) 0.51 * Math.sqrt(2); 
-    public static final boolean shouldFlipAuto = true;
+    public static final boolean shouldFlipAuto = false;
 
     //velocity PID tuning for overall swerve
     public static final double velocitykP = 1.0; // 0.0001
